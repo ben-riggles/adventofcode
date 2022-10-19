@@ -2,7 +2,7 @@ import numpy as np
 
 
 TREE = '#'
-with open('2020/day3.txt') as f:
+with open('2020/day03/data.txt') as f:
     TREE_MAP = np.array([list(line) for line in f.read().splitlines()])
 print(TREE_MAP)
 
