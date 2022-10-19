@@ -7,7 +7,6 @@ def parse_seat(seat: str) -> Tuple[int, int]:
     col = seat[-3:].replace('L', '0').replace('R', '1')
     return int(row, base=2), int(col, base=2)
 
-
 def seat_id(row, col) -> int:
     return row * 8 + col
 
