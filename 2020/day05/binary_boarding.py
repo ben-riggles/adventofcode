@@ -18,11 +18,7 @@ seats = np.column_stack((seats, seat_id(seats[:,0], seats[:,1])))
 print(f'PART ONE: {max(seats[:,2])}')
 
 
-missing = []
-for row in np.unique(seats[:,0]):
-    row_seats = seats[seats[:,0] == row]
-    open_seats = set(range(0, 8)) - set(row_seats[:,1])
-    missing.extend([(row, x, seat_id(row, x)) for x in open_seats])
-
-missing = [x for x in missing if x[2]+1 in seats[:,2] and x[2]-1 in seats[:,2]]
-print(f'PART TWO: {missing[0][2]}')
+seat_ids = set(seats[:,2])
+missing = set(range(max(seats[:,2]))) - seat_ids
+missing = [x for x in missing if {x-1, x+2} <= seat_ids]
+print(f'PART TWO: {missing[0]}')

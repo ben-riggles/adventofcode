@@ -1,0 +1,79 @@
+from __future__ import annotations
+from enum import Enum
+
+
+class Direction(Enum):
+    NORTH = 0
+    EAST = 90
+    SOUTH = 180
+    WEST = 270
+
+    def __add__(self, deg):
+        return Direction((self.value + deg) % 360)
+
+    def __sub__(self, deg):
+        return Direction((self.value - deg) % 360)
+
+    def __str__(self):
+        return self.name[0]
+
+
+class Location:
+    def __init__(self, x = 0, y = 0):
+        self.x = x
+        self.y = y
+
+    def __add__(self, other: Location):
+        return Location(x = self.x + other.x, y = self.y + other.y)
+
+    def __sub__(self, other: Location):
+        return Location(x = self.x - other.x, y = self.y - other.y)
+
+    def __mul__(self, val: int):
+        return Location(self.x * val, self.y * val)
+
+    def __str__(self):
+        return f'({self.x}, {self.y})'
+
+    def __repr__(self):
+        return f'Location({self.x}, {self.y})'
+
+    def rotate(self, deg: int, clockwise=True):
+        if (deg == 90 and clockwise) or (deg == 270 and not clockwise):
+            return Location(self.y, -self.x)
+        elif (deg == 180):
+            return Location(-self.x, -self.y)
+        elif (deg == 270 and clockwise) or (deg == 90 and not clockwise):
+            return Location(-self.y, self.x)
+        raise Exception(f'Invalid angle: {deg}')
+
+    def manhattan_dist(self):
+        return abs(self.x) + abs(self.y)
+
+class Ferry:
+    def __init__(self, waypoint: Location):
+        self.loc = Location(0, 0)
+        self.waypoint = waypoint
+
+    def move(self, command):
+        cmd, val = command[0], int(command[1:])
+        self._move(cmd, val)
+
+    def _move(self, cmd, val):
+        match cmd:
+            case 'N': self.waypoint += Location(0, val)
+            case 'E': self.waypoint += Location(val, 0)
+            case 'S': self.waypoint += Location(0, -val)
+            case 'W': self.waypoint += Location(-val, 0)
+            case 'L': self.waypoint = self.waypoint.rotate(val, clockwise=False)
+            case 'R': self.waypoint = self.waypoint.rotate(val, clockwise=True)
+            case 'F': self.loc += self.waypoint * val
+            case _: raise Exception(f'Invalid command {cmd}')
+
+
+with open('2020/day12/data.txt') as f:
+    commands = f.read().splitlines()
+
+ferry = Ferry(waypoint=Location(10, 1))
+[ferry.move(cmd) for cmd in commands]
+print(f'PART TWO: {ferry.loc.manhattan_dist()}')
