@@ -1,17 +1,13 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from functools import reduce
 import math
 import numpy as np
-from operator import iand
 import re
 from typing import Dict, List, Type
 
 
 class Mask:
-    X_MASK = 'X'
-
     def __init__(self, mask_str: str, masks: Dict[int, int] = None):
         self._mask_str = mask_str
         self.bit_masks = masks
@@ -40,9 +36,10 @@ class MemoryV1(Memory):
     def evaluate(self, mask: Mask) -> Dict[int, int]:
         retval = self.value
         for x, bit in mask.bit_masks.items():
-            if bit == Mask.X_MASK:
+            try:
+                retval = retval | x if int(bit) else retval & ~x
+            except ValueError:
                 continue
-            retval = retval | x if int(bit) else retval & ~x
         return {self.address: retval}
 
 class MemoryV2(Memory):
@@ -71,11 +68,7 @@ class Program:
         self.memory: Dict[int, int] = {}
 
     def execute(self, cmd_list: List[str]):
-        # [self._execute(x) for x in cmd_list]
-        for itr, cmd in enumerate(cmd_list):
-            if itr == 66:
-                two = 2
-            self._execute(cmd)
+        [self._execute(x) for x in cmd_list]
         return self
 
     def _execute(self, cmd: str):
