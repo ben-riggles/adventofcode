@@ -1,11 +1,12 @@
 import itertools
 import numpy as np
+from numpy.typing import NDArray
 
 
 ACTIVE, INACTIVE = '#', '.'
 NUM_CYCLES = 6
 
-def create_grid(dimensions: int, init):
+def create_grid(dimensions: int, init: NDArray) -> NDArray:
     init_hgt, init_wdt = init.shape
     border_size = NUM_CYCLES + 1
     grid_size = max(init_hgt, init_wdt) + 2*border_size
@@ -17,14 +18,14 @@ def create_grid(dimensions: int, init):
     grid[start_slice] = initial_state
     return grid
 
-def active_neighbors(grid) -> int:
+def active_neighbors(grid: NDArray) -> int:
     return sum([
         np.roll(grid, tuple(x), axis=tuple(range(grid.ndim))) == ACTIVE 
         for x in itertools.product((-1, 0, 1), repeat=grid.ndim)
         if x != (0,) * grid.ndim
     ])
 
-def run_cycle(grid):
+def run_cycle(grid: NDArray) -> NDArray:
     neighbors = active_neighbors(grid)
     rule_one = np.logical_and(grid == ACTIVE, np.logical_or(neighbors < 2, neighbors > 3))
     rule_two = np.logical_and(grid == INACTIVE, neighbors == 3)

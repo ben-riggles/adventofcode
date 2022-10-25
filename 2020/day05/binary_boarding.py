@@ -15,10 +15,11 @@ with open('2020/day05/data.txt') as f:
     seats = np.array([parse_seat(line) for line in f.read().splitlines()])
 
 seats = np.column_stack((seats, seat_id(seats[:,0], seats[:,1])))
-print(f'PART ONE: {max(seats[:,2])}')
+max_seat_id = max(seats[:,2])
+print(f'PART ONE: {max_seat_id}')
 
 
 seat_ids = set(seats[:,2])
-missing = set(range(max(seats[:,2]))) - seat_ids
-missing = [x for x in missing if {x-1, x+2} <= seat_ids]
+missing = set(range(max_seat_id)) - seat_ids
+missing = [x for x in missing if {x-1, x+1} <= seat_ids]
 print(f'PART TWO: {missing[0]}')
