@@ -33,7 +33,7 @@ class Line:
 
 
 
-with open('day05/vent_coordinates.txt') as f:
+with open('2021/day05/vent_coordinates.txt') as f:
     line_strings = f.readlines()
 
 

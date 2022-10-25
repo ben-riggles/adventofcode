@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('day06/lanternfish.txt') as f:
+with open('2021/day06/lanternfish.txt') as f:
     ages = f.readlines()[0].strip().split(',')
 ages = np.asarray(list(map(int, ages)), dtype=int)
 

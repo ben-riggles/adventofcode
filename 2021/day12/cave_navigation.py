@@ -1,4 +1,4 @@
-with open('day12/cave_system.txt') as f:
+with open('2021/day12/cave_system.txt') as f:
     cave_links = f.read().splitlines()
 cave_links = [tuple(x.split('-')) for x in cave_links]
 

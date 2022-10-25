@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from functools import reduce
 
-with open('day16/transmission.txt') as f:
+with open('2021/day16/transmission.txt') as f:
     transmission = f.read().strip()
 print(transmission)
 transmission = bin(int('F' + transmission, 16))[2:]

@@ -37,7 +37,7 @@ def main(numbers, boards):
 
 
 _boards = []
-with open('day04/bingo_input.txt') as f:
+with open('2021/day04/bingo_input.txt') as f:
     _numbers = list(map(int, f.readline().strip().split(',')))
     _ = f.readline().strip()
 

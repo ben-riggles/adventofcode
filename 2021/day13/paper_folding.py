@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('day13/code_sheet.txt') as f:
+with open('2021/day13/code_sheet.txt') as f:
     lines = f.read().splitlines()
 blank_idx = lines.index('')
 points = lines[:blank_idx]

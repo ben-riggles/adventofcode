@@ -35,7 +35,7 @@ class Player:
         return self.score >= 1000
 
 
-with open('day21/starting_positions.txt') as f:
+with open('2021/day21/starting_positions.txt') as f:
     positions = f.read().splitlines()
     p1_pos, p2_pos = int(positions[0].split(':')[1].strip()), int(positions[1].split(':')[1].strip())
 

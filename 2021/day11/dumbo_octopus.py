@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('day11/energy_levels.txt') as f:
+with open('2021/day11/energy_levels.txt') as f:
     energy_levels = f.read().splitlines()
 energy_levels = np.array([np.array(list(str(x)), dtype=int) for x in energy_levels])
 print(energy_levels)

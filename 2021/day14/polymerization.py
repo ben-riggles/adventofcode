@@ -2,7 +2,7 @@ import numpy as np
 import functools
 from collections import Counter
 
-with open('day14/polymer_template.txt') as f:
+with open('2021/day14/polymer_template.txt') as f:
     lines = f.read().splitlines()
 
 polymer = lines[0].strip()

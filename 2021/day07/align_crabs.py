@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('day07/crab_positions.txt') as f:
+with open('2021/day07/crab_positions.txt') as f:
     crabs = f.readlines()[0].strip().split(',')
 crabs = np.asarray(list(map(int, crabs)), dtype=int)
 

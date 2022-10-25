@@ -29,7 +29,7 @@ def enhance_image(image:NDArray, algorithm:NDArray) -> NDArray:
     return algorithm[indices]
 
 
-with open('day20/image.txt') as f:
+with open('2021/day20/image.txt') as f:
     image_input = f.read().splitlines()
     algorithm, image = np.array(list(image_input[0])), image_input[2:]
 

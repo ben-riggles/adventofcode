@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('day01/depth_measurements.txt') as f:
+with open('2021/day01/depth_measurements.txt') as f:
     measurements = np.asarray(list(map(int, f.readlines())))
 
 w1 = measurements[:-2]

@@ -72,7 +72,7 @@ class Display:
         return int(''.join(digits))
 
 
-with open('day08/display_signals.txt') as f:
+with open('2021/day08/display_signals.txt') as f:
     signals = f.read().splitlines()
 
 # Part 1

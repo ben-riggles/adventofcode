@@ -1,4 +1,4 @@
-with open('day02/planned_course.txt') as f:
+with open('2021/day02/planned_course.txt') as f:
     commands = f.read().splitlines()
 
 horizontal = 0

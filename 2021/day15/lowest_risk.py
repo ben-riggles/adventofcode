@@ -12,7 +12,7 @@ class Node:
     visited: bool = field(default=False)
 
 
-with open('day15/risk_level.txt') as f:
+with open('2021/day15/risk_level.txt') as f:
     grid = f.read().splitlines()
 
 base_array = np.array([[int(val) for val in list(row)] for row in grid])

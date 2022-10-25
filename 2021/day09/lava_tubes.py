@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('day09/small.txt') as f:
+with open('2021/day09/small.txt') as f:
     height_map = f.read().splitlines()
 
 height_map = np.array([list(x) for x in height_map], dtype=int)

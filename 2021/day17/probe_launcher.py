@@ -1,7 +1,7 @@
 from typing import Tuple, List
 import math
 
-with open('day17/target.txt') as f:
+with open('2021/day17/target.txt') as f:
     target_str = f.read().strip()
 
 asdf = None

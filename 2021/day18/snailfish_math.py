@@ -171,7 +171,7 @@ def parse_number(num_str:str):
     return Pair(first, second), num_str
 
 
-with open('day18/numbers.txt') as f:
+with open('2021/day18/numbers.txt') as f:
     numbers = f.read().splitlines()
 numbers = [parse_number(x)[0] for x in numbers]
 

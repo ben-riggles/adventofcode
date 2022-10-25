@@ -138,7 +138,7 @@ def roll(player:int, score_card:ScoreCard, outcomes:Counter[int, int]):
 
 
 
-with open('day21/small.txt') as f:
+with open('2021/day21/small.txt') as f:
     positions = f.read().splitlines()
     p1_pos, p2_pos = int(positions[0].split(':')[1].strip()), int(positions[1].split(':')[1].strip())
 

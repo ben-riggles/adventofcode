@@ -1,7 +1,7 @@
 import numpy as np
 from collections import deque
 
-with open('day10/navigation_subsystem.txt') as f:
+with open('2021/day10/navigation_subsystem.txt') as f:
     signals = f.read().splitlines()
 
 class CorruptionError(ValueError):

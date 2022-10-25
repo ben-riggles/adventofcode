@@ -1,4 +1,4 @@
-with open('day01/depth_measurements.txt') as f:
+with open('2021/day01/depth_measurements.txt') as f:
     measurements = list(map(int, f.readlines()))
 
 shifted = measurements[1:]
