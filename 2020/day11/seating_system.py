@@ -5,11 +5,6 @@ FLOOR = '.'
 EMPTY_SEAT = 'L'
 OCCUPIED_SEAT = '#'
 
-
-with open('2020/day11/data.txt') as f:
-    INITIAL_LAYOUT = np.array([list(line) for line in f.read().splitlines()])
-
-
 class Direction(Enum):
     UP = auto()
     DOWN = auto()
@@ -52,7 +47,10 @@ def leave_seats(layout, tolerance, count_method=count_adjacent_seats):
     retval = np.copy(layout)
     retval[(retval == OCCUPIED_SEAT) & (seats >= tolerance)] = EMPTY_SEAT
     return retval
-    
+
+
+with open('2020/day11/data.txt') as f:
+    INITIAL_LAYOUT = np.array([list(line) for line in f.read().splitlines()])
 
 layout1 = np.copy(INITIAL_LAYOUT)
 while True:

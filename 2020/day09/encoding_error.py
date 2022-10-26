@@ -1,28 +1,31 @@
 import itertools
 import numpy as np
-from typing import List
+from numpy.typing import NDArray
+from typing import Tuple
 
 
-PREAMBLE = 25
-def is_valid(window, test_value) -> bool:
-    options = [sum(combo) for combo in itertools.combinations(window, 2)]
+def is_valid(window: NDArray, test_value: int) -> bool:
+    options = {sum(combo) for combo in itertools.combinations(window, 2)}
     return test_value in options
 
 
-def find_weakness(window, target_value) -> List[int]:
-    _window = np.array(window)
-    data = np.array([(idx, val, sum(_window[:idx+1])) for idx, val in enumerate(_window)])
-    while data.any():
-        if target_value in data[:,2]:
-            last_row = data[np.where(data[:,2] == target_value)][0]
-            return list(_window[data[0][0] : last_row[0]])
-        _row, data = data[0], data[1:]
-        data[:,2] = data[:,2] - _row[2]
-    raise Exception('Oopsie! Couldnt find weakness')
+def find_weakness(window: NDArray, target_value: int) -> NDArray:
+    def _check(sums: NDArray, target_value: int, start: int = 0) -> Tuple[int, int]:
+        try:
+            idx = np.where(sums == target_value)[0][0]
+            return start, start + idx + 1
+        except IndexError:
+            sums = sums - sums[0]
+            return _check(sums[1:], target_value, start+1)
+
+    sums = np.cumsum(window)
+    start, end = _check(sums, target_value)
+    return window[start:end]
 
 
+PREAMBLE = 25
 with open('2020/day09/data.txt') as f:
-    data = [int(line) for line in f.read().splitlines()]
+    data = np.array([int(line) for line in f.read().splitlines()])
 
 idx = PREAMBLE
 while (is_valid(data[idx-PREAMBLE:idx], data[idx])):
