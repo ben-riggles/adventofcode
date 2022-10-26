@@ -3,7 +3,7 @@ import collections
 from typing import Set, Counter
 
 
-class BagTree:
+class BagDict:
     def __init__(self):
         self.bags = {}
 
@@ -16,54 +16,51 @@ class BagTree:
 class Bag:
     def __init__(self, color: str):
         self.color: str = color
-        self.parents: Counter[Bag] = collections.Counter({})
+        self.parents: Set[Bag] = set()
         self.children: Counter[Bag] = collections.Counter({})
-
-    def __str__(self):
-        return self.color
 
     def __repr__(self):
         return f'Bag({self.color})'
 
-    def add_child(self, other: Bag, amount: int):
-        self.children[other] = amount
-        other.parents[self] = amount
+    def __eq__(self, other: Bag):
+        return self.color == other.color
+
+    def __hash__(self):
+        return hash(self.color)
+
+    def add_child(self, child: Bag, amount: int):
+        self.children[child] = amount
+        child.parents.add(self)
+
+    def all_parents(self) -> Set[Bag]:
+        ancestors = [x.all_parents() for x in self.parents]
+        return self.parents.union(*ancestors)
+
+    def all_children(self, amount: int = 1) -> Counter[Bag]:
+        children = Counter({bag: num*amount for bag, num in self.children.items()})
+        children = sum([child.all_children(num) for child, num in children.items()], start=children)
+        return children
 
     @staticmethod
-    def from_string(data: str, tree: BagTree):
-        color, children = data.split('bags contain')
-        bag = tree[color.strip()]
+    def from_string(data: str, tree: BagDict):
+        color, children = (x.strip() for x in data.split('bags contain'))
+        bag = tree[color]
 
         if 'no other bags' in children:
             return
 
-        children = children.replace('.', '').replace('bags', '').replace('bag', '').split(',')
+        children = [x.strip() for x in children.replace('.', '').replace('bags', '').replace('bag', '').split(',')]
         for child in children:
-            amount, child_color = child.strip().split(' ', maxsplit=1)
-            bag.add_child(tree[child_color.strip()], int(amount.strip()))
+            amount, child_color = child.split(' ', maxsplit=1)
+            bag.add_child(tree[child_color], int(amount))
 
 
-tree = BagTree()
+bags = BagDict()
 with open('2020/day07/data.txt') as f:
-    [Bag.from_string(line, tree) for line in f.read().splitlines()]
+    [Bag.from_string(line, bags) for line in f.read().splitlines()]
 
-
-def all_parents(bag: Bag) -> Set[Bag]:
-    retval = set(bag.parents.keys())
-
-    parents = [all_parents(x) for x in bag.parents.keys()]
-    if parents:
-        retval = retval.union(*parents)
-    return retval
-
-shiny_gold_parents = all_parents(tree['shiny gold'])
+shiny_gold_parents = bags['shiny gold'].all_parents()
 print(f'PART ONE: {len(shiny_gold_parents)}')
 
-
-def all_children(bag: Bag, amount: int = 1) -> Counter[Bag]:
-    retval = Counter({k: v*amount for k, v in bag.children.items()})
-    retval = sum([all_children(key, value) for key, value in retval.items()], start=retval)
-    return retval
-
-shiny_gold_children = all_children(tree['shiny gold'])
+shiny_gold_children = bags['shiny gold'].all_children()
 print(f'PART TWO: {sum(shiny_gold_children.values())}')
