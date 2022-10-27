@@ -10,16 +10,16 @@ def is_valid(window: NDArray, test_value: int) -> bool:
 
 
 def find_weakness(window: NDArray, target_value: int) -> NDArray:
-    def _check(sums: NDArray, target_value: int, start: int = 0) -> Tuple[int, int]:
+    def _weakness_range(sums: NDArray, target_value: int, start: int = 0) -> Tuple[int, int]:
         try:
             idx = np.where(sums == target_value)[0][0]
             return start, start + idx + 1
         except IndexError:
             sums = sums - sums[0]
-            return _check(sums[1:], target_value, start+1)
+            return _weakness_range(sums[1:], target_value, start+1)
 
     sums = np.cumsum(window)
-    start, end = _check(sums, target_value)
+    start, end = _weakness_range(sums, target_value)
     return window[start:end]
 
 

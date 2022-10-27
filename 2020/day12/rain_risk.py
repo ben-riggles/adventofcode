@@ -1,5 +1,6 @@
 from __future__ import annotations
-from enum import Enum, auto
+from dataclasses import dataclass
+from enum import Enum
 
 
 class Direction(Enum):
@@ -8,20 +9,23 @@ class Direction(Enum):
     SOUTH = 180
     WEST = 270
 
+    def __str__(self):
+        return self.name[0]
+
     def __add__(self, deg):
         return Direction((self.value + deg) % 360)
 
     def __sub__(self, deg):
         return Direction((self.value - deg) % 360)
 
-    def __str__(self):
-        return self.name[0]
 
-
+@dataclass
 class Location:
-    def __init__(self, x = 0, y = 0):
-        self.x = x
-        self.y = y
+    x: int = 0
+    y: int = 0
+
+    def __repr__(self):
+        return f'Location({self.x}, {self.y})'
 
     def __add__(self, other: Location):
         return Location(x = self.x + other.x, y = self.y + other.y)
@@ -32,22 +36,16 @@ class Location:
     def __mul__(self, val: int):
         return Location(self.x * val, self.y * val)
 
-    def __str__(self):
-        return f'({self.x}, {self.y})'
-
-    def __repr__(self):
-        return f'Location({self.x}, {self.y})'
-
-    def rotate(self, deg: int, clockwise=True):
+    def rotate(self, deg: int, clockwise: bool = True) -> Location:
         if (deg == 90 and clockwise) or (deg == 270 and not clockwise):
             return Location(self.y, -self.x)
         elif (deg == 180):
             return Location(-self.x, -self.y)
         elif (deg == 270 and clockwise) or (deg == 90 and not clockwise):
             return Location(-self.y, self.x)
-        raise Exception(f'Invalid angle: {deg}')
+        raise ValueError(f'Invalid angle: {deg}')
 
-    def manhattan_dist(self):
+    def manhattan_dist(self) -> int:
         return abs(self.x) + abs(self.y)
 
 

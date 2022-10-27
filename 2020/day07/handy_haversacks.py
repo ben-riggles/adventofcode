@@ -1,5 +1,6 @@
 from __future__ import annotations
 import collections
+import re
 from typing import Set, Counter
 
 
@@ -11,7 +12,6 @@ class BagDict:
         if color not in self.bags:
             self.bags[color] = Bag(color)
         return self.bags[color]
-
 
 class Bag:
     def __init__(self, color: str):
@@ -43,16 +43,11 @@ class Bag:
 
     @staticmethod
     def from_string(data: str, tree: BagDict):
-        color, children = (x.strip() for x in data.split('bags contain'))
+        color = re.match(r'(.*) bags contain', data)[1]
+        children = re.findall(r'(\d+?) (.+?) bags?', data)
+
         bag = tree[color]
-
-        if 'no other bags' in children:
-            return
-
-        children = [x.strip() for x in children.replace('.', '').replace('bags', '').replace('bag', '').split(',')]
-        for child in children:
-            amount, child_color = child.split(' ', maxsplit=1)
-            bag.add_child(tree[child_color], int(amount))
+        [bag.add_child(tree[child], int(amount)) for amount, child in children]
 
 
 bags = BagDict()
