@@ -1,6 +1,8 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import Iterable
 
 
 class Direction(Enum):
@@ -49,19 +51,24 @@ class Location:
         return abs(self.x) + abs(self.y)
 
 
-class Ferry:
-    def __init__(self, direction: Direction = None, waypoint: Location = None):
-        self.loc = Location(0, 0)
-        self.direction = direction
-        self.waypoint = waypoint
-        if not (self.direction is not None) ^ (self.waypoint is not None):
-            raise Exception('Ferry must have a cardinal direction or waypoint provided')
+@dataclass(kw_only=True)
+class Ferry(ABC):
+    loc: Location = Location()
 
-    def move(self, command):
-        cmd, val = command[0], int(command[1:])
-        self._move_direct(cmd, val) if self.waypoint is None else self._move_relative(cmd, val)
+    def move(self, commands: str | Iterable[str]) -> Ferry:
+        commands = [commands] if isinstance(commands, str) else commands
+        [self._move(cmd[0], int(cmd[1:])) for cmd in commands]
+        return self
 
-    def _move_direct(self, cmd, val):
+    @abstractmethod
+    def _move(self, cmd: str, val: int):
+        pass
+
+@dataclass
+class CardinalFerry(Ferry):
+    direction: Direction
+
+    def _move(self, cmd, val):
         match cmd:
             case 'N': self.loc += Location(0, val)
             case 'E': self.loc += Location(val, 0)
@@ -69,10 +76,14 @@ class Ferry:
             case 'W': self.loc += Location(-val, 0)
             case 'L': self.direction -= val
             case 'R': self.direction += val
-            case 'F': self._move_direct(str(self.direction), val)
+            case 'F': self._move(str(self.direction), val)
             case _: raise Exception(f'Invalid command {cmd}')
 
-    def _move_relative(self, cmd, val):
+@dataclass
+class RelativeFerry(Ferry):
+    waypoint: Location
+
+    def _move(self, cmd, val):
         match cmd:
             case 'N': self.waypoint += Location(0, val)
             case 'E': self.waypoint += Location(val, 0)
@@ -87,10 +98,10 @@ class Ferry:
 with open('2020/day12/data.txt') as f:
     commands = f.read().splitlines()
 
-ferry = Ferry(direction=Direction.EAST)
-[ferry.move(cmd) for cmd in commands]
+ferry = CardinalFerry(direction=Direction.EAST)
+ferry = ferry.move(commands)
 print(f'PART ONE: {ferry.loc.manhattan_dist()}')
 
-ferry = Ferry(waypoint=Location(10, 1))
-[ferry.move(cmd) for cmd in commands]
-print(f'PART ONE: {ferry.loc.manhattan_dist()}')
+ferry = RelativeFerry(waypoint=Location(10, 1))
+ferry = ferry.move(commands)
+print(f'PART TWO: {ferry.loc.manhattan_dist()}')
