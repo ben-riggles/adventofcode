@@ -5,55 +5,63 @@ class Bag:
     def __init__(self, color, children):
         self.color = color
         self.children = children
-        self.num_of_children = 0
 
     def __repr__(self):
         return f"Bag({self.color})"
 
     @staticmethod
-    def clean_data(data):
+    def from_string(data):
         bag_color = re.match(r'(.*) bags contain', data)[1]
         bag_children = re.findall(r'(\d+?) (.+?) bags?', data)
-        return [bag_color, bag_children]
+        return Bag(bag_color, bag_children)
 
-    def check_gold(self, all_bags):
+    def contains(self, all_bags, color):
         try:
-            next(filter(lambda x: x[1] == "shiny gold", self.children))
+            next(filter(lambda x: x[1] == color, self.children))
             return True
         except StopIteration:
             pass
         for child in self.children:
             next_bag = all_bags[child[1]]
-            if next_bag.check_gold(all_bags):
+            if next_bag.check_gold(all_bags, color):
                 return True
 
         return False
 
     def count_children(self, all_bags):
         num_of_children = 0
-        for child in self.children:
-            num_of_children += int(child[0])
-            next_bag = all_bags[child[1]]
-            print(next_bag)
-            num_of_children += int(child[0]) * next_bag.count_children(all_bags)
+        for num, color in self.children:
+            num_of_children += int(num)
+            num_of_children += int(num) * all_bags[color].count_children(all_bags)
         return num_of_children
 
 
 
 def get_data():
     my_dict = {}
-    with open("2020/day07/data.txt") as f:
+    with open("./data/day_7.txt") as f:
         for bags in f.read().split("\n"):
-            color, children = Bag.clean_data(bags)
-            new_bag = Bag(color, children)
+            new_bag = Bag.from_string(bags)
             my_dict[new_bag.color] = new_bag
     return my_dict
 
 
 def bags_with_gold():
     bag_dict = get_data()
-    gold_bags = [bag_dict[bag].check_gold(bag_dict) for bag in bag_dict]
+    gold_bags = [bag_dict[bag].check_gold(bag_dict, 'shiny gold') for bag in bag_dict]
     return sum(gold_bags)
 
+def count_bags(current_bag, all_bags ):
+    children = current_bag.children
+    count = 0
+    for child in children:
+        current_amount = int(child[0])
+        count += current_amount
+        next_bag = all_bags[child[1]]
+        count += count_bags(next_bag, all_bags) * int(child[0]) 
+    return count
+
+bag_dict = get_data()
+
 print(f"There are {bags_with_gold()} bags that can contain a shiny gold bag")
-print(f"There are {get_data()['shiny gold'].count_children(get_data())} individual bags in one shiny gold bag")
+print(f"There are {count_bags(bag_dict['shiny gold'], bag_dict)} individual bags in one shiny gold bag")

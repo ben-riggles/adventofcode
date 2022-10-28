@@ -18,7 +18,7 @@ class Direction(Enum):
 class Tile:
     id: int
     shape: NDArray = field(repr=False)
-    neighbors: Dict[Direction, Tile] = field(init=False, repr=False, default_factory= lambda: {d: None for d in Direction})
+    neighbors: Dict[Direction, Tile] = field(init=False, repr=False, default_factory=lambda: {d: None for d in Direction})
 
     def __str__(self):
         shape_str = '\n'.join([''.join([char for char in line]) for line in self.shape])

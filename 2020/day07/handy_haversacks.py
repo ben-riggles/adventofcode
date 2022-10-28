@@ -22,9 +22,6 @@ class Bag:
     def __repr__(self):
         return f'Bag({self.color})'
 
-    def __eq__(self, other: Bag):
-        return self.color == other.color
-
     def __hash__(self):
         return hash(self.color)
 

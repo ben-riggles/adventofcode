@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Tuple, List, ClassVar
+from typing import List, ClassVar
 
 
 class InfiniteLoopException(Exception):
@@ -21,61 +21,67 @@ class Instruction(ABC):
     def reset(self):
         self._run = False
 
-    def execute(self, accumulator: int, idx: int) -> Tuple[int, int]:
+    def execute(self, state: Program):
         if self._run:
-            raise InfiniteLoopException(f'Instruction at index {idx} already run', accumulator)
+            raise InfiniteLoopException(f'Instruction at index {state.idx} already run', state.accumulator)
         self._run = True
-        return self._execute(accumulator, idx)
+        return self._execute(state)
 
     @abstractmethod
-    def _execute(self, accumulator: int, idx: int) -> Tuple[int, int]:
+    def _execute(self, state: Program):
         pass
 
     @staticmethod
     def from_string(inst_str: str) -> Instruction:
         op, val = inst_str.split(' ')
+        try:
+            inst = [x for x in Instruction.__subclasses__() if x.op_str == op][0]
+            return inst(int(val))
+        except IndexError:
+            raise ValueError(f'Invalid operation given: {op}')
         
-        match op:
-            case Accumulate.op_str: return Accumulate(int(val))
-            case Jump.op_str: return Jump(int(val))
-            case NoOperation.op_str: return NoOperation(int(val))
-        raise ValueError(f'Invalid operation given: {op}')
 
 class Accumulate(Instruction):
     op_str: str = 'acc'
 
-    def _execute(self, accumulator, idx):
-        return accumulator + self.value, idx + 1
+    def _execute(self, state):
+        state.accumulator += self.value
+        state.idx += 1
 
 class Jump(Instruction):
     op_str: str = 'jmp'
 
-    def _execute(self, accumulator, idx):
-        return accumulator, idx + self.value
+    def _execute(self, state):
+        state.idx += self.value
 
 class NoOperation(Instruction):
     op_str: str = 'nop'
 
-    def _execute(self, accumulator, idx):
-        return accumulator, idx + 1
+    def _execute(self, state):
+        state.idx += 1
 
 
-def run_program(inst: List[Instruction]) -> int:
-    [x.reset() for x in inst]
+class Program:
+    def __init__(self, insts: List[Instruction]):
+        self.instructions: List[Instruction] = insts.copy()
+        self.accumulator: int = 0
+        self.idx: int = 0
 
-    accumulator, idx = 0, 0
-    while True:
-        try:
-            accumulator, idx = inst[idx].execute(accumulator, idx)
-        except IndexError:
-            return accumulator
+    def execute(self) -> int:
+        [x.reset() for x in self.instructions]
+
+        while True:
+            try:
+                self.instructions[self.idx].execute(self)
+            except IndexError:
+                return self.accumulator
 
 
 with open('2020/day08/data.txt') as f:
     instructions = [Instruction.from_string(x) for x in f.read().splitlines()]
 
 try:
-    run_program(instructions.copy())
+    Program(instructions).execute()
 except InfiniteLoopException as e:
     print(f'PART ONE: {e.accumulator}')
 
@@ -84,7 +90,7 @@ jump_idxs = [idx for idx, i in enumerate(instructions) if isinstance(i, Jump)]
 for idx in jump_idxs:
     instructions[idx] = NoOperation(instructions[idx].value)
     try:
-        accumulator = run_program(instructions)
+        accumulator = Program(instructions).execute()
         break
     except InfiniteLoopException as e:
         instructions[idx] = Jump(instructions[idx].value)
