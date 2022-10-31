@@ -1,10 +1,10 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, ClassVar
+from typing import List, ClassVar, Set
 
 
-class InfiniteLoopException(Exception):
+class InfiniteLoopError(Exception):
     def __init__(self, message, acc):
         super().__init__(message)
         self.accumulator = acc
@@ -13,18 +13,8 @@ class InfiniteLoopException(Exception):
 class Instruction(ABC):
     op_str: ClassVar[str] = ''
     value: int
-    _run: bool = field(init=False, default=False)
-
-    def __repr__(self):
-        return f'Instruction({self.op_str} {self.value})'
-
-    def reset(self):
-        self._run = False
 
     def execute(self, state: Program):
-        if self._run:
-            raise InfiniteLoopException(f'Instruction at index {state.idx} already run', state.accumulator)
-        self._run = True
         return self._execute(state)
 
     @abstractmethod
@@ -61,16 +51,19 @@ class NoOperation(Instruction):
         state.idx += 1
 
 
+@dataclass
 class Program:
-    def __init__(self, insts: List[Instruction]):
-        self.instructions: List[Instruction] = insts.copy()
-        self.accumulator: int = 0
-        self.idx: int = 0
+    instructions: List[Instruction]
+    accumulator: int = 0
+    idx: int = 0
+    _executed: Set[int] = field(init=False, repr=False, default_factory=set)
 
     def execute(self) -> int:
-        [x.reset() for x in self.instructions]
-
         while True:
+            if self.idx in self._executed:
+                raise InfiniteLoopError(f'Instruction at index {self.idx} already run', self.accumulator)
+            self._executed.add(self.idx)
+
             try:
                 self.instructions[self.idx].execute(self)
             except IndexError:
@@ -82,16 +75,19 @@ with open('2020/day08/data.txt') as f:
 
 try:
     Program(instructions).execute()
-except InfiniteLoopException as e:
+except InfiniteLoopError as e:
     print(f'PART ONE: {e.accumulator}')
 
 
-jump_idxs = [idx for idx, i in enumerate(instructions) if isinstance(i, Jump)]
-for idx in jump_idxs:
-    instructions[idx] = NoOperation(instructions[idx].value)
+for idx, inst in enumerate(instructions):
+    og = inst.__class__
+    if og == Accumulate: continue
+    elif og == Jump: instructions[idx] = NoOperation(inst.value)
+    elif og == NoOperation: instructions[idx] = Jump(inst.value)
+
     try:
         accumulator = Program(instructions).execute()
+        print(f'PART TWO: {accumulator}')
         break
-    except InfiniteLoopException as e:
-        instructions[idx] = Jump(instructions[idx].value)
-print(f'PART TWO: {accumulator}')
+    except InfiniteLoopError as e:
+        instructions[idx] = og(inst.value)
