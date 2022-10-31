@@ -42,19 +42,23 @@ class Location:
 @dataclass
 class Tile:
     id: int
-    content: NDArray = field(repr=False)
-    neighbors: Dict[Direction, bool] = field(init=False, repr=False, default_factory=lambda: {d: False for d in Direction})
+    _content: NDArray = field(repr=False)
+    _neighbors: Dict[Direction, bool] = field(init=False, repr=False, default_factory=lambda: {d: False for d in Direction})
 
     def __str__(self):
-        content_str = '\n'.join([''.join([char for char in line]) for line in self.content])
+        content_str = '\n'.join([''.join([char for char in line]) for line in self._content])
         return f'Tile {self.id}:\n{content_str}'
+
+    @property
+    def content(self) -> str:
+        return self._content[1:-1, 1:-1]
 
     def edge(self, d: Direction, flipped: bool = False) -> str:
         match d:
-            case Direction.ABOVE: edge = self._ar_to_str(self.content[0])
-            case Direction.RIGHT: edge = self._ar_to_str(self.content[:, -1])
-            case Direction.BELOW: edge = self._ar_to_str(self.content[-1])[::-1]
-            case Direction.LEFT:  edge = self._ar_to_str(self.content[:,0])[::-1]
+            case Direction.ABOVE: edge = self._ar_to_str(self._content[0])
+            case Direction.RIGHT: edge = self._ar_to_str(self._content[:, -1])
+            case Direction.BELOW: edge = self._ar_to_str(self._content[-1])[::-1]
+            case Direction.LEFT:  edge = self._ar_to_str(self._content[:,0])[::-1]
         return edge if not flipped else edge[::-1]
 
     def edges(self, include_flipped: bool = True) -> Set[str]:
@@ -76,10 +80,10 @@ class Tile:
             None
 
     def rotate(self, n: int=1, clockwise=True) -> Tile:
-        return Tile(self.id, np.rot90(self.content, k=-1*n if clockwise else 1*n))
+        return Tile(self.id, np.rot90(self._content, k=-1*n if clockwise else 1*n))
         
     def flip(self) -> Tile:
-        return Tile(self.id, np.flip(self.content, axis=1))
+        return Tile(self.id, np.flip(self._content, axis=1))
 
     @staticmethod
     def _ar_to_str(ar: Iterable) -> str:
@@ -90,7 +94,7 @@ class Tile:
         lines = tile_str.splitlines()
         id = int(re.match(r'Tile (.*):', lines[0])[1])
         shape = np.array([list(x) for x in lines[1:]])
-        return Tile(id=id, content=shape)
+        return Tile(id=id, _content=shape)
 
 
 class Puzzle:
@@ -101,25 +105,48 @@ class Puzzle:
         edge: str
 
     def __init__(self):
-        self.layout: Dict[Location, Tile] = dict()
+        self._layout: NDArray = np.atleast_2d([])
 
-    def __getitem__(self, loc: Location) -> Tile | None:
-        try:
-            return self.layout[loc]
-        except KeyError:
-            return None
+    def __getitem__(self, loc: Location) -> Tile:
+        if loc.x < 0 or loc.y < 0:
+            raise IndexError('Location must be greater than 0')
+        return self._layout[loc.y][loc.x]
+
+    def __setitem__(self, loc: Location, tile: Tile):
+        if loc.x < 0:
+            self._layout = self._add_blank(Direction.LEFT)
+            loc.x = 0
+        elif loc.y < 0:
+            self._layout = self._add_blank(Direction.ABOVE)
+            loc.y = 0
+        elif loc.x >= self.width:
+            self._layout = self._add_blank(Direction.RIGHT)
+        elif loc.y >= self.height:
+            self._layout = self._add_blank(Direction.BELOW)
+        self._layout[loc.y][loc.x] = tile
+
+    def __str__(self):
+        content_str = '\n'.join([' '.join([str(tile.id) for tile in row]) for row in self._layout])
+        return content_str
 
     @property
-    def width(self):
-        return max([loc.x for loc in self.layout.keys()]) + 1
+    def width(self) -> int:
+        return self._layout.shape[1]
 
     @property
-    def height(self):
-        return max([loc.y for loc in self.layout.keys()]) + 1
+    def height(self) -> int:
+        return self._layout.shape[0]
+
+    @property
+    def content(self) -> str:
+        retval = ''
+        for row in self._layout:
+            retval = '\n'.join([t.content for t in row])
+        return retval
 
     def place(self, tile: Tile) -> bool:
-        if not self.layout:
-            self.layout[Location(0,0)] = tile
+        if self._layout.size == 0:
+            self._layout = np.atleast_2d([tile])
             return True
         try:
             match = self._find_match(tile)
@@ -127,24 +154,39 @@ class Puzzle:
             return False
 
         new_loc, new_tile = self._orient(match, tile)
-        self.layout[new_loc] = new_tile
-
+        self[new_loc] = new_tile
         self._mark_neighbors(new_loc)
-        if new_loc.x < 0 or new_loc.y < 0:
-            self.layout = self._reshape(new_loc)
         return True
 
     def corners(self) -> List[Tile]:
         width, height = self.width, self.height
-        return [
-            self.layout[Location(0, 0)], self.layout[Location(width-1, 0)],
-            self.layout[Location(0, height-1)], self.layout[Location(width-1, height-1)]
-        ]
+        return [self[Location(0, 0)], self[Location(width-1, 0)], self[Location(0, height-1)], self[Location(width-1, height-1)]]
+
+    def rotate(self, n: int=1, clockwise=True) -> Puzzle:
+        retval = Puzzle()
+        retval._layout = np.rot90(self._layout, k=-1*n if clockwise else 1*n)
+        retval._layout = np.vectorize(lambda t: t.rotate(n, clockwise))(retval._layout)
+        return retval
+        
+    def flip(self) -> Puzzle:
+        retval = Puzzle()
+        retval._layout = np.flip(self._layout, axis=1)
+        retval._layout = np.vectorize(lambda t: t.flip())(retval._layout)
+        return retval
+
+    def _add_blank(self, dir: Direction) -> NDArray:
+        match dir:
+            case Direction.ABOVE: return np.pad(self._layout, ((1,0),(0,0)), mode='constant', constant_values=(None,))
+            case Direction.RIGHT: return np.pad(self._layout, ((0,0),(0,1)), mode='constant', constant_values=(None,))
+            case Direction.BELOW: return np.pad(self._layout, ((0,1),(0,0)), mode='constant', constant_values=(None,))
+            case Direction.LEFT:  return np.pad(self._layout, ((0,0),(1,0)), mode='constant', constant_values=(None,))
 
     def _find_match(self, tile: Tile) -> Puzzle._Match:
-        for loc, t in self.layout.items():
-            if (edge := t.can_attach(tile)) is not None:
-                return Puzzle._Match(control=t, loc=loc, edge=edge)
+        for y, row in enumerate(self._layout):
+            for x, t in enumerate(row):
+                if t is None: continue
+                if (edge := t.can_attach(tile)) is not None:
+                    return Puzzle._Match(control=t, loc=Location(x,y), edge=edge)
         raise ValueError(f'No match found for tile: {tile.id}')
 
     def _orient(self, match: Puzzle._Match, tile: Tile) -> Tuple[Location, Tile]:
@@ -161,22 +203,17 @@ class Puzzle:
         return target_loc, tile
 
     def _mark_neighbors(self, new_loc: Location):
-        tile = self.layout[new_loc]
+        tile: Tile = self[new_loc]
         for dir in Direction:
-            if (neighbor := self[new_loc.move(dir)]) is not None:
-                tile.neighbors[dir] = True
-                neighbor.neighbors[dir+2] = True
-
-    def _reshape(self, new_loc: Location) -> Dict[Location, Tile]:
-        if new_loc.x < 0:
-            self.layout = {loc.move(Direction.RIGHT): tile for loc, tile in self.layout.items()}
-        if new_loc.y < 0:
-            self.layout = {loc.move(Direction.BELOW): tile for loc, tile in self.layout.items()}
-        return self.layout
+            try:
+                if (neighbor := self[new_loc.move(dir)]) is not None:
+                    tile._neighbors[dir] = True
+                    neighbor._neighbors[dir+2] = True
+            except IndexError:
+                continue
 
 
-
-with open('2020/day20/data.txt') as f:
+with open('2020/day20/small.txt') as f:
     tiles = [Tile.from_string(block) for block in f.read().split('\n\n')]
 
 puzzle = Puzzle()
@@ -189,3 +226,7 @@ two = 2
 print(puzzle.width, puzzle.height)
 corner_ids = [t.id for t in puzzle.corners()]
 print(f'PART ONE: {reduce(lambda x,y: x*y, corner_ids)}')
+
+
+puzzle = puzzle.flip().rotate(n=2)
+print(puzzle.content)
