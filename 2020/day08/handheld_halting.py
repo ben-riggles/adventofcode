@@ -30,7 +30,6 @@ class Instruction(ABC):
         except IndexError:
             raise ValueError(f'Invalid operation given: {op}')
         
-
 class Accumulate(Instruction):
     op_str: str = 'acc'
 
@@ -87,7 +86,7 @@ for idx, inst in enumerate(instructions):
 
     try:
         accumulator = Program(instructions).execute()
-        print(f'PART TWO: {accumulator}')
         break
     except InfiniteLoopError as e:
         instructions[idx] = og(inst.value)
+print(f'PART TWO: {accumulator}')
