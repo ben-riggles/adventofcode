@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 import re
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Set
 
 from location import Direction
 
