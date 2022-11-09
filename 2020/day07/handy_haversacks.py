@@ -1,22 +1,19 @@
 from __future__ import annotations
+import aoc
 import collections
 import re
-from typing import Set, Counter
+from typing import Counter
 
 
-class BagDict:
-    def __init__(self):
-        self.bags = {}
-
-    def __getitem__(self, color: str) -> Bag:
-        if color not in self.bags:
-            self.bags[color] = Bag(color)
-        return self.bags[color]
+class BagDict(dict):
+    def __missing__(self, key):
+        self[key] = Bag(key)
+        return self[key]
 
 class Bag:
     def __init__(self, color: str):
         self.color: str = color
-        self.parents: Set[Bag] = set()
+        self.parents: set[Bag] = set()
         self.children: Counter[Bag] = collections.Counter({})
 
     def __repr__(self):
@@ -29,7 +26,7 @@ class Bag:
         self.children[child] = amount
         child.parents.add(self)
 
-    def all_parents(self) -> Set[Bag]:
+    def all_parents(self) -> set[Bag]:
         ancestors = [x.all_parents() for x in self.parents]
         return self.parents.union(*ancestors)
 
@@ -47,12 +44,13 @@ class Bag:
         [bag.add_child(tree[child], int(amount)) for amount, child in children]
 
 
-bags = BagDict()
-with open('2020/day07/data.txt') as f:
-    [Bag.from_string(line, bags) for line in f.read().splitlines()]
+def main():
+    bags = BagDict()
+    [Bag.from_string(line, bags) for line in aoc.read_lines()]
 
-shiny_gold_parents = bags['shiny gold'].all_parents()
-print(f'PART ONE: {len(shiny_gold_parents)}')
+    shiny_gold_parents = bags['shiny gold'].all_parents()
+    shiny_gold_children = bags['shiny gold'].all_children()
+    aoc.print_results(len(shiny_gold_parents), sum(shiny_gold_children.values()))
 
-shiny_gold_children = bags['shiny gold'].all_children()
-print(f'PART TWO: {sum(shiny_gold_children.values())}')
+if __name__ == '__main__':
+    main()

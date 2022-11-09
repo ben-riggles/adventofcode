@@ -1,12 +1,13 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import aoc
 from dataclasses import dataclass, field
-from typing import List, ClassVar, Set
+from typing import ClassVar
 
 
 class InfiniteLoopError(Exception):
-    def __init__(self, message, acc):
-        super().__init__(message)
+    def __init__(self, acc):
+        super().__init__('')
         self.accumulator = acc
 
 @dataclass
@@ -14,8 +15,9 @@ class Instruction(ABC):
     op_str: ClassVar[str] = ''
     value: int
 
-    def execute(self, state: Program):
-        return self._execute(state)
+    def execute(self, state: Program) -> Program:
+        self._execute(state)
+        return state
 
     @abstractmethod
     def _execute(self, state: Program):
@@ -24,11 +26,8 @@ class Instruction(ABC):
     @staticmethod
     def from_string(inst_str: str) -> Instruction:
         op, val = inst_str.split(' ')
-        try:
-            inst = [x for x in Instruction.__subclasses__() if x.op_str == op][0]
-            return inst(int(val))
-        except IndexError:
-            raise ValueError(f'Invalid operation given: {op}')
+        inst = [x for x in Instruction.__subclasses__() if x.op_str == op][0]
+        return inst(int(val))
         
 class Accumulate(Instruction):
     op_str: str = 'acc'
@@ -49,18 +48,17 @@ class NoOperation(Instruction):
     def _execute(self, state):
         state.idx += 1
 
-
 @dataclass
 class Program:
-    instructions: List[Instruction]
+    instructions: list[Instruction]
     accumulator: int = 0
     idx: int = 0
-    _executed: Set[int] = field(init=False, repr=False, default_factory=set)
+    _executed: set[int] = field(init=False, repr=False, default_factory=set)
 
     def execute(self) -> int:
         while True:
             if self.idx in self._executed:
-                raise InfiniteLoopError(f'Instruction at index {self.idx} already run', self.accumulator)
+                raise InfiniteLoopError(self.accumulator)
             self._executed.add(self.idx)
 
             try:
@@ -69,24 +67,26 @@ class Program:
                 return self.accumulator
 
 
-with open('2020/day08/data.txt') as f:
-    instructions = [Instruction.from_string(x) for x in f.read().splitlines()]
-
-try:
-    Program(instructions).execute()
-except InfiniteLoopError as e:
-    print(f'PART ONE: {e.accumulator}')
-
-
-for idx, inst in enumerate(instructions):
-    og = inst.__class__
-    if og == Accumulate: continue
-    elif og == Jump: instructions[idx] = NoOperation(inst.value)
-    elif og == NoOperation: instructions[idx] = Jump(inst.value)
-
+def main():
+    instructions = [Instruction.from_string(x) for x in aoc.read_lines()]
     try:
-        accumulator = Program(instructions).execute()
-        break
+        Program(instructions).execute()
     except InfiniteLoopError as e:
-        instructions[idx] = og(inst.value)
-print(f'PART TWO: {accumulator}')
+        part1 = e.accumulator
+
+    for idx, inst in enumerate(instructions):
+        og = inst.__class__
+        if og == Accumulate: continue
+        elif og == Jump: instructions[idx] = NoOperation(inst.value)
+        elif og == NoOperation: instructions[idx] = Jump(inst.value)
+
+        try:
+            part2 = Program(instructions).execute()
+            break
+        except InfiniteLoopError as e:
+            instructions[idx] = og(inst.value)
+
+    aoc.print_results(part1, part2)
+
+if __name__ == '__main__':
+    main()

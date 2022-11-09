@@ -1,25 +1,22 @@
+import aoc
 import re
 
 
-def validity_minmax(line: str) -> bool:
-    m = re.match(r'(?P<min>.*)-(?P<max>.*) (?P<letter>.*): (?P<password>.*)', line)
-    assert m is not None
-    min, max, letter, password = m.groups()
-    return int(min) <= password.count(letter) <= int(max)
+def parse_line(line: str) -> tuple:
+    data = re.match(r'(?P<min>\d+)-(?P<max>\d+) (?P<letter>[a-z]): (?P<password>[a-z]+)', line).groups()
+    return int(data[0]), int(data[1]), data[2], data[3]
 
+def validity_minmax(min: int, max: int, letter: str, password: str) -> bool:
+    return min <= password.count(letter) <= max
 
-def validity_position(line: str) -> bool:
-    m = re.match(r'(?P<first>.*)-(?P<second>.*) (?P<letter>.*): (?P<password>.*)', line)
-    assert m is not None
-    first, second, letter, password = m.groups()
-    return (password[int(first)-1] == letter) ^ (password[int(second)-1] == letter)
+def validity_position(first: int, second: int, letter: str, password: str) -> bool:
+    return (password[first-1] == letter) ^ (password[second-1] == letter)
 
+def main():
+    data = [parse_line(line) for line in aoc.read_lines()]
+    part1 = sum([validity_minmax(*x) for x in data])
+    part2 = sum([validity_position(*x) for x in data])
+    aoc.print_results(part1, part2)
 
-with open('2020/day02/data.txt') as f:
-    data = f.read().splitlines()
-
-validity = [validity_minmax(x) for x in data]
-print(f'PART ONE: {sum(validity)}')
-
-validity = [validity_position(x) for x in data]
-print(f'PART TWO: {sum(validity)}')
+if __name__ == '__main__':
+    main()

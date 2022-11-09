@@ -1,20 +1,16 @@
-from ast import literal_eval
+import aoc
 import re
-from typing import Dict
 
 
-def line_to_dict(line: str) -> Dict[str, str]:
-    line = '{"' + line.replace('\n', '","').replace(':', '":"').replace(' ', '","') + '"}'
-    return literal_eval(line)
-
+def line_to_dict(line: str) -> dict[str, str]:
+    return dict(x.split(':') for x in line.replace('\n', ' ').split())
 
 REQUIRED_FIELDS = {'ecl', 'pid', 'eyr', 'hcl', 'byr', 'iyr', 'hgt'}
-def check_fields(passport: Dict[str, str]) -> bool:
+def check_fields(passport: dict[str, str]) -> bool:
     return passport.keys() >= REQUIRED_FIELDS
 
-
 EYE_COLORS = {'amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'}
-def check_data(passport: Dict[str, str]) -> bool:
+def check_data(passport: dict[str, str]) -> bool:
     try:
         if not 1920 <= int(passport['byr']) <= 2002: return False
         if not 2010 <= int(passport['iyr']) <= 2020: return False
@@ -33,11 +29,11 @@ def check_data(passport: Dict[str, str]) -> bool:
     return True
 
 
-with open('2020/day04/data.txt') as f:
-    passports = [line_to_dict(line) for line in f.read().split('\n\n')]
+def main():
+    passports = [line_to_dict(chunk) for chunk in aoc.read_chunks()]
+    valid_passports_1 = [x for x in passports if check_fields(x)]
+    valid_passports_2 = [x for x in valid_passports_1 if check_data(x)]
+    aoc.print_results(len(valid_passports_1), len(valid_passports_2))
 
-valid_passports = [x for x in passports if check_fields(x)]
-print(f'PART ONE: {len(valid_passports)}')
-
-valid_passports = [x for x in valid_passports if check_data(x)]
-print(f'PART TWO: {len(valid_passports)}')
+if __name__ == '__main__':
+    main()

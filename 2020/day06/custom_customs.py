@@ -1,15 +1,11 @@
-from typing import List, Set
+import aoc
 
 
-def parse_group(group: str) -> List[Set[str]]:
-    return [set(x) for x in group.split('\n')]
+def main():
+    groups = [[set(x) for x in chunk.split('\n')] for chunk in aoc.read_chunks()]
+    part1 = sum((len(set.union(*x)) for x in groups))
+    part2 = sum((len(set.intersection(*x)) for x in groups))
+    aoc.print_results(part1, part2)
 
-
-with open('2020/day06/data.txt') as f:
-    groups = [parse_group(line) for line in f.read().split('\n\n')]
-
-union = [set.union(*x) for x in groups]
-print(f'PART ONE: {sum([len(x) for x in union])}')
-
-intersection = [set.intersection(*x) for x in groups]
-print(f'PART TWO: {sum([len(x) for x in intersection])}')
+if __name__ == '__main__':
+    main()

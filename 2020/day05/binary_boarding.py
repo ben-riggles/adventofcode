@@ -1,8 +1,8 @@
+import aoc
 import numpy as np
-from typing import Tuple
 
 
-def parse_seat(seat: str) -> Tuple[int, int]:
+def parse_seat(seat: str) -> tuple[int, int]:
     row = seat[:-3].replace('F', '0').replace('B', '1')
     col = seat[-3:].replace('L', '0').replace('R', '1')
     return int(row, base=2), int(col, base=2)
@@ -11,15 +11,16 @@ def seat_id(row, col) -> int:
     return row * 8 + col
 
 
-with open('2020/day05/data.txt') as f:
-    seats = np.array([parse_seat(line) for line in f.read().splitlines()])
+def main():
+    seats = np.array([parse_seat(line) for line in aoc.read_lines()])
+    seats = np.column_stack((seats, seat_id(seats[:,0], seats[:,1])))
+    max_seat_id = max(seats[:,2])
 
-seats = np.column_stack((seats, seat_id(seats[:,0], seats[:,1])))
-max_seat_id = max(seats[:,2])
-print(f'PART ONE: {max_seat_id}')
+    seat_ids = set(seats[:,2])
+    missing = set(range(max_seat_id)) - seat_ids
+    missing = [x for x in missing if {x-1, x+1} <= seat_ids][0]
 
+    aoc.print_results(max_seat_id, missing)
 
-seat_ids = set(seats[:,2])
-missing = set(range(max_seat_id)) - seat_ids
-missing = [x for x in missing if {x-1, x+1} <= seat_ids]
-print(f'PART TWO: {missing[0]}')
+if __name__ == '__main__':
+    main()
