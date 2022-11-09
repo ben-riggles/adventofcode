@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+import aoc
+from dataclasses import dataclass
 from enum import Enum
 from typing import Iterable
 
@@ -19,7 +20,6 @@ class Direction(Enum):
 
     def __sub__(self, deg):
         return Direction((self.value - deg) % 360)
-
 
 @dataclass
 class Location:
@@ -50,7 +50,6 @@ class Location:
     def manhattan_dist(self) -> int:
         return abs(self.x) + abs(self.y)
 
-
 @dataclass(kw_only=True)
 class Ferry(ABC):
     loc: Location = Location()
@@ -77,7 +76,6 @@ class CardinalFerry(Ferry):
             case 'L': self.direction -= val
             case 'R': self.direction += val
             case 'F': self._move(str(self.direction), val)
-            case _: raise Exception(f'Invalid command {cmd}')
 
 @dataclass
 class RelativeFerry(Ferry):
@@ -92,16 +90,18 @@ class RelativeFerry(Ferry):
             case 'L': self.waypoint = self.waypoint.rotate(val, clockwise=False)
             case 'R': self.waypoint = self.waypoint.rotate(val, clockwise=True)
             case 'F': self.loc += self.waypoint * val
-            case _: raise Exception(f'Invalid command {cmd}')
 
 
-with open('2020/day12/data.txt') as f:
-    commands = f.read().splitlines()
+def main():
+    commands = aoc.read_lines()
 
-ferry = CardinalFerry(direction=Direction.EAST)
-ferry = ferry.move(commands)
-print(f'PART ONE: {ferry.loc.manhattan_dist()}')
+    ferry1 = CardinalFerry(direction=Direction.EAST)
+    ferry1 = ferry1.move(commands)
 
-ferry = RelativeFerry(waypoint=Location(10, 1))
-ferry = ferry.move(commands)
-print(f'PART TWO: {ferry.loc.manhattan_dist()}')
+    ferry2 = RelativeFerry(waypoint=Location(10, 1))
+    ferry2 = ferry2.move(commands)
+
+    aoc.print_results(ferry1.loc.manhattan_dist(), ferry2.loc.manhattan_dist())
+
+if __name__ == '__main__':
+    main()

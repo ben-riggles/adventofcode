@@ -48,8 +48,7 @@ def sightline(layout: NDArray, direction: Direction) -> NDArray:
     return adjacent_seats(retval, direction) == OCCUPIED
 
 def count_seen_seats(layout: NDArray) -> int:
-    count = [sightline(layout, d) for d in Direction]
-    return sum(count)
+    return sum([sightline(layout, d) for d in Direction])
 
 
 def occupy_seats(layout: NDArray, count: NDArray) -> NDArray:

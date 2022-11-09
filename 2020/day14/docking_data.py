@@ -1,14 +1,14 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import aoc
 from dataclasses import dataclass
-import math
 import numpy as np
 import re
-from typing import Dict, List, Type
+from typing import Type
 
 
 class Mask:
-    def __init__(self, mask_str: str, masks: Dict[int, int] = None):
+    def __init__(self, mask_str: str, masks: dict[int, int] = None):
         self._mask_str = mask_str
         self.bit_masks = masks
 
@@ -16,10 +16,10 @@ class Mask:
         return self._mask_str
 
     @staticmethod
-    def parse(mask_str: str) -> Mask:
+    def from_string(mask_str: str) -> Mask:
         return Mask(
             mask_str = mask_str,
-            masks = {int(math.pow(2, int(idx))): x for idx,x in enumerate(reversed(mask_str))}
+            masks = {2 ** idx: x for idx, x in enumerate(reversed(mask_str))}
         )
 
 
@@ -29,11 +29,11 @@ class Memory(ABC):
     value: int
 
     @abstractmethod
-    def evaluate(self, mask: Mask) -> Dict[int, int]:
+    def evaluate(self, mask: Mask) -> dict[int, int]:
         pass
 
 class MemoryV1(Memory):
-    def evaluate(self, mask: Mask) -> Dict[int, int]:
+    def evaluate(self, mask):
         retval = self.value
         for x, bit in mask.bit_masks.items():
             try:
@@ -43,7 +43,7 @@ class MemoryV1(Memory):
         return {self.address: retval}
 
 class MemoryV2(Memory):
-    def evaluate(self, mask: Mask) -> Dict[int, int]:
+    def evaluate(self, mask):
         address_str = bin(self.address)[2:].zfill(36)
         mask_bits = np.array(list(str(mask)))
         adr_bits = np.array(list(address_str))
@@ -53,11 +53,10 @@ class MemoryV2(Memory):
 
         addresses = np.array([0], dtype=np.longlong)
         for idx, val in enumerate(reversed(adr_bits)):
-            power = int(math.pow(2, idx))
             if val == 'X':
-                addresses = np.concatenate((addresses, addresses + power))
+                addresses = np.concatenate((addresses, addresses + 2 ** idx))
             else:
-                addresses += power*int(val)
+                addresses += (2 ** idx) * int(val)
         return {x: self.value for x in addresses}
         
 
@@ -65,35 +64,29 @@ class Program:
     def __init__(self, mem_type):
         self._memory_type: Type[Memory] = mem_type
         self.mask = None
-        self.memory: Dict[int, int] = {}
+        self.memory: dict[int, int] = {}
 
-    def execute(self, cmd_list: List[str]):
+    def execute(self, cmd_list: list[str]) -> int:
         [self._execute(x) for x in cmd_list]
-        return self
+        return sum(self.memory.values())
 
     def _execute(self, cmd: str):
-        m = re.match(r'mem\[(?P<address>.*)\] = (?P<value>.*)', cmd)
-        if m is not None:
-            return self._update_memory(int(m.group('address')), int(m.group('value')))
+        try:
+            mem_data = re.match(r'mem\[(?P<address>.*)\] = (?P<value>.*)', cmd).groupdict()
+            return self.memory.update(
+                self._memory_type(address=int(mem_data['address']), value=int(mem_data['value'])).evaluate(self.mask))
+        except AttributeError:
+            pass
 
-        m = re.match(r'mask = (?P<value>.*)', cmd)
-        if m is not None:
-            return self._update_mask(m.group('value'))
-
-        raise Exception(f'Invalid command given: {cmd}')
-    
-    def _update_memory(self, address: int, value: int):
-        self.memory.update(self._memory_type(address=address, value=value).evaluate(self.mask))
-
-    def _update_mask(self, value: str):
-        self.mask = Mask.parse(value)
+        mask_data = re.match(r'mask = (?P<value>.*)', cmd).group(1)
+        self.mask = Mask.from_string(mask_data)
 
 
-with open('2020/day14/data.txt') as f:
-    commands = f.read().splitlines()
+def main():
+    commands = aoc.read_lines()
+    part1 = Program(mem_type=MemoryV1).execute(commands)
+    part2 = Program(mem_type=MemoryV2).execute(commands)
+    aoc.print_results(part1, part2)
 
-program1 = Program(mem_type=MemoryV1).execute(commands)
-print(f'PART ONE: {sum(program1.memory.values())}')
-
-program2 = Program(mem_type=MemoryV2).execute(commands)
-print(f'PART TWO: {sum(program2.memory.values())}')
+if __name__ == '__main__':
+    main()

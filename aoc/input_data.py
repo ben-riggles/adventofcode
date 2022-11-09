@@ -1,7 +1,5 @@
 import inspect
 from pathlib import Path
-import sys
-from typing import List
 
 
 def _data_file(filename) -> str:
@@ -13,12 +11,12 @@ def read_data(filename='data') -> str:
         data = f.read()
     return data
 
-def read_lines(filename='data') -> List[str]:
+def read_lines(filename='data') -> list[str]:
     with open(_data_file(filename)) as f:
         data = f.read().splitlines()
     return data
 
-def read_chunks(filename='data') -> List[str]:
+def read_chunks(filename='data') -> list[str]:
     with open(_data_file(filename)) as f:
         data = f.read().split('\n\n')
     return data
