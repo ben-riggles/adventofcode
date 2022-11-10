@@ -10,7 +10,7 @@ def num_choices(ar: NDArray, jolts: int) -> int:
     diffs = ar - jolts
     return np.count_nonzero((diffs >= 1) & (diffs <= 3))
 
-@functools.lru_cache()
+@functools.cache
 def branches(chunk) -> int:
     if chunk == tuple(): return 1
     elif chunk == (2,): return 2
