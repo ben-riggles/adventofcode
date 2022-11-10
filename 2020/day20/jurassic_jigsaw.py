@@ -1,10 +1,16 @@
 import aoc
 from math import prod
 
-from .location import Direction
-from .image import Image
-from .tile import Tile
-from .puzzle import Puzzle
+try:
+    from .location import Direction
+    from .image import Image
+    from .tile import Tile
+    from .puzzle import Puzzle
+except ImportError:
+    from location import Direction
+    from image import Image
+    from tile import Tile
+    from puzzle import Puzzle
 
 
 def find_monsters(image: Image):

@@ -4,7 +4,10 @@ from numpy.typing import NDArray
 import regex
 from typing import List
 
-from .location import Location
+try:
+    from .location import Location
+except ImportError:
+    from location import Location
 
 
 #--------------------------#

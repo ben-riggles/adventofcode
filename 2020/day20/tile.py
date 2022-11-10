@@ -5,7 +5,10 @@ from numpy.typing import NDArray
 import re
 from typing import Dict, Iterable, Set
 
-from .location import Direction
+try:
+    from .location import Direction
+except ImportError:
+    from location import Direction
 
 
 @dataclass
@@ -56,7 +59,7 @@ class Tile:
 
     @staticmethod
     def _ar_to_str(ar: Iterable) -> str:
-        return ''.join([c for c in ar])
+        return ''.join(ar)
 
     @staticmethod
     def from_string(tile_str: str) -> Tile:
