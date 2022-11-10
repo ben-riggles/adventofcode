@@ -9,6 +9,7 @@ def find_combo(data: list[int], target: int, len: int) -> int:
             return reduce(lambda x, y: x*y, combo)
 
 def main():
+    aoc.setup(__file__)
     data = list(map(int, aoc.read_lines()))
     aoc.answer(1, find_combo(data, 2020, 2))
     aoc.answer(2, find_combo(data, 2020, 3))

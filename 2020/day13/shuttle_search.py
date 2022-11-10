@@ -42,6 +42,7 @@ class Cycle:
 
 
 def main():
+    aoc.setup(__file__)
     init_time, schedule = aoc.read_lines()
 
     bus_ids = np.array([int(x) for x in schedule.split(',') if x != 'x'])

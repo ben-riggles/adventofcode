@@ -1,4 +1,4 @@
-from aoc.io import reset_timer, print_runtime
+from aoc.io import print_runtime
 import cProfile
 from importlib import import_module
 from pathlib import Path
@@ -26,4 +26,3 @@ if __name__ == '__main__':
         print_runtime()
         output = f.parent.joinpath(f'{f.stem}.pstats')
         pr.dump_stats(str(output))
-        reset_timer()

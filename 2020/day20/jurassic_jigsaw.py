@@ -17,6 +17,7 @@ def find_monsters(image: Image):
 
 
 def main():
+    aoc.setup(__file__)
     tiles = [Tile.from_string(chunk) for chunk in aoc.read_chunks()]
 
     puzzle = Puzzle()

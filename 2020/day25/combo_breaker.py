@@ -14,6 +14,7 @@ def transform(subject: int, target: int) -> int:
 
 
 def main():
+    aoc.setup(__file__)
     card_pubkey, door_pubkey = map(int, aoc.read_lines())
     door_loop = transform(subject=INITIAL_SUBJECT, target=door_pubkey)
     encryption_key = card_pubkey

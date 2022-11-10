@@ -12,6 +12,8 @@ def seat_id(row, col) -> int:
 
 
 def main():
+    aoc.setup(__file__)
+    
     seats = np.array([parse_seat(line) for line in aoc.read_lines()])
     seats = np.column_stack((seats, seat_id(seats[:,0], seats[:,1])))
     max_seat_id = max(seats[:,2])

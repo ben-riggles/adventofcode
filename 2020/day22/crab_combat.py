@@ -90,6 +90,7 @@ class RecursiveCombat(Combat):
 
 
 def main():
+    aoc.setup(__file__)
     player_data = aoc.read_chunks()
 
     p1, p2 = (Player.from_string(block) for block in player_data)

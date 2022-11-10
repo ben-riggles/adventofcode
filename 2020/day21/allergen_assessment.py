@@ -16,6 +16,7 @@ def build_allergen_dict(foods: tuple) -> dict[str, set[str]]:
 
 
 def main():
+    aoc.setup(__file__)
     foods = [parse(line) for line in aoc.read_lines()]
     allergen_dict = build_allergen_dict(foods)
 

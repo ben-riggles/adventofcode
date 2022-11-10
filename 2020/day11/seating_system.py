@@ -72,6 +72,7 @@ def perform_round(layout: NDArray, tolerance: int, count_method: Callable) -> ND
 
 
 def main():
+    aoc.setup(__file__)
     transform = str.maketrans('.L#','012')
     initial_layout = np.array([[int(x) for x in list(line.translate(transform))]
                                 for line in aoc.read_lines()])

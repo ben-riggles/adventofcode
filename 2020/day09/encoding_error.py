@@ -24,6 +24,7 @@ def find_weakness(window: NDArray, target_value: int) -> NDArray:
 
 
 def main():
+    aoc.setup(__file__)
     PREAMBLE = 25
     data = np.array(list(map(int, aoc.read_lines())))
 

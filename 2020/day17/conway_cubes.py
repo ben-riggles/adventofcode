@@ -37,6 +37,7 @@ def run_cycle(grid: NDArray) -> NDArray:
 
 
 def main():
+    aoc.setup(__file__)
     initial_state = np.array(list(map(list, aoc.read_lines())))
 
     grid1 = create_grid(dimensions=3, init=initial_state)

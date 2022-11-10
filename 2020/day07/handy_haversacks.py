@@ -45,6 +45,7 @@ class Bag:
 
 
 def main():
+    aoc.setup(__file__)
     bags = BagDict()
     [Bag.from_string(line, bags) for line in aoc.read_lines()]
 

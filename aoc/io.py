@@ -1,15 +1,24 @@
 import atexit
-import inspect
 from pathlib import Path
 import os
 import re
 import time
 
 
+START_TIME = None
+MAIN_FILE = None
+
+def setup(f: str):
+    info = re.match(r'.*\\(?P<year>\d+)\\day(?P<day>\d+)\\(?P<filename>.*).py', f).groupdict()
+    print(f'********************************************')
+    print(f'** {info["year"]}/day{info["day"]}: {info["filename"].replace("_", " ").title()}')
+
+    global START_TIME, MAIN_FILE
+    START_TIME = time.process_time()
+    MAIN_FILE = f
+
 def _data_file(filename) -> str:
-    main_file = Path(inspect.stack()[2].filename)
-    _print_header(main_file)
-    return str(main_file.parent.joinpath(f'{filename}.txt'))
+    return str(Path(MAIN_FILE).parent.joinpath(f'{filename}.txt'))
 
 def read_data(filename='data') -> str:
     with open(_data_file(filename)) as f:
@@ -26,27 +35,11 @@ def read_chunks(filename='data') -> list[str]:
         data = f.read().split('\n\n')
     return data
 
-
-def _print_header(main_file: Path):
-    try:
-        main_file = main_file.relative_to(os.getcwd())
-    except ValueError:
-        pass
-    info = re.match(r'(?P<year>\d+)\\day(?P<day>\d+)\\(?P<filename>.*).py', str(main_file)).groupdict()
-
-    print(f'********************************************')
-    print(f'** {info["year"]}/day{info["day"]}: {info["filename"].replace("_", " ").title()}')
-
+NUM_WORDS = {1: 'ONE', 2: 'TWO'}
 def answer(part_no: int, result):
-    words = {1: 'ONE', 2: 'TWO'}
-    print(f'PART {words[part_no]}: {result}')
+    print(f'PART {NUM_WORDS[part_no]}: {result}')
 
-START_TIME = time.process_time()
 @atexit.register
 def print_runtime():
     elapsed = time.process_time() - START_TIME
     print(f'Time elapsed: {round(elapsed * 1000, 3)} ms')
-
-def reset_timer():
-    global START_TIME
-    START_TIME = time.process_time()

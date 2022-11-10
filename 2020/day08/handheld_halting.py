@@ -68,7 +68,9 @@ class Program:
 
 
 def main():
+    aoc.setup(__file__)
     instructions = [Instruction.from_string(x) for x in aoc.read_lines()]
+    
     try:
         Program(instructions).execute()
     except InfiniteLoopError as e:

@@ -22,6 +22,7 @@ def move(cups: dict[int,int], current_cup: int, max_cup: int) -> int:
 
 
 def main():
+    aoc.setup(__file__)
     cups = [int(x) for x in aoc.read_data()]
 
     cup_dict = {}

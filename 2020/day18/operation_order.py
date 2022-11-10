@@ -82,6 +82,7 @@ class EquationAddPriority(Equation):
 
 
 def main():
+    aoc.setup(__file__)
     equation_strs = aoc.read_lines()
 
     equations1 = [EquationLeftToRight.from_string(s) for s in equation_strs]

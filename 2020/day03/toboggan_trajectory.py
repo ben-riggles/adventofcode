@@ -15,6 +15,7 @@ def count_trees(tree_map: NDArray, right: int, down: int) -> int:
     return np.count_nonzero(points == TREE)
 
 def main():
+    aoc.setup(__file__)
     tree_map = np.array(list(map(list, aoc.read_lines())))
     aoc.answer(1, count_trees(tree_map, 3, 1))
 

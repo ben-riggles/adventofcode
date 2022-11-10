@@ -1,7 +1,7 @@
 from __future__ import annotations
 import aoc
 import re
-from typing import Generator, Iterator
+from typing import Generator
 
 
 class RuleSet:
@@ -32,7 +32,7 @@ class RuleSet:
 
 
 class Rule:
-    def __init__(self, num:int, letter: str = None, rule_sets: List[RuleSet] = None):
+    def __init__(self, num:int, letter: str = None, rule_sets: list[RuleSet] = None):
         self.id = num
         self.letter = letter
         self.rule_sets = rule_sets
@@ -72,6 +72,7 @@ class Rule:
 
 
 def main():
+    aoc.setup(__file__)
     rules, messages = aoc.read_chunks()
 
     rules = [Rule.from_string(line) for line in rules.split('\n')]

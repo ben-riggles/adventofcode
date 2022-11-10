@@ -17,6 +17,7 @@ def branches(chunk) -> int:
 
 
 def main():
+    aoc.setup(__file__)
     adapters = np.array(list(map(int, aoc.read_lines())))
     adapters = np.sort(np.append(adapters, (0, max(adapters) + 3)))
     

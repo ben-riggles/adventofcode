@@ -50,6 +50,7 @@ def match_fields(ticket_fields: dict[int, set[int]], fields: list[Field]) -> lis
 
 
 def main():
+    aoc.setup(__file__)
     fields, my_ticket, tickets = aoc.read_chunks()
 
     fields = [Field.from_string(f) for f in fields.splitlines()]

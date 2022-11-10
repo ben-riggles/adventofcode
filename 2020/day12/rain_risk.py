@@ -93,6 +93,7 @@ class RelativeFerry(Ferry):
 
 
 def main():
+    aoc.setup(__file__)
     commands = aoc.read_lines()
 
     ferry1 = CardinalFerry(direction=Direction.EAST)

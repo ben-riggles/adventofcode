@@ -49,6 +49,7 @@ def process_day(black_tiles: set[Location]) -> set[Location]:
 
 
 def main():
+    aoc.setup(__file__)
     lines = aoc.read_lines()
     delims = '|'.join(d.value for d in Direction)
     lines = [list(filter(None, re.split(f'({delims})', line))) for line in lines]

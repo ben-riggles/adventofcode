@@ -83,6 +83,7 @@ class Program:
 
 
 def main():
+    aoc.setup(__file__)
     commands = aoc.read_lines()
     aoc.answer(1, Program(mem_type=MemoryV1).execute(commands))
     aoc.answer(2, Program(mem_type=MemoryV2).execute(commands))
