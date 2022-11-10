@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+import aoc
 from enum import Enum
-from typing import List, Tuple
 
 
 class Operation(Enum):
@@ -9,13 +9,9 @@ class Operation(Enum):
     ADDITION = '+'
     MULTIPLICATION = '*'
 
-    @classmethod
-    def _missing_(cls, _):
-        return cls.NOOP
-
 
 class Equation(ABC):
-    def __init__(self, eq_list: List[Tuple[Operation, int|Equation]]):
+    def __init__(self, eq_list: list[tuple[Operation, int|Equation]]):
         self.eq_list = eq_list
 
     def __add__(self, other: int | Equation) -> int:
@@ -35,7 +31,7 @@ class Equation(ABC):
         pass
 
     @classmethod
-    def parse(cls, eq_list: List[str]) -> Equation:
+    def parse(cls, eq_list: list[str]) -> Equation:
         op = Operation.NOOP
         retval = []
         while eq_list:
@@ -87,14 +83,16 @@ class EquationAddPriority(Equation):
         return retval
 
 
+def main():
+    equation_strs = aoc.read_lines()
 
-with open('2020/day18/data.txt') as f:
-    equation_strs = [line for line in f.read().splitlines()]
+    equations1 = [EquationLeftToRight.from_string(s) for s in equation_strs]
+    part1 = sum([eq.evaluate() for eq in equations1])
 
-equations = [EquationLeftToRight.from_string(s) for s in equation_strs]
-results = [eq.evaluate() for eq in equations]
-print(f'PART ONE: {sum(results)}')
+    equations2 = [EquationAddPriority.from_string(s) for s in equation_strs]
+    part2 = sum([eq.evaluate() for eq in equations2])
 
-equations = [EquationAddPriority.from_string(s) for s in equation_strs]
-results = [eq.evaluate() for eq in equations]
-print(f'PART TWO: {sum(results)}')
+    aoc.print_results(part1, part2)
+
+if __name__ == '__main__':
+    main()
