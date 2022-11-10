@@ -1,13 +1,13 @@
 from __future__ import annotations
+import aoc
 from dataclasses import dataclass, field
 import re
-from typing import List
 
 
 @dataclass
 class Player:
     id: int
-    deck: List[int] = field(default_factory=list)
+    deck: list[int] = field(default_factory=list)
 
     @property
     def empty(self) -> bool:
@@ -16,10 +16,10 @@ class Player:
     def draw(self) -> int:
         return self.deck.pop(0)
 
-    def top(self, amt: int) -> List[int]:
+    def top(self, amt: int) -> list[int]:
         return self.deck[:amt]
 
-    def collect(self, cards: List[int]):
+    def collect(self, cards: list[int]):
         self.deck.extend(cards)
 
     def score(self):
@@ -52,13 +52,6 @@ class Combat:
             else:
                 self.p2.collect([card2, card1])
         return self.p1 if self.p2.empty else self.p2
-            
-
-with open('2020/day22/data.txt') as f:
-    p1, p2 = (Player.from_string(block) for block in f.read().split('\n\n'))
-
-winner = Combat(p1, p2).play()
-print(f'PART ONE: {winner.score()}')
 
 
 class RecursionError(Exception):
@@ -67,7 +60,7 @@ class RecursionError(Exception):
 
 @dataclass
 class RecursiveCombat(Combat):
-    memory: List = field(default_factory=list)
+    memory: list = field(default_factory=list)
     
     def __next__(self):
         if (self.p1.deck, self.p2.deck) in self.memory:
@@ -96,7 +89,16 @@ class RecursiveCombat(Combat):
         return self.p1 if self.p2.empty else self.p2
 
 
-with open('2020/day22/data.txt') as f:
-    p1, p2 = (Player.from_string(block) for block in f.read().split('\n\n'))
-winner = RecursiveCombat(p1, p2).play()
-print(f'PART TWO: {winner.score()}')
+def main():
+    player_data = aoc.read_chunks()
+
+    p1, p2 = (Player.from_string(block) for block in player_data)
+    winner1 = Combat(p1, p2).play()
+    aoc.answer(1, winner1.score())
+
+    p1, p2 = (Player.from_string(block) for block in player_data)
+    winner2 = RecursiveCombat(p1, p2).play()
+    aoc.answer(2, winner2.score())
+
+if __name__ == '__main__':
+    main()

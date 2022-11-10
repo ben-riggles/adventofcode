@@ -68,9 +68,7 @@ class EquationAddPriority(Equation):
 
     def evaluate(self) -> int:
         # Handle addition
-        while True:
-            if (idx := self._next_add_idx()) is None:
-                break
+        while (idx := self._next_add_idx()) is not None:
             self.eq_list[idx-1] = (self.eq_list[idx-1][0], self.eq_list[idx-1][1] + self.eq_list[idx][1])
             self.eq_list.pop(idx)
 
@@ -87,12 +85,10 @@ def main():
     equation_strs = aoc.read_lines()
 
     equations1 = [EquationLeftToRight.from_string(s) for s in equation_strs]
-    part1 = sum([eq.evaluate() for eq in equations1])
+    aoc.answer(1, sum([eq.evaluate() for eq in equations1]))
 
     equations2 = [EquationAddPriority.from_string(s) for s in equation_strs]
-    part2 = sum([eq.evaluate() for eq in equations2])
-
-    aoc.print_results(part1, part2)
+    aoc.answer(2, sum([eq.evaluate() for eq in equations2]))
 
 if __name__ == '__main__':
     main()

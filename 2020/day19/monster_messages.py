@@ -1,20 +1,20 @@
 from __future__ import annotations
-import itertools
+import aoc
 import re
-from typing import List, Set, Dict, Generator, Iterator
+from typing import Generator, Iterator
 
 
 class RuleSet:
-    def __init__(self, rules: List[int]):
+    def __init__(self, rules: list[int]):
         self.rules = rules
 
     def __repr__(self):
         return f'RuleSet({" ".join([str(x) for x in self.rules])})'
 
-    def matches(self, rules: Dict[int, Rule], message: str) -> Generator[str]:
+    def matches(self, rules: dict[int, Rule], message: str) -> Generator[str]:
         yield from self._matches(rules, message)
 
-    def _matches(self, rules: Dict[int, Rule], message: str, _match: str = '', idx: int = 0) -> Generator[str]:
+    def _matches(self, rules: dict[int, Rule], message: str, _match: str = '', idx: int = 0) -> Generator[str]:
         try:
             rule = rules[self.rules[idx]]
         except IndexError:
@@ -40,13 +40,13 @@ class Rule:
     def __repr__(self):
         return f'Rule({self.id})'
 
-    def match(self, rules: Dict[int, Rule], message: str) -> bool:
+    def match(self, rules: dict[int, Rule], message: str) -> bool:
         for m in self.matches(rules, message):
             if m == message:
                 return True
         return False
 
-    def matches(self, rules: Dict[int, Rule], message: str) -> Generator[str]:
+    def matches(self, rules: dict[int, Rule], message: str) -> Generator[str]:
         if self.letter is not None:
             if message.startswith(self.letter):
                 yield self.letter
@@ -71,17 +71,19 @@ class Rule:
         return Rule(rule_id, rule_sets=rule_sets)
 
 
-with open('2020/day19/data.txt') as f:
-    rules, messages = f.read().split('\n\n')
+def main():
+    rules, messages = aoc.read_chunks()
 
-rules = [Rule.from_string(line) for line in rules.split('\n')]
-rules = {rule.id: rule for rule in rules}
-messages = messages.split('\n')
+    rules = [Rule.from_string(line) for line in rules.split('\n')]
+    rules = {rule.id: rule for rule in rules}
+    messages = messages.split('\n')
+    valid_messages = [msg for msg in messages if rules[0].match(rules, msg)]
+    aoc.answer(1, len(valid_messages))
 
-valid_messages = [msg for msg in messages if rules[0].match(rules, msg)]
-print(f'PART ONE: {len(valid_messages)}')
+    rules[8] = Rule.from_string('8: 42 | 42 8')
+    rules[11] = Rule.from_string('11: 42 31 | 42 11 31')
+    valid_messages = [msg for msg in messages if rules[0].match(rules, msg)]
+    aoc.answer(2, len(valid_messages))
 
-rules[8] = Rule.from_string('8: 42 | 42 8')
-rules[11] = Rule.from_string('11: 42 31 | 42 11 31')
-valid_messages = [msg for msg in messages if rules[0].match(rules, msg)]
-print(f'PART TWO: {len(valid_messages)}')
+if __name__ == '__main__':
+    main()

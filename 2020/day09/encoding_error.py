@@ -30,11 +30,10 @@ def main():
     idx = PREAMBLE
     while (is_valid(data[idx-PREAMBLE:idx], data[idx])):
         idx += 1
+    aoc.answer(1, idx)
 
     weakness = find_weakness(data[:idx], data[idx])
-    part2 = min(weakness) + max(weakness)
-
-    aoc.print_results(idx, part2)
+    aoc.answer(2, min(weakness) + max(weakness))
 
 if __name__ == '__main__':
     main()

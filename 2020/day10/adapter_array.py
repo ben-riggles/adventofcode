@@ -22,13 +22,13 @@ def main():
     
     diff = adapters[1:] - np.roll(adapters, 1)[1:]
     ones, threes = np.count_nonzero(diff == 1), np.count_nonzero(diff == 3)
+    aoc.answer(1, ones * threes)
 
     choices = np.array([num_choices(adapters, x) for x in adapters])
     chunks = [list(x[1]) for x in itertools.groupby(choices, lambda x: x > 1) if x[0]]
     branch_list = [branches(tuple(chunk)) for chunk in chunks]
     num_branches = functools.reduce(lambda x, y: x*y, branch_list)
-
-    aoc.print_results(ones * threes, num_branches)
+    aoc.answer(2, num_branches)
 
 if __name__ == '__main__':
     main()

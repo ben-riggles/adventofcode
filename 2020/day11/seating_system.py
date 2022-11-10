@@ -82,7 +82,7 @@ def main():
             layout1 = perform_round(layout1, tolerance=4, count_method=count_adjacent_seats)
         except StopIteration:
             break
-    part1 = np.count_nonzero(layout1 == OCCUPIED)
+    aoc.answer(1, np.count_nonzero(layout1 == OCCUPIED))
 
     layout2 = np.copy(initial_layout)
     while True:
@@ -90,9 +90,7 @@ def main():
             layout2 = perform_round(layout2, tolerance=5, count_method=count_seen_seats)
         except StopIteration:
             break
-    part2 = np.count_nonzero(layout2 == OCCUPIED)
-
-    aoc.print_results(part1, part2)
+    aoc.answer(2, np.count_nonzero(layout2 == OCCUPIED))
 
 if __name__ == '__main__':
     main()

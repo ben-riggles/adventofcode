@@ -1,22 +1,10 @@
+import aoc
 from functools import reduce
 
-from location import Direction
-from image import Image
-from tile import Tile
-from puzzle import Puzzle
-
-
-with open('2020/day20/data.txt') as f:
-    tiles = [Tile.from_string(block) for block in f.read().split('\n\n')]
-
-puzzle = Puzzle()
-while tiles:
-    tile = tiles.pop(0)
-    if not puzzle.place(tile):
-        tiles.append(tile)
-
-corner_ids = [t.id for t in puzzle.corners()]
-print(f'PART ONE: {reduce(lambda x,y: x*y, corner_ids)}')
+from .location import Direction
+from .image import Image
+from .tile import Tile
+from .puzzle import Puzzle
 
 
 def find_monsters(image: Image):
@@ -27,7 +15,22 @@ def find_monsters(image: Image):
             image = image.rotate(1)
         image = image.flip()
 
-image = puzzle.image
-sea_monsters = find_monsters(image)
-points = set.union(*[x.points for x in sea_monsters])
-print(f'PART TWO: {image.count_hash() - len(points)}')
+
+def main():
+    tiles = [Tile.from_string(chunk) for chunk in aoc.read_chunks()]
+
+    puzzle = Puzzle()
+    while tiles:
+        tile = tiles.pop(0)
+        if not puzzle.place(tile):
+            tiles.append(tile)
+    corner_ids = [t.id for t in puzzle.corners()]
+    aoc.answer(1, reduce(lambda x,y: x*y, corner_ids))
+
+    image = puzzle.image
+    sea_monsters = find_monsters(image)
+    points = set.union(*[x.points for x in sea_monsters])
+    aoc.answer(2, image.count_hash() - len(points))
+
+if __name__ == '__main__':
+    main()

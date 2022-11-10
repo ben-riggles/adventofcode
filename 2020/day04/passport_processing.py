@@ -31,9 +31,11 @@ def check_data(passport: dict[str, str]) -> bool:
 
 def main():
     passports = [line_to_dict(chunk) for chunk in aoc.read_chunks()]
-    valid_passports_1 = [x for x in passports if check_fields(x)]
-    valid_passports_2 = [x for x in valid_passports_1 if check_data(x)]
-    aoc.print_results(len(valid_passports_1), len(valid_passports_2))
+    valid_passports = [x for x in passports if check_fields(x)]
+    aoc.answer(1, len(valid_passports))
+
+    valid_passports = [x for x in valid_passports if check_data(x)]
+    aoc.answer(2, len(valid_passports))
 
 if __name__ == '__main__':
     main()

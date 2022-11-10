@@ -15,12 +15,12 @@ def main():
     seats = np.array([parse_seat(line) for line in aoc.read_lines()])
     seats = np.column_stack((seats, seat_id(seats[:,0], seats[:,1])))
     max_seat_id = max(seats[:,2])
+    aoc.answer(1, max_seat_id)
 
     seat_ids = set(seats[:,2])
     missing = set(range(max_seat_id)) - seat_ids
     missing = [x for x in missing if {x-1, x+1} <= seat_ids][0]
-
-    aoc.print_results(max_seat_id, missing)
+    aoc.answer(2, missing)
 
 if __name__ == '__main__':
     main()

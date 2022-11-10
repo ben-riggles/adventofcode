@@ -5,7 +5,7 @@ from numpy.typing import NDArray
 import re
 from typing import Dict, Iterable, Set
 
-from location import Direction
+from .location import Direction
 
 
 @dataclass

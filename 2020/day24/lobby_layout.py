@@ -1,11 +1,11 @@
 from __future__ import annotations
+import aoc
 from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
 from functools import reduce
 import itertools
 import re
-from typing import Set
 
 
 class Direction(Enum):
@@ -31,29 +31,14 @@ class Location:
             case Direction.NORTHWEST: return Location(self.x-1, self.y+1)
 
 
-with open('2020/day24/data.txt') as f:
-    lines = f.read().splitlines()
-
-delims = '|'.join(d.value for d in Direction)
-lines = [list(filter(None, re.split(f'({delims})', line))) 
-         for line in lines]
-
-origin = Location(0,0)
-flipped_tiles = [reduce(lambda x,y: x.move(Direction(y)), line, origin)
-                 for line in lines]
-flipped_tiles = Counter(flipped_tiles)
-state = {tile for tile, n in flipped_tiles.items() if n % 2 != 0}
-print(f'PART ONE: {len(state)}')
-
-
-def adjacent_tiles(tile: Location) -> Set[Location]:
+def adjacent_tiles(tile: Location) -> set[Location]:
     return {tile.move(dir) for dir in Direction}
 
-def check_black(black_tiles: Set[Location], adjacents: Set[Location]) -> bool:
+def check_black(black_tiles: set[Location], adjacents: set[Location]) -> bool:
     adjacent_blacks = len(adjacents & black_tiles)
     return adjacent_blacks == 0 or adjacent_blacks > 2
 
-def process_day(black_tiles: Set[Location]) -> Set[Location]:
+def process_day(black_tiles: set[Location]) -> set[Location]:
     adjacents = {tile: adjacent_tiles(tile) for tile in black_tiles}
     blacks_to_flip = {tile for tile, adj in adjacents.items() if check_black(black_tiles, adj)}
 
@@ -62,6 +47,21 @@ def process_day(black_tiles: Set[Location]) -> Set[Location]:
 
     return (black_tiles | whites_to_flip) - blacks_to_flip
 
-for _ in range(100):
-    state = process_day(state)
-print(f'PART TWO: {len(state)}')
+
+def main():
+    lines = aoc.read_lines()
+    delims = '|'.join(d.value for d in Direction)
+    lines = [list(filter(None, re.split(f'({delims})', line))) for line in lines]
+
+    origin = Location(0,0)
+    flipped_tiles = [reduce(lambda x,y: x.move(Direction(y)), line, origin) for line in lines]
+    flipped_tiles = Counter(flipped_tiles)
+    state = {tile for tile, n in flipped_tiles.items() if n % 2 != 0}
+    aoc.answer(1, len(state))
+
+    for _ in range(100):
+        state = process_day(state)
+    aoc.answer(2, len(state))
+
+if __name__ == '__main__':
+    main()

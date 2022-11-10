@@ -10,9 +10,8 @@ def find_combo(data: list[int], target: int, len: int) -> int:
 
 def main():
     data = list(map(int, aoc.read_lines()))
-    part1 = find_combo(data, 2020, 2)
-    part2 = find_combo(data, 2020, 3)
-    aoc.print_results(part1, part2)
+    aoc.answer(1, find_combo(data, 2020, 2))
+    aoc.answer(2, find_combo(data, 2020, 3))
 
 if __name__ == '__main__':
     main()

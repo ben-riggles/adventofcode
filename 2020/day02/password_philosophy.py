@@ -14,9 +14,8 @@ def validity_position(first: int, second: int, letter: str, password: str) -> bo
 
 def main():
     data = [parse_line(line) for line in aoc.read_lines()]
-    part1 = sum([validity_minmax(*x) for x in data])
-    part2 = sum([validity_position(*x) for x in data])
-    aoc.print_results(part1, part2)
+    aoc.answer(1, sum([validity_minmax(*x) for x in data]))
+    aoc.answer(2, sum([validity_position(*x) for x in data]))
 
 if __name__ == '__main__':
     main()

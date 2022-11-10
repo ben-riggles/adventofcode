@@ -84,9 +84,8 @@ class Program:
 
 def main():
     commands = aoc.read_lines()
-    part1 = Program(mem_type=MemoryV1).execute(commands)
-    part2 = Program(mem_type=MemoryV2).execute(commands)
-    aoc.print_results(part1, part2)
+    aoc.answer(1, Program(mem_type=MemoryV1).execute(commands))
+    aoc.answer(2, Program(mem_type=MemoryV2).execute(commands))
 
 if __name__ == '__main__':
     main()

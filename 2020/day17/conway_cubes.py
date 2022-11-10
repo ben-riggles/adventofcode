@@ -42,14 +42,12 @@ def main():
     grid1 = create_grid(dimensions=3, init=initial_state)
     for _ in range(NUM_CYCLES):
         grid1 = run_cycle(grid1)
-    part1 = np.count_nonzero(grid1 == ACTIVE)
+    aoc.answer(1, np.count_nonzero(grid1 == ACTIVE))
 
     grid2 = create_grid(dimensions=4, init=initial_state)
     for _ in range(NUM_CYCLES):
         grid2 = run_cycle(grid2)
-    part2 = np.count_nonzero(grid2 == ACTIVE)
-
-    aoc.print_results(part1, part2)
+    aoc.answer(2, np.count_nonzero(grid2 == ACTIVE))
 
 if __name__ == '__main__':
     main()

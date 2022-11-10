@@ -97,11 +97,11 @@ def main():
 
     ferry1 = CardinalFerry(direction=Direction.EAST)
     ferry1 = ferry1.move(commands)
+    aoc.answer(1, ferry1.loc.manhattan_dist())
 
     ferry2 = RelativeFerry(waypoint=Location(10, 1))
     ferry2 = ferry2.move(commands)
-
-    aoc.print_results(ferry1.loc.manhattan_dist(), ferry2.loc.manhattan_dist())
+    aoc.answer(2, ferry2.loc.manhattan_dist())
 
 if __name__ == '__main__':
     main()

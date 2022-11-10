@@ -16,13 +16,11 @@ def count_trees(tree_map: NDArray, right: int, down: int) -> int:
 
 def main():
     tree_map = np.array(list(map(list, aoc.read_lines())))
-    part1 = count_trees(tree_map, 3, 1)
+    aoc.answer(1, count_trees(tree_map, 3, 1))
 
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
     results = [count_trees(tree_map, right, down) for right, down in slopes]
-    part2 = reduce(lambda x, y: x*y, results)
-
-    aoc.print_results(part1, part2)
+    aoc.answer(2, reduce(lambda x, y: x*y, results))
 
 if __name__ == '__main__':
     main()

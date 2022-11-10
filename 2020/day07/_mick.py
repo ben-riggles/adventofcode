@@ -39,7 +39,7 @@ class Bag:
 
 def get_data():
     my_dict = {}
-    with open("./data/day_7.txt") as f:
+    with open("2020/day07/data.txt") as f:
         for bags in f.read().split("\n"):
             new_bag = Bag.from_string(bags)
             my_dict[new_bag.color] = new_bag

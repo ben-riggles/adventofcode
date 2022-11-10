@@ -72,7 +72,7 @@ def main():
     try:
         Program(instructions).execute()
     except InfiniteLoopError as e:
-        part1 = e.accumulator
+        aoc.answer(1, e.accumulator)
 
     for idx, inst in enumerate(instructions):
         og = inst.__class__
@@ -81,12 +81,11 @@ def main():
         elif og == NoOperation: instructions[idx] = Jump(inst.value)
 
         try:
-            part2 = Program(instructions).execute()
+            accumulator = Program(instructions).execute()
             break
         except InfiniteLoopError as e:
             instructions[idx] = og(inst.value)
-
-    aoc.print_results(part1, part2)
+    aoc.answer(2, accumulator)
 
 if __name__ == '__main__':
     main()

@@ -4,7 +4,7 @@ from numpy.typing import NDArray
 import regex
 from typing import List
 
-from location import Location
+from .location import Location
 
 
 #--------------------------#

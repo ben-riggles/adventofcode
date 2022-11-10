@@ -57,7 +57,7 @@ def main():
     tickets = [Ticket.from_string(t) for t in tickets.splitlines()[1:]]
 
     valid_values = set.union(*[x.values for x in fields])
-    part1 = sum(t.error_rate(valid_values) for t in tickets)
+    aoc.answer(1, sum(t.error_rate(valid_values) for t in tickets))
 
     valid_tickets = [t for t in tickets if t.error_rate(valid_values) == 0]
     value_grid = np.array([t.values for t in valid_tickets]).T
@@ -66,9 +66,7 @@ def main():
     fields = match_fields(ticket_field_values, fields)
     departure_fields = [f for f in fields if f.name.startswith('departure')]
     departure_values = [my_ticket.values[f.idx] for f in departure_fields]
-    part2 = reduce(lambda x,y: x*y, departure_values)
-
-    aoc.print_results(part1, part2)
+    aoc.answer(2, reduce(lambda x,y: x*y, departure_values))
 
 if __name__ == '__main__':
     main()

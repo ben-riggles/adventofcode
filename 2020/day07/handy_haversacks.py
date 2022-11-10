@@ -49,8 +49,10 @@ def main():
     [Bag.from_string(line, bags) for line in aoc.read_lines()]
 
     shiny_gold_parents = bags['shiny gold'].all_parents()
+    aoc.answer(1, len(shiny_gold_parents))
+
     shiny_gold_children = bags['shiny gold'].all_children()
-    aoc.print_results(len(shiny_gold_parents), sum(shiny_gold_children.values()))
+    aoc.answer(2, sum(shiny_gold_children.values()))
 
 if __name__ == '__main__':
     main()

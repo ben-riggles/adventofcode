@@ -21,9 +21,8 @@ def play_game(starters: list[int], total_turns: int) -> int:
 
 def main():
     starters = list(map(int, aoc.read_data().split(',')))
-    part1 = play_game(starters, 2020)
-    part2 = play_game(starters, 30_000_000)
-    aoc.print_results(part1, part2)
+    aoc.answer(1, play_game(starters, 2020))
+    aoc.answer(2, play_game(starters, 30_000_000))
 
 if __name__ == '__main__':
     main()
