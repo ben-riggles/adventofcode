@@ -1,5 +1,5 @@
 import aoc
-from functools import reduce
+from math import prod
 import numpy as np
 from numpy.typing import NDArray
 
@@ -21,7 +21,7 @@ def main():
 
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
     results = [count_trees(tree_map, right, down) for right, down in slopes]
-    aoc.answer(2, reduce(lambda x, y: x*y, results))
+    aoc.answer(2, prod(results))
 
 if __name__ == '__main__':
     main()

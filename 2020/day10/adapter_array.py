@@ -1,6 +1,7 @@
 import aoc
-import itertools
 import functools
+import itertools
+from math import prod
 import numpy as np
 from numpy.typing import NDArray
 
@@ -28,7 +29,7 @@ def main():
     choices = np.array([num_choices(adapters, x) for x in adapters])
     chunks = [list(x[1]) for x in itertools.groupby(choices, lambda x: x > 1) if x[0]]
     branch_list = [branches(tuple(chunk)) for chunk in chunks]
-    num_branches = functools.reduce(lambda x, y: x*y, branch_list)
+    num_branches = prod(branch_list)
     aoc.answer(2, num_branches)
 
 if __name__ == '__main__':

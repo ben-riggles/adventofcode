@@ -1,7 +1,7 @@
 from __future__ import annotations
 import aoc
 from dataclasses import dataclass, field
-from functools import reduce
+from math import prod
 import numpy as np
 import re
 
@@ -67,7 +67,7 @@ def main():
     fields = match_fields(ticket_field_values, fields)
     departure_fields = [f for f in fields if f.name.startswith('departure')]
     departure_values = [my_ticket.values[f.idx] for f in departure_fields]
-    aoc.answer(2, reduce(lambda x,y: x*y, departure_values))
+    aoc.answer(2, prod(departure_values))
 
 if __name__ == '__main__':
     main()

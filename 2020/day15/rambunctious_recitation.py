@@ -2,22 +2,20 @@ import aoc
 
 
 def play_game(starters: list[int], total_turns: int) -> int:
-    asdf = starters.copy()
+    ages = [0] * total_turns
+    for turn, n in enumerate(starters[:-1], 1):
+        ages[n] = turn
 
-    ages = {}
-    turn = 0
-    value = 0
-    next_turn = 0
-    while turn < total_turns:
-        try:
-            value = asdf.pop(0)
-        except IndexError:
-            value = next_turn
-            
-        next_turn = turn - ages.get(value, turn)
-        ages[value] = turn
-        turn += 1
+    prev = starters[-1]
+    for turn in range(len(starters), total_turns):
+        value = turn - ages[prev]
+        if value == turn:
+            value = 0
+        
+        ages[prev] = turn
+        prev = value
     return value
+
 
 def main():
     aoc.setup(__file__)
@@ -27,4 +25,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

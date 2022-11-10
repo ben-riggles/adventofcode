@@ -1,5 +1,5 @@
 import aoc
-from functools import reduce
+from math import prod
 
 from .location import Direction
 from .image import Image
@@ -26,7 +26,7 @@ def main():
         if not puzzle.place(tile):
             tiles.append(tile)
     corner_ids = [t.id for t in puzzle.corners()]
-    aoc.answer(1, reduce(lambda x,y: x*y, corner_ids))
+    aoc.answer(1, prod(corner_ids))
 
     image = puzzle.image
     sea_monsters = find_monsters(image)

@@ -1,12 +1,12 @@
 import aoc
 import itertools
-from functools import reduce
+from math import prod
 
 
 def find_combo(data: list[int], target: int, len: int) -> int:
     for combo in itertools.combinations(data, len):
         if sum(combo) == target:
-            return reduce(lambda x, y: x*y, combo)
+            return prod(combo)
 
 def main():
     aoc.setup(__file__)
