@@ -8,13 +8,12 @@ ACTIVE, INACTIVE = '#', '.'
 NUM_CYCLES = 6
 
 def create_grid(dimensions: int, init: NDArray, border: int = NUM_CYCLES) -> NDArray:
-    init_hgt, init_wdt = init.shape
-    grid_size = max(init_hgt, init_wdt) + 2 * border
-    grid = np.full((grid_size,)*dimensions, INACTIVE)
+    init_size = max(init.shape)
+    grid_size = init_size + 2 * border
+    grid = np.full([grid_size] * dimensions, INACTIVE)
 
-    slice_x = slice(border, border + init_wdt)
-    slice_y = slice(border, border + init_hgt)
-    start_slice = (grid_size//2,)*(dimensions-2) + (slice_y, slice_x)
+    _slice = slice(border, border + init_size)
+    start_slice = (grid_size//2,)*(dimensions-2) + (_slice, _slice)
     grid[start_slice] = init
     return grid
 

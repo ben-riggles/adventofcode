@@ -31,23 +31,21 @@ class Equation(ABC):
         pass
 
     @classmethod
-    def parse(cls, eq_list: list[str]) -> Equation:
-        op = Operation.NOOP
-        retval = []
-        while eq_list:
-            _next = eq_list.pop(0)
-
-            match _next:
-                case '(': retval.append((op, cls.parse(eq_list)))
-                case ')': return cls(retval)
-                case '+'|'*': op = Operation(_next)
-                case _: retval.append((op, int(_next)))
-        return cls(retval)
-
-    @classmethod
     def from_string(cls, eq_str: str) -> Equation:
-        eq_str = eq_str.replace('(', '( ').replace(')', ' )').split(' ')
-        return cls.parse(eq_str)
+        def parse(eq_list: list[str]) -> Equation:
+            op = Operation.NOOP
+            retval = []
+            while eq_list:
+                _next = eq_list.pop(0)
+
+                match _next:
+                    case '(': retval.append((op, parse(eq_list)))
+                    case ')': return cls(retval)
+                    case '+'|'*': op = Operation(_next)
+                    case _: retval.append((op, int(_next)))
+            return cls(retval)
+
+        return parse(list(eq_str.replace(' ', '')))
 
 class EquationLeftToRight(Equation):
     def evaluate(self) -> int:
@@ -86,10 +84,10 @@ def main():
     equation_strs = aoc.read_lines()
 
     equations1 = [EquationLeftToRight.from_string(s) for s in equation_strs]
-    aoc.answer(1, sum([eq.evaluate() for eq in equations1]))
+    aoc.answer(1, sum(equations1))
 
     equations2 = [EquationAddPriority.from_string(s) for s in equation_strs]
-    aoc.answer(2, sum([eq.evaluate() for eq in equations2]))
+    aoc.answer(2, sum(equations2))
 
 if __name__ == '__main__':
     main()
