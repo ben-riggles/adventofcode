@@ -1,17 +1,13 @@
 from __future__ import annotations
+from collections import defaultdict
 from dataclasses import dataclass
+import itertools
 import numpy as np
 from numpy.typing import NDArray
-from typing import Tuple, List
 
-try:
-    from .image import Image
-    from .location import Direction, Location
-    from .tile import Tile
-except ImportError:
-    from image import Image
-    from location import Direction, Location
-    from tile import Tile
+from image import Image
+from location import Direction, Location
+from tile import Tile
 
 
 class Puzzle:
@@ -26,7 +22,7 @@ class Puzzle:
 
     def __getitem__(self, loc: Location) -> Tile:
         if loc.x < 0 or loc.y < 0:
-            raise IndexError('Location must be greater than 0')
+            raise IndexError
         return self._layout[loc.y][loc.x]
 
     def __setitem__(self, loc: Location, tile: Tile):
@@ -74,21 +70,9 @@ class Puzzle:
         self._mark_neighbors(new_loc)
         return True
 
-    def corners(self) -> List[Tile]:
+    def corners(self) -> list[Tile]:
         width, height = self.width, self.height
         return [self[Location(0, 0)], self[Location(width-1, 0)], self[Location(0, height-1)], self[Location(width-1, height-1)]]
-
-    def rotate(self, n: int=1, clockwise=True) -> Puzzle:
-        retval = Puzzle()
-        retval._layout = np.rot90(self._layout, k=-1*n if clockwise else 1*n)
-        retval._layout = np.vectorize(lambda t: t.rotate(n, clockwise))(retval._layout)
-        return retval
-        
-    def flip(self) -> Puzzle:
-        retval = Puzzle()
-        retval._layout = np.flip(self._layout, axis=1)
-        retval._layout = np.vectorize(lambda t: t.flip())(retval._layout)
-        return retval
 
     def _add_blank(self, dir: Direction) -> NDArray:
         match dir:
@@ -105,7 +89,7 @@ class Puzzle:
                     return Puzzle._Match(control=t, loc=Location(x,y), edge=edge)
         raise ValueError(f'No match found for tile: {tile.id}')
 
-    def _orient(self, match: Puzzle._Match, tile: Tile) -> Tuple[Location, Tile]:
+    def _orient(self, match: Puzzle._Match, tile: Tile) -> tuple[Location, Tile]:
         edge, edge_rev = match.edge, match.edge[::-1]
         if edge_rev not in tile.edges(include_flipped=False):
             tile = tile.flip()

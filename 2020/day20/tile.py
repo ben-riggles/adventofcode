@@ -3,19 +3,16 @@ from dataclasses import dataclass, field
 import numpy as np
 from numpy.typing import NDArray
 import re
-from typing import Dict, Iterable, Set
+from typing import Iterable
 
-try:
-    from .location import Direction
-except ImportError:
-    from location import Direction
+from location import Direction
 
 
 @dataclass
 class Tile:
     id: int
     _content: NDArray = field(repr=False)
-    _neighbors: Dict[Direction, bool] = field(init=False, repr=False, default_factory=lambda: {d: False for d in Direction})
+    _neighbors: dict[Direction, bool] = field(init=False, repr=False, default_factory=lambda: {d: False for d in Direction})
 
     def __str__(self):
         content_str = '\n'.join([''.join([char for char in line]) for line in self._content])
@@ -33,7 +30,7 @@ class Tile:
             case Direction.LEFT:  edge = self._ar_to_str(self._content[:,0])[::-1]
         return edge if not flipped else edge[::-1]
 
-    def edges(self, include_flipped: bool = True) -> Set[str]:
+    def edges(self, include_flipped: bool = True) -> set[str]:
         edges = {self.edge(d, flipped=False) for d in Direction if self._neighbors[d] == False}
         if include_flipped:
             edges |= {self.edge(d, flipped=True) for d in Direction if self._neighbors[d] == False}

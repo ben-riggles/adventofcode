@@ -1,5 +1,5 @@
 {
-    "terminal.integrated.env.windows": {"PYTHONPATH": "PYTHONPATH;${workspaceFolder}"},
+    "terminal.integrated.env.windows": {"PYTHONPATH": "PYTHONPATH;${workspaceFolder};${fileWorkspaceFolder}"},
     "python.envFile": "${workspaceFolder}/.env",
     "python.analysis.extraPaths": ["C:/src/adventofcode"]
 }

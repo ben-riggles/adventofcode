@@ -2,12 +2,8 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import NDArray
 import regex
-from typing import List
 
-try:
-    from .location import Location
-except ImportError:
-    from location import Location
+from location import Location
 
 
 #--------------------------#
@@ -18,14 +14,15 @@ except ImportError:
 #                          #
 #--------------------------#
 class SeaMonster:
+    relative_locs = [
+        Location(18, 0), Location(0, 1), Location(5, 1), Location(6, 1), Location(11, 1),
+        Location(12, 1), Location(17, 1), Location(18, 1), Location(19, 1), Location(1, 2),
+        Location(4, 2), Location(7, 2), Location (10, 2), Location(13, 2), Location(16, 2)
+    ]
+
     def __init__(self, start: Location):
-        relative_locs = [
-            Location(18, 0), Location(0, 1), Location(5, 1), Location(6, 1), Location(11, 1),
-            Location(12, 1), Location(17, 1), Location(18, 1), Location(19, 1), Location(1, 2),
-            Location(4, 2), Location(7, 2), Location (10, 2), Location(13, 2), Location(16, 2)
-        ]
         self.start = start
-        self.points = {start + loc for loc in relative_locs}
+        self.points = {start + loc for loc in SeaMonster.relative_locs}
 
     def __repr__(self):
         return f'SeaMonster({str(self.start)})'
@@ -62,12 +59,10 @@ class Image:
     def count_hash(self) -> int:
         return np.count_nonzero(self._content == '#')
 
-    def _loc_from_idx(self, idx: int) -> Location:
-        return Location(x=idx % (self.width + 1), y=idx // (self.width + 1))
-
-    def sea_monsters(self) -> List[SeaMonster]:
+    def sea_monsters(self) -> list[SeaMonster]:
         monsters = []
         for match in regex.finditer(SeaMonster.regex(self.width), str(self), overlapped=True):
-            start = self._loc_from_idx(match.start())
+            idx = match.start()
+            start = Location(x=idx % (self.width + 1), y=idx // (self.width + 1))
             monsters.append(SeaMonster(start))
         return monsters

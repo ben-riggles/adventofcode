@@ -48,7 +48,7 @@ def match(rules, string, rule=0, index=0):
 	return matches
 
 
-with open('2020/day19/small.txt') as f:
+with open('2020/day19/data.txt') as f:
     fin = f.read().splitlines()
 
 rules1 = parse_input(fin)
