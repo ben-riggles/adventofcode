@@ -14,6 +14,13 @@ def build_allergen_dict(foods: tuple) -> dict[str, set[str]]:
             allergen_dict[allergen] = allergen_dict.get(allergen, ingredients) & ingredients
     return allergen_dict
 
+def solved_allergens(allergen_dict: dict) -> tuple[str, str]:
+    while allergen_dict:
+        allergen = next(k for k,v in allergen_dict.items() if len(v) == 1)
+        ingredient = allergen_dict.pop(allergen)
+        allergen_dict = {k: v - ingredient for k, v in allergen_dict.items()}
+        yield allergen, list(ingredient)[0]
+
 
 def main():
     aoc.setup(__file__)
@@ -25,13 +32,7 @@ def main():
     non_allergens = all_ingredients - possible_allergens
     aoc.answer(1, sum([len(food[0] & non_allergens) for food in foods]))
 
-    solved = {}
-    while allergen_dict:
-        solved_allergens = [k for k,v in allergen_dict.items() if len(v) == 1]
-        for allergen in solved_allergens:
-            ingredient = allergen_dict.pop(allergen)
-            solved[allergen] = list(ingredient)[0]
-            allergen_dict = {k: v - ingredient for k, v in allergen_dict.items()}
+    solved = {allergen: ingredient for allergen, ingredient in solved_allergens(allergen_dict)}
     dangerous = [solved[x] for x in sorted(solved.keys())]
     aoc.answer(2, ",".join(dangerous))
 
