@@ -1,63 +1,61 @@
 import aoc
+from typing import Iterable
 
 
-def destination(current: int, moving: list[int], max_cup: int) -> int:
-    while True:
-        current = current -1 if current > 1 else max_cup
-        if current not in moving:
-            return current
+def build_list(init_cups: Iterable[int], num_turns: int, num_cups: int = None) -> list[int]:
+    max_cup = num_cups if num_cups is not None else len(init_cups)
+    cups = [0] + list(range(max_cup + 2))[2:]
+    for cup1, cup2 in zip(init_cups, init_cups[1:]):
+        cups[cup1] = cup2
 
-def move(cups: dict[int,int], current_cup: int, max_cup: int) -> int:
-    next1 = cups[current_cup]
-    next2 = cups[next1]
-    next3 = cups[next2]
-    next4 = cups[next3]
-    moving_cups = [next1, next2, next3]
-    dest = destination(current_cup, moving_cups, max_cup)
+    if num_cups is None:
+        cups[init_cups[-1]] = init_cups[0]
+    else:
+        cups[-1] = init_cups[0]
+        cups[init_cups[-1]] = len(init_cups) + 1
+    return cups
 
-    cups[current_cup] = next4
-    cups[next3] = cups[dest]
-    cups[dest] = next1
-    return next4
+def play_game(init_cups: Iterable[int], num_turns: int, num_cups: int = None):
+    cups = build_list(init_cups, num_turns, num_cups)
+    max_cup = len(cups) - 1
+    
+    current_cup = init_cups[0]
+    for _ in range(num_turns):
+        first = cups[current_cup]
+        second = cups[first]
+        third = cups[second]
+        moving_cups = first, second, third
+
+        dest = max_cup if current_cup == 1 else current_cup - 1
+        while dest in moving_cups:
+            dest = max_cup if dest == 1 else dest - 1
+
+        new_next = cups[third]
+        cups[current_cup] = new_next
+        cups[third] = cups[dest]
+        cups[dest] = first
+        current_cup = new_next
+    return cups
+
+def build_from_one(cups: list[int]) -> str:
+    idx = cups[1]
+    retval = ''
+    while idx != 1:
+        retval += str(idx)
+        idx = cups[idx]
+    return retval
 
 
 def main():
     aoc.setup(__file__)
     cups = [int(x) for x in aoc.read_data()]
 
-    cup_dict = {}
-    try:
-        for idx, cup in enumerate(cups):
-            cup_dict[cup] = cups[idx+1]
-    except IndexError:
-        cup_dict[cups[-1]] = cups[0]
+    cups1 = play_game(cups, num_turns=100)
+    aoc.answer(1, build_from_one(cups1))
 
-    current_cup = cups[0]
-    for _ in range(100):
-        current_cup = move(cup_dict, current_cup, 9)
-
-    cup_list = [cup_dict[1]]
-    while cup_list[-1] != 1:
-        cup_list.append(cup_dict[cup_list[-1]])
-    aoc.answer(1, ''.join([str(x) for x in cup_list[:-1]]))
-
-    cup_dict = {}
-    try:
-        for idx, cup in enumerate(cups):
-            cup_dict[cup] = cups[idx+1]
-    except IndexError:
-        cup_dict[cups[-1]] = 10
-
-    for i in range(10, 1000000):
-        cup_dict[i] = i+1
-    cup_dict[1000000] = cups[0]
-
-    current_cup = cups[0]
-    for _ in range(10000000):
-        current_cup = move(cup_dict, current_cup, 1000000)
-
-    next1 = cup_dict[1]
-    next2 = cup_dict[next1]
+    cups2 = play_game(cups, num_turns=10_000_000, num_cups=1_000_000)
+    next1 = cups2[1]
+    next2 = cups2[next1]
     aoc.answer(2, next1 * next2)
 
 if __name__ == '__main__':
