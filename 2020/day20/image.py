@@ -3,7 +3,7 @@ import numpy as np
 from numpy.typing import NDArray
 import regex
 
-from location import Location
+from location import Location, Direction
 
 
 #--------------------------#
@@ -23,9 +23,6 @@ class SeaMonster:
     def __init__(self, start: Location):
         self.start = start
         self.points = {start + loc for loc in SeaMonster.relative_locs}
-
-    def __repr__(self):
-        return f'SeaMonster({str(self.start)})'
         
     @staticmethod
     def regex(width: int) -> str:
@@ -42,14 +39,6 @@ class Image:
     def __str__(self):
         return '\n'.join([''.join([char for char in line]) for line in self._content])
 
-    @property
-    def width(self) -> int:
-        return self._content.shape[1]
-
-    @property
-    def height(self) -> int:
-        return self._content.shape[0]
-
     def rotate(self, n: int=1, clockwise=True) -> Image:
         return Image(np.rot90(self._content, k=-1*n if clockwise else 1*n))
         
@@ -60,9 +49,20 @@ class Image:
         return np.count_nonzero(self._content == '#')
 
     def sea_monsters(self) -> list[SeaMonster]:
-        monsters = []
-        for match in regex.finditer(SeaMonster.regex(self.width), str(self), overlapped=True):
-            idx = match.start()
-            start = Location(x=idx % (self.width + 1), y=idx // (self.width + 1))
-            monsters.append(SeaMonster(start))
-        return monsters
+        width = self._content.shape[1]
+        def find_monsters(image: Image) -> list[SeaMonster]:
+            monsters = []
+            for match in regex.finditer(SeaMonster.regex(width), str(image), overlapped=True):
+                idx = match.start()
+                start = Location(x=idx % (width + 1), y=idx // (width + 1))
+                monsters.append(SeaMonster(start))
+            return monsters
+
+        _image = self
+        for _ in range(2):
+            for _ in Direction:
+                if monsters := find_monsters(_image):
+                    return monsters
+                _image = self.rotate(1)
+            _image = self.flip()
+        
