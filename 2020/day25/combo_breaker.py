@@ -1,25 +1,28 @@
 import aoc
+import math
 
 
-INITIAL_SUBJECT = 7
-MOD_NO = 20201227
-
-def transform(subject: int, target: int) -> int:
-    loops = 1
-    val = subject
-    while val != target:
-        val = (val * subject) % MOD_NO
-        loops += 1
-    return loops
+# Baby-step Giant-step algorithm
+def bsgs(base, pubkey, modulo) -> int | None:
+    m = math.ceil(math.sqrt(modulo))
+    table = {pow(base, i, modulo): i for i in range(m)}
+    inv = pow(base, -m, modulo)
+    
+    for i in range(m):
+        y = (pubkey * pow(inv, i, modulo)) % modulo
+        if y in table:
+            return i * m + table[y]
+    return None
 
 
 def main():
     aoc.setup(__file__)
+    INITIAL_SUBJECT = 7
+    MOD_NO = 20201227
+
     card_pubkey, door_pubkey = map(int, aoc.read_lines())
-    door_loop = transform(subject=INITIAL_SUBJECT, target=door_pubkey)
-    encryption_key = card_pubkey
-    for _ in range(door_loop-1):
-        encryption_key = (encryption_key * card_pubkey) % MOD_NO
+    door_loop = bsgs(INITIAL_SUBJECT, door_pubkey, MOD_NO)
+    encryption_key = pow(card_pubkey, door_loop, MOD_NO)
     aoc.answer(1, encryption_key)
 
 if __name__ == '__main__':
