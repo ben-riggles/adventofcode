@@ -1,6 +1,6 @@
 import numpy as np
 
-with open('2021/day03/diagnostic_report.txt') as f:
+with open('2021/day03/data.txt') as f:
     readings = f.read().splitlines()
     readings = np.asarray([int(x, 2) for x in readings])
 

@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import mode
 
 with open('2021/day03/diagnostic_report.txt') as f:
     readings = np.asarray(f.read().splitlines())

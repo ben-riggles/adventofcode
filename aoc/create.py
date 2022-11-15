@@ -15,21 +15,14 @@ def create(year: int, day: int, name: str):
     if not day_dir.exists():
         day_dir.mkdir()
 
-    python_file = day_dir.joinpath(f'{name}.py')
     small_file = day_dir.joinpath('small.txt')
     data_file = day_dir.joinpath('data.txt')
-
     with open(small_file, mode='w') as f: pass
     with open(data_file, mode='w') as f: pass
-    with open(python_file, mode='w') as f:
-        f.write(
-            'import aoc\n\n\n'
-            '@aoc.register(__file__)\n'
-            'def answers():\n'
-            '\tpass\n\n'
-            'if __name__ == \'__main__\':\n'
-            '\taoc.run()\n'
-        )
+
+    template_py = Path.cwd().joinpath('aoc/template_py.py')
+    dest_py = day_dir.joinpath(f'{name}.py')
+    shutil.copy(str(template_py), str(dest_py))
 
 
 if __name__ == '__main__':
