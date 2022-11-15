@@ -1,5 +1,6 @@
 import argparse
 import cProfile
+from pathlib import Path
 
 from aoc.io import set_main_file
 from aoc.register import registered_functions
@@ -19,7 +20,8 @@ def run(profile: bool = False):
 
         if profile:
             pr.disable()
-            output = filename.parent.joinpath(f'{filename.stem}.pstats')
+            f = Path(filename)
+            output = f.parent.joinpath(f'{f.stem}.pstats')
             pr.dump_stats(str(output))
     
 
