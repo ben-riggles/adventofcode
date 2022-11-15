@@ -17,11 +17,11 @@ def play_game(starters: list[int], total_turns: int) -> int:
     return value
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     starters = list(map(int, aoc.read_data().split(',')))
-    aoc.answer(1, play_game(starters, 2020))
-    aoc.answer(2, play_game(starters, 30_000_000))
+    yield play_game(starters, 2020)
+    yield play_game(starters, 30_000_000)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

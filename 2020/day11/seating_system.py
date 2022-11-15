@@ -71,8 +71,8 @@ def perform_round(layout: NDArray, tolerance: int, count_method: Callable) -> ND
     return step_two
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     transform = str.maketrans('.L#','012')
     initial_layout = np.array([[int(x) for x in list(line.translate(transform))]
                                 for line in aoc.read_lines()])
@@ -83,7 +83,7 @@ def main():
             layout1 = perform_round(layout1, tolerance=4, count_method=count_adjacent_seats)
         except StopIteration:
             break
-    aoc.answer(1, np.count_nonzero(layout1 == OCCUPIED))
+    yield np.count_nonzero(layout1 == OCCUPIED)
 
     layout2 = np.copy(initial_layout)
     while True:
@@ -91,7 +91,7 @@ def main():
             layout2 = perform_round(layout2, tolerance=5, count_method=count_seen_seats)
         except StopIteration:
             break
-    aoc.answer(2, np.count_nonzero(layout2 == OCCUPIED))
+    yield np.count_nonzero(layout2 == OCCUPIED)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

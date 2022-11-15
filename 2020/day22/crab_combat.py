@@ -94,17 +94,17 @@ class RecursiveCombat(Combat):
             return self.p1
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     player_data = aoc.read_chunks()
 
     p1, p2 = (Player.from_string(block) for block in player_data)
     winner1 = Combat(p1, p2).play()
-    aoc.answer(1, winner1.score())
+    yield winner1.score()
 
     p1, p2 = (Player.from_string(block) for block in player_data)
     winner2 = RecursiveCombat(p1, p2).play()
-    aoc.answer(2, winner2.score())
+    yield winner2.score()
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

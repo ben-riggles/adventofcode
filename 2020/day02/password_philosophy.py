@@ -12,11 +12,11 @@ def validity_minmax(min: int, max: int, letter: str, password: str) -> bool:
 def validity_position(first: int, second: int, letter: str, password: str) -> bool:
     return (password[first-1] == letter) ^ (password[second-1] == letter)
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     data = [parse_line(line) for line in aoc.read_lines()]
-    aoc.answer(1, sum([validity_minmax(*x) for x in data]))
-    aoc.answer(2, sum([validity_position(*x) for x in data]))
+    yield sum([validity_minmax(*x) for x in data])
+    yield sum([validity_position(*x) for x in data])
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

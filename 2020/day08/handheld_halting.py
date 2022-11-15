@@ -67,14 +67,14 @@ class Program:
                 return self.accumulator
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     instructions = [Instruction.from_string(x) for x in aoc.read_lines()]
     
     try:
         Program(instructions).execute()
     except InfiniteLoopError as e:
-        aoc.answer(1, e.accumulator)
+        yield e.accumulator
 
     for idx, inst in enumerate(instructions):
         og = inst.__class__
@@ -87,7 +87,7 @@ def main():
             break
         except InfiniteLoopError as e:
             instructions[idx] = og(inst.value)
-    aoc.answer(2, accumulator)
+    yield accumulator
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

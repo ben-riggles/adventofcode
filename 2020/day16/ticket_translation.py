@@ -49,8 +49,8 @@ def match_fields(tickets: list[Ticket], fields: list[Field]) -> list[Field]:
     return fields
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     fields, my_ticket, tickets = aoc.read_chunks()
 
     fields = [Field.from_string(f) for f in fields.splitlines()]
@@ -58,14 +58,14 @@ def main():
     tickets = [Ticket.from_string(t) for t in tickets.splitlines()[1:]]
 
     valid_values = set.union(*[x.values for x in fields])
-    aoc.answer(1, sum(t.error_rate(valid_values) for t in tickets))
+    yield sum(t.error_rate(valid_values) for t in tickets)
 
     valid_tickets = [t for t in tickets if t.error_rate(valid_values) == 0]
     fields = match_fields(valid_tickets, fields)
     
     departure_fields = [f for f in fields if f.name.startswith('departure')]
     departure_values = [my_ticket.values[f.idx] for f in departure_fields]
-    aoc.answer(2, prod(departure_values))
+    yield prod(departure_values)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

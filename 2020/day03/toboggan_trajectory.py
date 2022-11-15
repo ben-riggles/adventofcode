@@ -14,14 +14,14 @@ def count_trees(tree_map: NDArray, right: int, down: int) -> int:
     points = tree_map[points[0], points[1]]
     return np.count_nonzero(points == TREE)
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     tree_map = np.array(list(map(list, aoc.read_lines())))
-    aoc.answer(1, count_trees(tree_map, 3, 1))
+    yield count_trees(tree_map, 3, 1)
 
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
     results = [count_trees(tree_map, right, down) for right, down in slopes]
-    aoc.answer(2, prod(results))
+    yield prod(results)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

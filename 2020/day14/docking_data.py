@@ -54,11 +54,11 @@ class ProgramV2(Program):
         return {x: value for x in addresses}
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     commands = aoc.read_lines()
-    aoc.answer(1, ProgramV1().execute(commands))
-    aoc.answer(2, ProgramV2().execute(commands))
+    yield ProgramV1().execute(commands)
+    yield ProgramV2().execute(commands)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

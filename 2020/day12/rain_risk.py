@@ -92,17 +92,17 @@ class RelativeFerry(Ferry):
             case 'F': self.loc += self.waypoint * val
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     commands = aoc.read_lines()
 
     ferry1 = CardinalFerry(direction=Direction.EAST)
     ferry1 = ferry1.move(commands)
-    aoc.answer(1, ferry1.loc.manhattan_dist())
+    yield ferry1.loc.manhattan_dist()
 
     ferry2 = RelativeFerry(waypoint=Location(10, 1))
     ferry2 = ferry2.move(commands)
-    aoc.answer(2, ferry2.loc.manhattan_dist())
+    yield ferry2.loc.manhattan_dist()
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

@@ -79,15 +79,15 @@ class EquationAddPriority(Equation):
         return retval
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     equation_strs = aoc.read_lines()
 
     equations1 = [EquationLeftToRight.from_string(s) for s in equation_strs]
-    aoc.answer(1, sum(equations1))
+    yield sum(equations1)
 
     equations2 = [EquationAddPriority.from_string(s) for s in equation_strs]
-    aoc.answer(2, sum(equations2))
+    yield sum(equations2)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

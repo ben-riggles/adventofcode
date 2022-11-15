@@ -44,16 +44,16 @@ class Bag:
         [bag.add_child(tree[child], int(amount)) for amount, child in children]
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     bags = BagDict()
     [Bag.from_string(line, bags) for line in aoc.read_lines()]
 
     shiny_gold_parents = bags['shiny gold'].all_parents()
-    aoc.answer(1, len(shiny_gold_parents))
+    yield len(shiny_gold_parents)
 
     shiny_gold_children = bags['shiny gold'].all_children()
-    aoc.answer(2, sum(shiny_gold_children.values()))
+    yield sum(shiny_gold_children.values())
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

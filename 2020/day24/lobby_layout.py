@@ -36,16 +36,16 @@ def process_days(black_tiles: NDArray, num_days: int) -> NDArray:
     return black_tiles
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     lines = aoc.read_lines()
 
     black_tiles = np.array(initial_state(lines))
-    aoc.answer(1, len(black_tiles))
+    yield len(black_tiles)
 
     black_tiles = process_days(black_tiles, num_days=100)
-    aoc.answer(2, np.sum(black_tiles))
+    yield np.sum(black_tiles)
 
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

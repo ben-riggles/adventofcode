@@ -15,15 +15,15 @@ def bsgs(base, pubkey, modulo) -> int | None:
     return None
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     INITIAL_SUBJECT = 7
     MOD_NO = 20201227
 
     card_pubkey, door_pubkey = map(int, aoc.read_lines())
     door_loop = bsgs(INITIAL_SUBJECT, door_pubkey, MOD_NO)
     encryption_key = pow(card_pubkey, door_loop, MOD_NO)
-    aoc.answer(1, encryption_key)
+    yield encryption_key
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

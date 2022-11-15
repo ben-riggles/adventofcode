@@ -48,20 +48,20 @@ class Rule:
         return Rule(rule_id, rule_sets=rule_sets)
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     rules, messages = aoc.read_chunks('data')
     rules = [Rule.from_string(line) for line in rules.split('\n')]
     rules = {rule.id: rule for rule in rules}
     messages = messages.split('\n')
 
     valid_messages = [msg for msg in messages if rules[0].match(rules, msg)]
-    aoc.answer(1, len(valid_messages))
+    yield len(valid_messages)
 
     rules[8] = Rule.from_string('8: 42 | 42 8')
     rules[11] = Rule.from_string('11: 42 31 | 42 11 31')
     valid_messages = [msg for msg in messages if rules[0].match(rules, msg)]
-    aoc.answer(2, len(valid_messages))
+    yield len(valid_messages)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

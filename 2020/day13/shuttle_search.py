@@ -41,8 +41,8 @@ class Cycle:
         )
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     init_time, schedule = aoc.read_lines()
 
     bus_ids = np.array([int(x) for x in schedule.split(',') if x != 'x'])
@@ -50,11 +50,11 @@ def main():
     idx = np.where(distances == min(distances))
     nearest_bus = bus_ids[idx][0]
     wait_time = distances[idx][0]
-    aoc.answer(1, nearest_bus * wait_time)
+    yield nearest_bus * wait_time
 
     cycles = [Cycle(int(bus), -idx) for idx, bus in enumerate(schedule.split(',')) if bus != 'x']
     merged_cycle: Cycle = reduce(iand, cycles)
-    aoc.answer(2, merged_cycle.offset)
+    yield merged_cycle.offset
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

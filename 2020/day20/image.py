@@ -3,7 +3,10 @@ import numpy as np
 from numpy.typing import NDArray
 import regex
 
-from location import Location, Direction
+try:
+    from location import Location, Direction
+except ImportError:
+    from .location import Location, Direction
 
 
 #--------------------------#

@@ -3,9 +3,14 @@ import itertools
 import numpy as np
 from numpy.typing import NDArray
 
-from image import Image
-from location import Direction, Location
-from tile import Tile
+try:
+    from image import Image
+    from location import Direction, Location
+    from tile import Tile
+except ImportError:
+    from .image import Image
+    from .location import Direction, Location
+    from .tile import Tile
 
 
 class Puzzle:

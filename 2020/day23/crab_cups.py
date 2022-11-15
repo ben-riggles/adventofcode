@@ -46,17 +46,17 @@ def build_from_one(cups: list[int]) -> str:
     return retval
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     cups = [int(x) for x in aoc.read_data()]
 
     cups1 = play_game(cups, num_turns=100)
-    aoc.answer(1, build_from_one(cups1))
+    yield build_from_one(cups1)
 
     cups2 = play_game(cups, num_turns=10_000_000, num_cups=1_000_000)
     next1 = cups2[1]
     next2 = cups2[next1]
-    aoc.answer(2, next1 * next2)
+    yield next1 * next2
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

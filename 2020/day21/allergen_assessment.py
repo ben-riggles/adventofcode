@@ -22,19 +22,19 @@ def solved_allergens(allergen_dict: dict) -> tuple[str, str]:
         yield allergen, list(ingredient)[0]
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     foods = [parse(line) for line in aoc.read_lines()]
     allergen_dict = build_allergen_dict(foods)
 
     all_ingredients = set.union(*[f[0] for f in foods])
     possible_allergens = set.union(*[v for v in allergen_dict.values()])
     non_allergens = all_ingredients - possible_allergens
-    aoc.answer(1, sum([len(food[0] & non_allergens) for food in foods]))
+    yield sum([len(food[0] & non_allergens) for food in foods])
 
     solved = {allergen: ingredient for allergen, ingredient in solved_allergens(allergen_dict)}
     dangerous = [solved[x] for x in sorted(solved.keys())]
-    aoc.answer(2, ",".join(dangerous))
+    yield ",".join(dangerous)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

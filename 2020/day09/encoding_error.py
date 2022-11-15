@@ -23,18 +23,18 @@ def find_weakness(window: NDArray, target_value: int) -> NDArray:
     return window[start:end]
 
 
-def main():
-    aoc.setup(__file__)
+@aoc.register(__file__)
+def answers():
     PREAMBLE = 25
     data = np.array(list(map(int, aoc.read_lines())))
 
     idx = PREAMBLE
     while (is_valid(data[idx-PREAMBLE:idx], data[idx])):
         idx += 1
-    aoc.answer(1, idx)
+    yield idx
 
     weakness = find_weakness(data[:idx], data[idx])
-    aoc.answer(2, min(weakness) + max(weakness))
+    yield min(weakness) + max(weakness)
 
 if __name__ == '__main__':
-    main()
+    aoc.run()

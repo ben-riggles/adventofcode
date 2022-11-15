@@ -3,7 +3,10 @@ import numpy as np
 from numpy.typing import NDArray
 import re
 
-from location import Direction
+try:
+    from location import Direction
+except ImportError:
+    from .location import Direction
 
 
 class Tile:

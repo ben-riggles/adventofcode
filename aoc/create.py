@@ -1,14 +1,20 @@
 import argparse
 from pathlib import Path
+import shutil
 
 
 def create(year: int, day: int, name: str):
     year_dir = Path.cwd().joinpath(str(year))
     if not year_dir.exists():
         year_dir.mkdir()
+        template_init = Path.cwd().joinpath('aoc/template_init.py')
+        dest_init = year_dir.joinpath('__init__.py')
+        shutil.copy(str(template_init), str(dest_init))
+
     day_dir = year_dir.joinpath('day{:02d}'.format(day))
     if not day_dir.exists():
         day_dir.mkdir()
+
     python_file = day_dir.joinpath(f'{name}.py')
     small_file = day_dir.joinpath('small.txt')
     data_file = day_dir.joinpath('data.txt')
@@ -17,11 +23,12 @@ def create(year: int, day: int, name: str):
     with open(data_file, mode='w') as f: pass
     with open(python_file, mode='w') as f:
         f.write(
-            'import aoc\n\n\n' + 
-            'def main():\n' + 
-            '\taoc.setup(__file__)\n\n' +
-            'if __name__ == \'__main__\':\n' +
-            '\tmain()\n'
+            'import aoc\n\n\n'
+            '@aoc.register(__file__)\n'
+            'def answers():\n'
+            '\tpass\n\n'
+            'if __name__ == \'__main__\':\n'
+            '\taoc.run()\n'
         )
 
 
