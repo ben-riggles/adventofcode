@@ -12,8 +12,6 @@ if __name__ == '__main__':
     for f in py_files:
         if 'aoc' in str(f) or '2021' in str(f) or f.stem.startswith('_'):
             continue
-        if 'day20' not in str(f):
-            continue
         
         sys.path = [str(f.parent)] + pythonpath
         mod_name = str(f).replace('.py', '').replace('\\', '.')
