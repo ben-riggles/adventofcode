@@ -7,8 +7,8 @@ import re
 
 
 DIRECTIONS = {
-    'w': (0, -1), 'nw': (-1, -1), 'ne': (-1, 0),
-    'e': (0, 1), 'se': (1, 1), 'sw': (1, 0)
+    'w': (0, -2), 'nw': (-1, -1), 'ne': (-1, 1),
+    'e': (0, 2), 'se': (1, 1), 'sw': (1, -1)
 }
 
 def initial_state(lines: list[str]) -> list[tuple]:
@@ -23,12 +23,12 @@ def process_days(black_tiles: NDArray, num_days: int) -> NDArray:
     init_shape = np.zeros(init_shape+1, dtype=int)
     min_value = np.min(black_tiles, axis=1, keepdims=True)
     init_shape[tuple(black_tiles - min_value)] = 1
-    black_tiles = np.pad(init_shape, num_days)
+    black_tiles = np.pad(init_shape, 2 * num_days)
 
     kernel = [
-        [1, 1, 0],
-        [1, 0, 1],
-        [0, 1, 1]
+        [0, 1, 0, 1, 0],
+        [1, 0, 0, 0, 1],
+        [0, 1, 0, 1, 0]
     ]
     for _ in range(num_days):
         neighbors = convolve(black_tiles, kernel, mode='constant')

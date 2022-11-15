@@ -8,14 +8,9 @@ ACTIVE, INACTIVE = '#', '.'
 NUM_CYCLES = 6
 
 def create_grid(dimensions: int, init: NDArray, border: int = NUM_CYCLES) -> NDArray:
-    init_size = max(init.shape)
-    grid_size = init_size + 2 * border
-    grid = np.full([grid_size] * dimensions, INACTIVE)
-
-    _slice = slice(border, border + init_size)
-    start_slice = (grid_size//2,)*(dimensions-2) + (_slice, _slice)
-    grid[start_slice] = init
-    return grid
+    new_dims = tuple(x for x in range(dimensions-2))
+    grid = np.expand_dims(init, new_dims)
+    return np.pad(grid, border, constant_values=INACTIVE)
 
 def active_neighbors(grid: NDArray) -> NDArray:
     return sum([
