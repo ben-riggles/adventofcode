@@ -1,68 +1,51 @@
-from __future__ import annotations
 import aoc
 from collections import Counter
-from dataclasses import dataclass
-from enum import Enum
-from functools import reduce
-import itertools
+import numpy as np
+from numpy.typing import NDArray
+from scipy.ndimage import convolve
 import re
 
 
-class Direction(Enum):
-    NORTHEAST = 'ne'
-    EAST = 'e'
-    SOUTEAST = 'se'
-    SOUTHWEST = 'sw'
-    WEST = 'w'
-    NORTHWEST = 'nw'
+DIRECTIONS = {
+    'w': (0, -1), 'nw': (-1, -1), 'ne': (-1, 0),
+    'e': (0, 1), 'se': (1, 1), 'sw': (1, 0)
+}
 
-@dataclass(eq=True, frozen=True)
-class Location:
-    x: int
-    y: int
+def initial_state(lines: list[str]) -> list[tuple]:
+    delims = '|'.join(DIRECTIONS.keys())
+    lines = [list(filter(None, re.split(f'({delims})', line))) for line in lines]
+    coords = Counter([tuple(sum(np.array([DIRECTIONS[x] for x in line]))) for line in lines])
+    return [coord for coord, count in coords.items() if count % 2 != 0]
 
-    def move(self, dir: Direction) -> Location:
-        match dir:
-            case Direction.NORTHEAST: return Location(self.x+1, self.y+1)
-            case Direction.EAST: return Location(self.x+2, self.y)
-            case Direction.SOUTEAST: return Location(self.x+1, self.y-1)
-            case Direction.SOUTHWEST: return Location(self.x-1, self.y-1)
-            case Direction.WEST: return Location(self.x-2, self.y)
-            case Direction.NORTHWEST: return Location(self.x-1, self.y+1)
+def process_days(black_tiles: NDArray, num_days: int) -> NDArray:
+    black_tiles = black_tiles.T
+    init_shape = np.ptp(black_tiles, axis=1)
+    init_shape = np.zeros(init_shape+1, dtype=int)
+    min_value = np.min(black_tiles, axis=1, keepdims=True)
+    init_shape[tuple(black_tiles - min_value)] = 1
+    black_tiles = np.pad(init_shape, num_days)
 
-
-def adjacent_tiles(tile: Location) -> set[Location]:
-    return {tile.move(dir) for dir in Direction}
-
-def check_black(black_tiles: set[Location], adjacents: set[Location]) -> bool:
-    adjacent_blacks = len(adjacents & black_tiles)
-    return adjacent_blacks == 0 or adjacent_blacks > 2
-
-def process_day(black_tiles: set[Location]) -> set[Location]:
-    adjacents = {tile: adjacent_tiles(tile) for tile in black_tiles}
-    blacks_to_flip = {tile for tile, adj in adjacents.items() if check_black(black_tiles, adj)}
-
-    adj_counter = Counter(list(itertools.chain.from_iterable(adjacents.values())))
-    whites_to_flip = {tile for tile, n in adj_counter.items() if n == 2}
-
-    return (black_tiles | whites_to_flip) - blacks_to_flip
+    kernel = [
+        [1, 1, 0],
+        [1, 0, 1],
+        [0, 1, 1]
+    ]
+    for _ in range(num_days):
+        neighbors = convolve(black_tiles, kernel, mode='constant')
+        black_tiles = black_tiles & (neighbors == 1) | (neighbors == 2)
+    return black_tiles
 
 
 def main():
     aoc.setup(__file__)
     lines = aoc.read_lines()
-    delims = '|'.join(d.value for d in Direction)
-    lines = [list(filter(None, re.split(f'({delims})', line))) for line in lines]
 
-    origin = Location(0,0)
-    flipped_tiles = [reduce(lambda x,y: x.move(Direction(y)), line, origin) for line in lines]
-    flipped_tiles = Counter(flipped_tiles)
-    state = {tile for tile, n in flipped_tiles.items() if n % 2 != 0}
-    aoc.answer(1, len(state))
+    black_tiles = np.array(initial_state(lines))
+    aoc.answer(1, len(black_tiles))
 
-    for _ in range(100):
-        state = process_day(state)
-    aoc.answer(2, len(state))
+    black_tiles = process_days(black_tiles, num_days=100)
+    aoc.answer(2, np.sum(black_tiles))
+
 
 if __name__ == '__main__':
     main()
