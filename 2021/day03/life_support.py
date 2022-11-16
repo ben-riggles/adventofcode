@@ -12,6 +12,8 @@ for i in reversed(range(0, 12)):
     zeroes = (sliced == 0).sum()
     ones = (sliced > 0).sum()
 
+    print(len(oxygen), ones > zeroes)
+
     if ones >= zeroes:
         oxygen = oxygen[np.where(oxygen & slicer)]
     else:
