@@ -37,7 +37,7 @@ print(risk_level)
 
 # Part 2
 print('---------- Part 2 ----------')
-def find_basin(point, indices=None):
+def find_basin(point: tuple, indices=None):
     try:
         if height_map[point] == 9 or point[0] < 0 or point[1] < 0:
             return []
