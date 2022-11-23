@@ -1,11 +1,8 @@
 from typing import Tuple, List
 import math
 
-with open('2021/day17/target.txt') as f:
+with open('2021/day17/data.txt') as f:
     target_str = f.read().strip()
-
-asdf = None
-asdf.fish
 
 
 class TargetArea:
@@ -32,6 +29,8 @@ class TargetArea:
         return (self.x_min <= point[0] <= self.x_max) and (self.y_min <= point[1] <= self.y_max)
 
     def __possible_x_vels(self) -> List[int]:
+        # Quadratic equation to solve triangular number
+        #  x = m*(m+1)/2
         x_max, x_min = abs(self.x_max), abs(self.x_min)
         min_x_vel = math.ceil(-1 + math.sqrt(1 + 8 * x_min) / 2)
 
