@@ -15,7 +15,6 @@ except ImportError:
 
 class Puzzle:
     def __init__(self, tiles: list[Tile]):
-        #self._layout: NDArray = np.atleast_2d([])
         puzzle_len = int(len(tiles) ** 0.5)
         self._layout: NDArray = np.full(shape=(puzzle_len, puzzle_len), fill_value=None, dtype=object)
         self._build_puzzle(tiles)

@@ -1,6 +1,7 @@
 from __future__ import annotations
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 import aoc
+from collections import deque
 from dataclasses import dataclass, field
 from functools import reduce
 from typing import ClassVar
@@ -24,38 +25,39 @@ class Packet(ABC):
         if (type_id := cls.type_id) >= 0:
             Packet.TYPE_DICT[type_id] = cls
 
-    @property
-    @abstractmethod
+    @abstractproperty
     def value(self):
         pass
 
-    def read(self, bits: str, start: int, end: int) -> str:
-        contents = bits[start:end]
-        self.length += end - start
-        return contents
+    def _read(self, transmission: deque[str], size: int, as_int=True) -> str:
+        try:
+            contents = ''.join([transmission.popleft() for _ in range(size)])
+        except IndexError:
+            raise PacketParseError
+        self.length += size
+        return int(contents, 2) if as_int == True else contents
 
     def version_total(self) -> int:
         return self.version
 
     @staticmethod
-    def parse(contents) -> Packet:
-        version = int(contents[:3], 2)
-        packet_type = int(contents[3:6], 2)
-        child_cls = Packet.TYPE_DICT[packet_type]
-        return child_cls(version=version, length=6)._parse(contents)
+    def parse(transmission: deque[str]) -> Packet:
+        if len(transmission) < 6:
+            raise PacketParseError
+
+        opening = ''.join([transmission.popleft() for _ in range(6)])
+        version = int(opening[:3], 2)
+        packet_type = int(opening[3:6], 2)
+
+        packet_class = Packet.TYPE_DICT[packet_type]
+        packet = packet_class(version=version, length=6)._parse(transmission)
+        # Do remainder
+        return packet
 
     @abstractmethod
-    def _parse(self, contents) -> Packet:
+    def _parse(self, transmission: list[str]) -> Packet:
         pass
-
-    # @classmethod
-    # def parse(cls, contents) -> Packet:
-    #     packet = cls()
-    #     packet.version = int(packet.read(contents, 0, 3), 2)
-    #     packet_type = int(packet.read(contents, 3, 6), 2)
-    #     return packet
-    #     child = [x for x in Packet.__subclasses__() if x.type_id == packet_type][0]
-    #     return child.parse(contents)
+        
 
 @dataclass
 class LiteralPacket(Packet):
@@ -66,20 +68,16 @@ class LiteralPacket(Packet):
     def value(self):
         return self.stored_value
 
-    def _parse(self, contents) -> Packet:
+    def _parse(self, transmission) -> Packet:
         value_strings = []
-        idx = 6
-        while True:
+        leading_bit = True
+        while leading_bit:
             try:
-                leading_bit = bool(int(self.read(contents, idx, idx+1), 2))
-                val_str = self.read(contents, idx+1, idx+5)
-                value_strings.append(val_str)
-                idx += 5
-
-                if not leading_bit:
-                    break
+                leading_bit = bool(self._read(transmission, 1))
+                value_strings.append(self._read(transmission, 4, as_int=False))
             except (IndexError, ValueError):
-                raise PacketParseError()
+                raise PacketParseError
+
         self.stored_value = int(''.join(value_strings), 2)
         return self
 
@@ -90,101 +88,89 @@ class OperatorPacket(Packet, ABC):
     def version_total(self):
         return sum([x.version_total() for x in self.packets]) + self.version
 
-    def read_packet(self, contents: str) -> Packet:
-        packet = parse_packet(contents, strip=False)
+    def read_packet(self, transmission: list[str]) -> Packet:
+        packet = Packet.parse(transmission)
         self.packets.append(packet)
         self.length += packet.length
         return packet.length
 
-    def _parse(self, contents):
-        lenTypeID = int(self.read(contents, 6, 7), 2)
+    def _parse(self, transmission):
+        lenTypeID = self._read(transmission, 1)
         match(lenTypeID):
             case 0:
-                subLength = int(self.read(contents, 7, 22), 2)
-                idx = 22
-                while idx-22 < subLength:
-                    idx += self.read_packet(contents[idx:])
+                subLength = self._read(transmission, 15)
+                bits = 0
+                while bits < subLength:
+                    bits += self.read_packet(transmission)
             case 1:
-                numPackets = int(self.read(contents, 7, 18), 2)
-                idx = 18
-                for _ in range(0, numPackets):
-                    idx += self.read_packet(contents[idx:])
+                numPackets = self._read(transmission, 11)
+                for _ in range(numPackets):
+                    self.read_packet(transmission)
             case _:
                 raise PacketParseError()
         return self
-adve
+
 
 class SumPacket(OperatorPacket):
     type_id = 0
+    
     @property
     def value(self):
         return sum([x.value for x in self.packets])
 
 class ProductPacket(OperatorPacket):
     type_id = 1
+
     @property
     def value(self):
         return reduce(lambda x, y: x*y, [x.value for x in self.packets])
 
 class MinimumPacket(OperatorPacket):
     type_id = 2
+
     @property
     def value(self):
         return min([x.value for x in self.packets])
 
 class MaximumPacket(OperatorPacket):
     type_id = 3
+
     @property
     def value(self):
         return max([x.value for x in self.packets])
 
 class GreaterThanPacket(OperatorPacket):
     type_id = 5
+
     @property
     def value(self):
         return self.packets[0].value > self.packets[1].value
 
 class LessThanPacket(OperatorPacket):
     type_id = 6
+
     @property
     def value(self):
         return self.packets[0].value < self.packets[1].value
 
 class EqualToPacket(OperatorPacket):
     type_id = 7
+    
     @property
     def value(self):
         return self.packets[0].value == self.packets[1].value
 
 
-def parse_packet(ts: str, strip: bool=True) -> Packet:
-    if len(ts) < 6:
-        raise PacketParseError()
-
-    packet = Packet.parse(ts)
-    if strip:
-        remainder = packet.length % 4
-        remainder = 4 - remainder if remainder else 0
-        _ = packet.read(ts, packet.length, packet.length+remainder)
-    return packet
-
-
-
-
 @aoc.register(__file__)
 def answers():
-    transmission = bin(int('F' + aoc.read_data(), 16))[2:]
-    transmission = transmission[4:]
+    transmission = deque(bin(int('F' + aoc.read_data(), 16))[6:])
 
     packets = []
     while transmission:
         try:
-            packet = parse_packet(transmission)
+            packets.append(Packet.parse(transmission))
         except PacketParseError:
-            'We had to kill it'
             break
-        transmission = transmission[packet.length:]
-        packets.append(packet)
 
     yield sum([x.version_total() for x in packets])
     yield sum([x.value for x in packets])

@@ -14,8 +14,7 @@ def answers():
     tiles = [Tile.from_string(chunk) for chunk in aoc.read_chunks()]
 
     puzzle = Puzzle(tiles)
-    corner_ids = [t.id for t in puzzle.corners()]
-    yield prod(corner_ids)
+    yield prod(t.id for t in puzzle.corners())
 
     image = puzzle.image
     points = set.union(*[x.points for x in image.sea_monsters()])
