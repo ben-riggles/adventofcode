@@ -1,5 +1,5 @@
 import aoc
-from enum import Enum, auto
+import itertools
 import numpy as np
 from numpy.typing import NDArray
 from scipy.ndimage import convolve
@@ -10,65 +10,42 @@ FLOOR = 0
 EMPTY = 1
 OCCUPIED = 2
 
-class Direction(Enum):
-    UP = auto()
-    DOWN = auto()
-    LEFT = auto()
-    RIGHT = auto()
-    UPPER_LEFT = auto()
-    UPPER_RIGHT = auto()
-    LOWER_LEFT = auto()
-    LOWER_RIGHT = auto()
+DIRECTIONS = [x for x in itertools.product((-1, 0, 1), repeat=2) if x != (0,0)]
 
-
-def adjacent_seats(layout: NDArray, direction: Direction) -> NDArray:
-    match direction:
-        case Direction.UP: retval = np.pad(layout, ((0,1), (0,0)))[1:, :]
-        case Direction.DOWN: retval = np.pad(layout, ((1,0), (0,0)))[:-1, :]
-        case Direction.LEFT: retval = np.pad(layout, ((0,0), (1,0)))[:, :-1]
-        case Direction.RIGHT: retval = np.pad(layout, ((0,0), (0,1)))[:, 1:]
-        case Direction.UPPER_LEFT: retval = np.pad(layout, ((0,1), (1,0)))[1:, :-1]
-        case Direction.UPPER_RIGHT: retval = np.pad(layout, ((0,1), (0,1)))[1:, 1:]
-        case Direction.LOWER_LEFT: retval = np.pad(layout, ((1,0), (1,0)))[:-1, :-1]
-        case Direction.LOWER_RIGHT: retval = np.pad(layout, ((1,0), (0,1)))[:-1, 1:]
-    return retval
 
 def count_adjacent_seats(layout: NDArray) -> NDArray:
-    window = np.array([[1,1,1],[1,0,1],[1,1,1]])
+    window = np.array([[1,1,1], [1,0,1], [1,1,1]])
     return convolve(np.where(layout == OCCUPIED, 1, 0), window, mode='constant')
 
-def sightline(layout: NDArray, direction: Direction) -> NDArray:
-    retval = np.copy(layout)
-    shifted = adjacent_seats(layout, direction)
-    _slice = np.where(retval == FLOOR)
-    retval[_slice] = shifted[_slice]
-
-    if not (layout == retval).all():
-        return sightline(retval, direction)
-    return adjacent_seats(retval, direction) == OCCUPIED
-
 def count_seen_seats(layout: NDArray) -> int:
-    return sum([sightline(layout, d) for d in Direction])
+    def adjacent_seats(_layout: NDArray, dir: tuple[int, int]) -> NDArray:
+        default_slice = (1,-1)
+        vert = (default_slice[0] + dir[0], default_slice[1] + dir[0])
+        horz = (default_slice[0] + dir[1], default_slice[1] + dir[1])
+        vert_slice = slice(vert[0], None if vert[1] == 0 else vert[1])
+        horz_slice = slice(horz[0], None if horz[1] == 0 else horz[1])
+        return np.pad(_layout, 1)[vert_slice, horz_slice]
 
+    def sightline(_layout: NDArray, dir: tuple[int, int]) -> NDArray:
+        shifted = adjacent_seats(_layout, dir)
+        retval = np.where(_layout == FLOOR, shifted, _layout)
 
-def occupy_seats(layout: NDArray, count: NDArray) -> NDArray:
-    retval = np.copy(layout)
-    retval[(retval == EMPTY) & (count == 0)] = OCCUPIED
-    return retval
+        if not (_layout == retval).all():
+            return sightline(retval, dir)
+        return adjacent_seats(retval, dir) == OCCUPIED
 
-def leave_seats(layout: NDArray, count: NDArray, tolerance: int) -> NDArray:
-    retval = np.copy(layout)
-    retval[(retval == OCCUPIED) & (count >= tolerance)] = EMPTY
-    return retval
+    return sum([sightline(layout, d) for d in DIRECTIONS])
 
-def perform_round(layout: NDArray, tolerance: int, count_method: Callable) -> NDArray:
-    count = count_method(layout)
-    step_one = occupy_seats(layout, count)
-    step_two = leave_seats(step_one, count, tolerance)
+def process_seats(layout: NDArray, tolerance: int, count_method: Callable) -> NDArray:
+     _layout = np.copy(layout)
+     while True:
+        count = count_method(_layout)
+        step_one = np.where((_layout == EMPTY) & (count == 0), OCCUPIED, _layout)
+        step_two = np.where((step_one == OCCUPIED) & (count >= tolerance), EMPTY, step_one)
 
-    if (layout == step_two).all():
-        raise StopIteration
-    return step_two
+        if (_layout == step_two).all():
+            return _layout
+        _layout = step_two
 
 
 @aoc.register(__file__)
@@ -77,20 +54,10 @@ def answers():
     initial_layout = np.array([[int(x) for x in list(line.translate(transform))]
                                 for line in aoc.read_lines()])
 
-    layout1 = np.copy(initial_layout)
-    while True:
-        try:
-            layout1 = perform_round(layout1, tolerance=4, count_method=count_adjacent_seats)
-        except StopIteration:
-            break
+    layout1 = process_seats(initial_layout, tolerance=4, count_method=count_adjacent_seats)
     yield np.count_nonzero(layout1 == OCCUPIED)
 
-    layout2 = np.copy(initial_layout)
-    while True:
-        try:
-            layout2 = perform_round(layout2, tolerance=5, count_method=count_seen_seats)
-        except StopIteration:
-            break
+    layout2 = process_seats(initial_layout, tolerance=5, count_method=count_seen_seats)
     yield np.count_nonzero(layout2 == OCCUPIED)
 
 if __name__ == '__main__':
