@@ -18,11 +18,36 @@ class Target:
         return (self.x_min <= point[0] <= self.x_max) and (self.y_min <= point[1] <= self.y_max)
 
     def _y_velocities(self) -> dict[int, set]:
-        min_y_vel = math.ceil(-1 + math.sqrt(1 + 8 * abs(self.x_min)) / 2) if self.y_min < 0 else self.y_min
-        if self.y_min < 0:
-            min_y_vel = self.y_min
-        else:
-            min_y_vel = 
+        min_y_vel = math.ceil(-1 + math.sqrt(1 + 8 * abs(self.x_min)) / 2) if self.y_min >= 0 else self.y_min
+        max_y_vel = self.y_max + 1 if self.y_max >= 0 else -self.y_min - 1
+
+        y_vel_dict = {}
+        for y_vel in range(min_y_vel, max_y_vel+1):
+            max_t = math.floor(((2*y_vel + 1) + math.sqrt((2*y_vel + 1)**2 - 8*self.y_min)) / 2)
+            t_vals = np.arange(1, max_t+1)
+            y_vals = ((y_vel * t_vals) - ((t_vals * (t_vals - 1)) / 2)).astype(int)
+            idxs = np.where((y_vals >= self.y_min) & (y_vals <= self.y_max))[0]
+            if idxs.size != 0:
+                y_vel_dict[y_vel] = set(t_vals[idxs])
+        return y_vel_dict
+
+    def _x_velocities(self, max_t: int) -> dict[int, set]:
+        min_x_vel = math.ceil(-1 + math.sqrt(1 + 8 * abs(self.x_min)) / 2)
+        step = 1 if self.x_min >=0 else -1
+        max_x_vel = self.x_max + step
+
+        x_vel_dict = {}
+        for x_vel in range(min_x_vel, max_x_vel, step):
+            t_vals = np.arange(1, x_vel+step)
+            x_vals = np.cumsum(t_vals[::-1])
+            idxs = np.where((x_vals >= self.x_min) & (x_vals <= self.x_max))[0]
+            valid_t = set(t_vals[idxs])
+            if idxs.size != 0:
+                if (len(x_vals) - 1) in idxs:
+                    valid_t |= set(range(len(x_vals), max_t+1))
+                x_vel_dict[x_vel] = valid_t
+        return x_vel_dict
+
 
     def velocities(self) -> Generator[tuple[int,int]]:
         # Quadratic equation to solve triangular number
@@ -58,6 +83,10 @@ def highest_y(y_vel: int) -> int:
 @aoc.register(__file__)
 def answers():
     target = Target.from_string(aoc.read_data('small'))
+    asdf = target._y_velocities()
+    max_t = max(set.union(*[v for v in asdf.values()]))
+    qwer = target._x_velocities(max_t)
+    raise
     for x in target.velocities():
         print(x)
     high_points = [highest_y(y_vel) for _, y_vel in target.velocities()]
