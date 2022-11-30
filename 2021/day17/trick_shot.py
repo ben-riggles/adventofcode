@@ -1,6 +1,6 @@
 from __future__ import annotations
 import aoc
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import math
 import numpy as np
 import re
@@ -48,26 +48,13 @@ class Target:
                 x_vel_dict[x_vel] = valid_t
         return x_vel_dict
 
-
     def velocities(self) -> Generator[tuple[int,int]]:
-        # Quadratic equation to solve triangular number
-        #  x = m*(m+1)/2
-        min_x_vel = math.ceil(-1 + math.sqrt(1 + 8 * abs(self.x_min)) / 2)
-        step = 1 if self.x_min >=0 else -1
+        y_vel_map = self._y_velocities()
+        max_t = max(set.union(*[v for v in y_vel_map.values()]))
+        x_vel_map = self._x_velocities(max_t)
 
-        for x_vel in range(min_x_vel, self.x_max+step, step):
-            t_vals = np.arange(1, x_vel+step)
-            x_velos = t_vals[::-1]
-            x_vals = np.cumsum(x_velos)
-            idxs = np.where((x_vals >= self.x_min) & (x_vals <= self.x_max))
-            for t, x in zip(t_vals[idxs], x_vals[idxs]):
-                y_vel_min = (self.y_min + (t * (t-1) / 2)) / t
-                y_vel_min = math.floor(y_vel_min) if y_vel_min >= 0 else math.ceil(y_vel_min)
-                y_vel_max = (self.y_max + (t * (t-1) / 2)) / t
-                y_vel_max = math.floor(y_vel_max) if y_vel_max >= 0 else math.ceil(y_vel_max)
-                y_pos_min =  t * y_vel_min - (t * (t-1) / 2)
-                y_pos_max =  t * y_vel_max - (t * (t-1) / 2)
-                yield from [(x, y) for y in range(y_vel_min, y_vel_max)]
+        for y, y_t in y_vel_map.items():
+            yield from ((x,y) for x, x_t in x_vel_map.items() if y_t & x_t)
 
     @staticmethod
     def from_string(target_str: str) -> Target:
@@ -82,18 +69,11 @@ def highest_y(y_vel: int) -> int:
 
 @aoc.register(__file__)
 def answers():
-    target = Target.from_string(aoc.read_data('small'))
-    asdf = target._y_velocities()
-    max_t = max(set.union(*[v for v in asdf.values()]))
-    qwer = target._x_velocities(max_t)
-    raise
-    for x in target.velocities():
-        print(x)
+    target = Target.from_string(aoc.read_data())
     high_points = [highest_y(y_vel) for _, y_vel in target.velocities()]
 
     yield max(high_points)
     yield len(high_points)
 
 if __name__ == '__main__':
-    print(math.floor(0.5))
     aoc.run()
