@@ -17,6 +17,13 @@ class Target:
     def __contains__(self, point: tuple[int,int]):
         return (self.x_min <= point[0] <= self.x_max) and (self.y_min <= point[1] <= self.y_max)
 
+    def _y_velocities(self) -> dict[int, set]:
+        min_y_vel = math.ceil(-1 + math.sqrt(1 + 8 * abs(self.x_min)) / 2) if self.y_min < 0 else self.y_min
+        if self.y_min < 0:
+            min_y_vel = self.y_min
+        else:
+            min_y_vel = 
+
     def velocities(self) -> Generator[tuple[int,int]]:
         # Quadratic equation to solve triangular number
         #  x = m*(m+1)/2
