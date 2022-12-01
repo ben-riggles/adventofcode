@@ -21,7 +21,7 @@ def step(energy: NDArray) -> int:
 
 @aoc.register(__file__)
 def answers():
-    energy_levels = np.array([list(map(int, line)) for line in aoc.read_lines()])
+    energy_levels = np.array(aoc.read_grid(), dtype=int)
 
     flash_count = sum([step(energy_levels) for _ in range(100)])
     yield flash_count

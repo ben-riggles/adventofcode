@@ -32,7 +32,7 @@ def run_cycle(grid: NDArray) -> NDArray:
 
 @aoc.register(__file__)
 def answers():
-    initial_state = np.array(list(map(list, aoc.read_lines())))
+    initial_state = np.array(aoc.read_grid())
 
     grid1 = create_grid(dimensions=3, init=initial_state)
     for _ in range(NUM_CYCLES):

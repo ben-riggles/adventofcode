@@ -187,4 +187,4 @@ def answers():
     yield max(mags)
 
 if __name__ == '__main__':
-    aoc.run(profile=True)
+    aoc.run()

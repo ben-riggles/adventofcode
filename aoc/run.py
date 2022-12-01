@@ -32,7 +32,10 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     if (year := args.pop('year')) is not None:
-        __import__(year)
+        __import__(str(year))
     else:
-        __import__('2020')
+        cwd = Path.cwd()
+        dirs = [d.relative_to(cwd) for d in cwd.iterdir() if d.is_dir()]
+        dirs = [d for d in dirs if not str(d).startswith('.') and str(d) != 'aoc' and str(d) != '2021']
+        [__import__(str(d)) for d in dirs]
     run(**args)
