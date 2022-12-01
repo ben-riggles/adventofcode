@@ -45,10 +45,10 @@ def expand_grid(grid: NDArray, n: int) -> NDArray:
 
 @aoc.register(__file__)
 def answers():
-    grid = np.array([list(map(int, x)) for x in aoc.read_lines()])
+    grid = np.array(aoc.read_grid(), dtype=int)
     yield astar(grid)
 
-    grid = expand_grid(grid, 5).astype(int)
+    grid = expand_grid(grid, 5)
     yield astar(grid)
 
 if __name__ == '__main__':

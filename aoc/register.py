@@ -19,7 +19,11 @@ def register(filename):
             print(f'** {info["year"]}/day{info["day"]}: {info["filename"].replace("_", " ").title()}')
 
             start = time.process_time()
-            yield from func()
+            result_gen = func()
+            if result_gen is not None:
+                yield from result_gen
+            else:
+                print('NO RESULTS')
             end = time.process_time()
 
             print(f'Time elapsed: {round((end - start) * 1000, 3)} ms')

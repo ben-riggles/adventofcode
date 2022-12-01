@@ -50,9 +50,10 @@ def process_seats(layout: NDArray, tolerance: int, count_method: Callable) -> ND
 
 @aoc.register(__file__)
 def answers():
-    transform = str.maketrans('.L#','012')
-    initial_layout = np.array([[int(x) for x in list(line.translate(transform))]
-                                for line in aoc.read_lines()])
+    initial_layout = np.array(aoc.read_grid())
+    initial_layout[initial_layout == '.'] = FLOOR
+    initial_layout[initial_layout == 'L'] = EMPTY
+    initial_layout = initial_layout.astype(int)
 
     layout1 = process_seats(initial_layout, tolerance=4, count_method=count_adjacent_seats)
     yield np.count_nonzero(layout1 == OCCUPIED)

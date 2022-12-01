@@ -32,7 +32,7 @@ def find_basin(height_map: NDArray, point:tuple, indices=None):
 
 @aoc.register(__file__)
 def answers():
-    height_map = np.array([list(x) for x in aoc.read_lines()], dtype=int)
+    height_map = np.array(aoc.read_grid(), dtype=int)
     
     low_points = find_low_points(height_map)
     yield sum(height_map[low_points] + 1)

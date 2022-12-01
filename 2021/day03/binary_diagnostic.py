@@ -23,7 +23,7 @@ def reduce_data(data: NDArray, common=True) -> int:
 
 @aoc.register(__file__)
 def answers():
-    data = np.array([list(map(int, x)) for x in aoc.read_lines()]).T
+    data = np.array(aoc.read_grid(), dtype=int).T
 
     gamma = np.array([most_common(column) for column in data])
     epsilon = 1 - gamma

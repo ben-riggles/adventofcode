@@ -16,7 +16,7 @@ def count_trees(tree_map: NDArray, right: int, down: int) -> int:
 
 @aoc.register(__file__)
 def answers():
-    tree_map = np.array(list(map(list, aoc.read_lines())))
+    tree_map = np.array(aoc.read_grid())
     yield count_trees(tree_map, 3, 1)
 
     slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
