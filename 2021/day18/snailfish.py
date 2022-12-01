@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import aoc
+from copy import deepcopy
 from dataclasses import dataclass, field
 import itertools
 import math
@@ -13,7 +14,7 @@ class SnailfishNumber(ABC):
     uid: uuid.UUID = field(init=False, repr=False, default_factory=lambda: str(uuid.uuid4()))
 
     def __add__(self, other: SnailfishNumber) -> SnailfishNumber:
-        return Pair(self, other).reduce()
+        return Pair(deepcopy(self), deepcopy(other)).reduce()
 
     def __radd__(self, other) -> SnailfishNumber:
         if other == 0:
@@ -175,15 +176,12 @@ class Pair(SnailfishNumber):
 
 @aoc.register(__file__)
 def answers():
-    from copy import deepcopy
     numbers = [SnailfishNumber.from_string(x)[0] for x in aoc.read_lines()]
-
-    numbers1 = deepcopy(numbers)
-    result: SnailfishNumber = sum(numbers1)
+    
+    result: SnailfishNumber = sum(numbers)
     yield result.magnitude()
 
-    mags = [(deepcopy(x)+deepcopy(y)).magnitude() for x,y in itertools.permutations(numbers, r=2)]
-    #print(mags)
+    mags = [(x+y).magnitude() for x,y in itertools.permutations(numbers, r=2)]
     yield max(mags)
 
 if __name__ == '__main__':
