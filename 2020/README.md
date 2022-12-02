@@ -9,8 +9,8 @@
 
 <!--SOLUTIONS-->
 
-[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](day01)
-[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](day02)
+[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](#d01)
+[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](day03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](day04)
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](day05)
@@ -38,3 +38,31 @@
 <!--/SOLUTIONS-->
 
 _Click a badge to go to the specific day._
+
+
+## <a name="d01"></a> Day 1 - Custom Name 
+
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+text  
+
+## Day 2 - Custom Name <a name="d02"></a>
