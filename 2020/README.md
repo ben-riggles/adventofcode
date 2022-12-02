@@ -11,7 +11,7 @@
 
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](#d01)
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
-[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](day03)
+[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](day04)
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](day05)
 [![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](day06)
