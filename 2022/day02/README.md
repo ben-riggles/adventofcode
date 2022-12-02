@@ -4,7 +4,7 @@
 
 [Task description](https://adventofcode.com/2022/day/2)  
 [Complete solution](rock_paper_scissors.py)  
-Runtime: ...  
+Runtime: 0.867 ms  
 
 ## Notes
 
