@@ -1,11 +1,10 @@
-# 🎄 <<title>> 🎄
+## <a name="d<<day_str>>"></a> Day <<day_str>>: <<title>>
 
-## Info
+[Task description](https://adventofcode.com/<<year>>/day/<<day>>) - [Complete solution](day<<day_str>>/<<name>>.py) - [Back to top](#top)  
 
-[Task description](https://adventofcode.com/<<year>>/day/<<day>>)  
-[Complete solution](<<py_file>>)  
 Runtime: ...  
 
-## Notes
+### Notes
 
-...
+...  
+

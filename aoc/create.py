@@ -27,11 +27,11 @@ def create(year: int, day: int, name: str):
     day_dir.mkdir()
 
     with open(year_md, 'r+') as f:
-        lines = f.read().splitlines()
+        lines = f.readlines()
         idx = next(i for i, x in enumerate(lines) if f'badge/{day_str}' in x)
-        lines[idx] = f'[{lines[idx]}](day{day_str})'.replace('gray', 'green')
+        lines[idx] = lines[idx].replace('gray', 'green')
         f.seek(0)
-        f.writelines('\n'.join(lines) + '\n')
+        f.writelines(lines)
 
 
     small_file = day_dir.joinpath('small.txt')
@@ -44,14 +44,12 @@ def create(year: int, day: int, name: str):
     dest_py = day_dir.joinpath(py_file)
     shutil.copy(str(template_py), str(dest_py))
 
-    day_md = day_dir.joinpath('README.md')
     template_md = Path.cwd().joinpath('aoc/template_readme_day.md')
-    shutil.copy(str(template_md), str(day_md))
-    with open(str(day_md), mode='r+') as f:
-        contents = f.read().replace('<<year>>', str(year)).replace('<<day>>', str(day))
-        contents = contents.replace('<<py_file>>', py_file).replace('<<title>>', name.replace('_', ' ').title())
-        f.seek(0)
-        f.write(contents)
+    with open(str(template_md), mode='r') as f:
+        day_contents = f.read().replace('<<year>>', str(year)).replace('<<day>>', str(day)).replace('<<day_str>>', day_str)
+        day_contents = day_contents.replace('<<name>>', py_file).replace('<<title>>', name.replace('_', ' ').title())
+    with open(str(year_md), mode='a') as f:
+        f.write(day_contents)
 
 
 if __name__ == '__main__':
@@ -59,6 +57,5 @@ if __name__ == '__main__':
     parser.add_argument('-y', '--year', help='The year to place the new files under', required=True, type=int)
     parser.add_argument('-d', '--day', help='The day to place the new files under', required=True, type=int)
     parser.add_argument('-n', '--name', help='The name of the new file', required=True)
-    #args = vars(parser.parse_args())
-    #create(**args)
-    create(2024, 1, 'tester')
+    args = vars(parser.parse_args())
+    create(**args)
