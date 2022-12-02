@@ -1,39 +1,12 @@
 import aoc
-from enum import Enum, IntEnum
-import numpy as np
+from collections import Counter
+from enum import IntEnum
 
 
-class Option(Enum):
+class Option(IntEnum):
     ROCK = 1
     PAPER = 2
     SCISSORS = 3
-
-    def __int__(self):
-        return self.value
-
-    def __gt__(self, other):
-        return self == other >> 1
-
-    def __lt__(self, other):
-        return self == other << 1
-
-    def __lshift__(self, amt: int):
-        retval = self
-        for _ in range(amt):
-            match (retval):
-                case Option.ROCK: retval = Option.SCISSORS
-                case Option.PAPER: retval = Option.ROCK
-                case Option.SCISSORS: retval = Option.PAPER
-        return retval
-
-    def __rshift__(self, amt: int):
-        retval = self
-        for _ in range(amt):
-            match (retval):
-                case Option.ROCK: return Option.PAPER
-                case Option.PAPER: return Option.SCISSORS
-                case Option.SCISSORS: return Option.ROCK
-        return retval
 
 class Outcome(IntEnum):
     WIN = 6
@@ -41,25 +14,38 @@ class Outcome(IntEnum):
     LOSS = 0
 
 
+def translator1(opponent: str, me: str) -> dict[tuple, int]:
+    match me:
+        case 'X':
+            choice = Option.ROCK
+            result = Outcome.DRAW if opponent == 'A' else (Outcome.WIN if opponent == 'C' else Outcome.LOSS)
+        case 'Y':
+            choice = Option.PAPER
+            result = Outcome.DRAW if opponent == 'B' else (Outcome.WIN if opponent == 'A' else Outcome.LOSS)
+        case 'Z':
+            choice = Option.SCISSORS
+            result = Outcome.DRAW if opponent == 'C' else (Outcome.WIN if opponent == 'B' else Outcome.LOSS)
+    return choice + result
+
+def translator2(opponent: str, me: str) -> dict[tuple, int]:
+    match me:
+        case 'X':
+            result = Outcome.LOSS
+            choice = Option.ROCK if opponent == 'B' else (Option.PAPER if opponent == 'C' else Option.SCISSORS)
+        case 'Y':
+            result = Outcome.DRAW
+            choice = Option.ROCK if opponent == 'A' else (Option.PAPER if opponent == 'B' else Option.SCISSORS)
+        case 'Z':
+            result = Outcome.WIN
+            choice = Option.ROCK if opponent == 'C' else (Option.PAPER if opponent == 'A' else Option.SCISSORS)
+    return choice + result
+
+
 @aoc.register(__file__)
 def answers():
-    rounds = np.array([x.split(' ') for x in aoc.read_lines()])
-    
-    choices = np.where((rounds == 'A') | (rounds == 'X'), Option.ROCK, -1)
-    choices = np.where((rounds == 'B') | (rounds == 'Y'), Option.PAPER, choices)
-    choices = np.where((rounds == 'C') | (rounds == 'Z'), Option.SCISSORS, choices)
-    
-    outcomes = np.where(choices[:,1] > choices[:,0], Outcome.WIN, Outcome.LOSS)
-    outcomes = np.where(choices[:,1] == choices[:,0], Outcome.DRAW, outcomes)
-    yield sum(outcomes) + sum(choices[:,1].astype(int))
-
-    choices[:,1] = np.where(rounds[:,1] == 'X', choices[:,0] << 1, -1)
-    choices[:,1] = np.where(rounds[:,1] == 'Y', choices[:,0], choices[:,1])
-    choices[:,1] = np.where(rounds[:,1] == 'Z', choices[:,0] >> 1, choices[:,1])
-
-    outcomes = np.where(choices[:,1] > choices[:,0], Outcome.WIN, Outcome.LOSS)
-    outcomes = np.where(choices[:,1] == choices[:,0], Outcome.DRAW, outcomes)
-    yield sum(outcomes) + sum(choices[:,1].astype(int))
+    rounds = Counter([tuple(x.split(' ')) for x in aoc.read_lines()])
+    yield sum(v * translator1(*k) for k, v in rounds.items())
+    yield sum(v * translator2(*k) for k, v in rounds.items())
 
 if __name__ == '__main__':
     aoc.run()
