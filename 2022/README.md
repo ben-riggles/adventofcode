@@ -11,9 +11,9 @@
 
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](#d01)
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
-[![Day](https://badgen.net/badge/03/%E2%98%86%E2%98%86/green)](#d03)
-[![Day](https://badgen.net/badge/04/%E2%98%86%E2%98%86/green)](#d04)
-[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
+[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
+[![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
+[![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](#d05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/gray)](#d08)
@@ -220,3 +220,13 @@ For part two, we just need to see if there's any overlap between the two elves. 
     part_two = len([x for x in assignments if x[0] & x[1]])
 
 Tada! Not much else to say here, really.
+## <a name="d05"></a> Day 05: Supply Stacks
+
+[Task description](https://adventofcode.com/2022/day/5) - [Complete solution](day05/supply_stacks.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
