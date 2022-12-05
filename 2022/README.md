@@ -220,13 +220,85 @@ For part two, we just need to see if there's any overlap between the two elves. 
     part_two = len([x for x in assignments if x[0] & x[1]])
 
 Tada! Not much else to say here, really.
+
 ## <a name="d05"></a> Day 05: Supply Stacks
 
 [Task description](https://adventofcode.com/2022/day/5) - [Complete solution](day05/supply_stacks.py) - [Back to top](#top)  
 
 Runtime: ...  
 
-### Notes
+### Part One
 
-...  
+Today's issue has dealing with moving crates between a series of stacks. The first question we have to ask is "how do we want to represent the data?". Each movement will involve moving `n` crates from some stack `a` to some stack `b`. While my gut instinct was to use a series of `deque` objects, since this is just a series of LIFO stacks, the fact that we have to move multiple crates at once actually makes me rather use a series of lists. This is because there's no way to pop multiple values from a `deque` at the same time, whereas with lists, I can slice multiple values off at once. So we can represent our stacks of crates using this structure.
+
+    Stacks = dict[int, list[str]]
+
+With our data structure in place, let's read the input, which is split into two chunks: our initial state of stacks and the movements we need to perform. Let's start with the initial state.
+
+        [D]        # <-- This is the final element of a stack
+    [N] [C]    
+    [Z] [M] [P]    # <-- This is the 0th element of a stack
+     1   2   3     # <-- Last row is the ID of a given stack
+
+Here we see how the input is structured. We want to look at it from the bottom-up to make our initial state of `Stacks`. Let's create a function that does that.
+
+    def parse_state(state: str) -> Stacks:
+        lines = state.splitlines()
+        crates, stacks = lines[:-1], lines[-1]
+        return {int(stack_no): [row[i] for row in reversed(crates) if row[i] != ' '] 
+                for i, stack_no in enumerate(stacks) if stack_no != ' '}
+
+    initial_state, movements = aoc.read_chunks()
+    stacks = parse_state(initial_state)
+
+The bottom line (`stacks`) contains our stack_ids and a bunch of spaces we don't care about. Meanwhile, every other line (`crates`) contains the letters of our crates and a bunch of other characters we don't care about. Notice that the letter of a crate is always in the same index as the stack id itself. If we enumerate over `stacks` (taking care to skip spaces), we are left with every index that contains the letters in that stack. Then we can loop backwards over `crates` and grab that index in each row (once again skipping blank lines).
+
+With that out of the way, all that's left is to move the crates around. We can use regex to parse our movement lines, like so:
+
+    m = re.match(r'move (\d+) from (\d+) to (\d+)', movement).groups()
+    amount, start, end = int(m[0]), int(m[1]), int(m[2])
+
+Once we have that, it's as simple as pulling `amount` number of crates from `start` stack and placing them into `end` stack. Be sure you remember to remove the crates from the `start` stack alone the way.
+
+    def move(stacks: Stacks, movement: str) -> Stacks:
+        m = re.match(r'move (\d+) from (\d+) to (\d+)', movement).groups()
+        amount, start, end = int(m[0]), int(m[1]), int(m[2])
+        to_move = stacks[start][-amount:]        # Grab the crates that need moved
+        stacks[start] = stacks[start][:-amount]  # Remove those crates from the start stack
+        stacks[end].extend(reversed(to_move))    # Place them into the end stack
+        return stacks
+
+Finally, let's call this function once for each movement. The `reduce` function in the `functools` library helps a lot here. Given a function, an iterable, and an initial state, you can apply the function from left to right on the iterable and obtain the final value. For instance `reduce(lambda x,y: x*y, numbers, 1)` will multiply every value of numbers together, starting with the value 1.
+
+    stacks = reduce(lambda x,y: move(x, y), movements.splitlines(), stacks)
+    part_one = ''.join([q[-1] for q in stacks.values()])
+
+### Part Two
+
+Part two doesn't change things a whole lot for us. Instead of reversing the crates that are moved, we want to keep them in the same order. To do that, we can just edit our move function a little bit:
+
+    def move(stacks: Stacks, movement: str, reverse=True) -> Stacks:
+        m = re.match(r'move (\d+) from (\d+) to (\d+)', movement).groups()
+        amount, start, end = int(m[0]), int(m[1]), int(m[2])
+        to_move = stacks[start][-amount:]
+        stacks[start] = stacks[start][:-amount]
+        stacks[end].extend(reversed(to_move) if reverse else to_move)
+        return stacks
+
+A new optional argument `reverse` was added. If `reverse` is `True`, we will reverse the moved crates (like in part 1). However, now we can pass `False` in, and it will give us our answer for part two.
+
+    stacks = reduce(lambda x,y: move(x, y, reverse=False), movements.splitlines(), stacks)
+    part_two = ''.join([q[-1] for q in stacks.values()])
+
+If you're trying to do both parts in one script, it should be noted that our move function **mutates** our `Stacks` state. Because of this, you can't keep using the same state object for both parts, because the initial state will have changed after part one. We can use the `deepcopy` function from the `copy` module to copy the state of our `Stacks` object before we modify it.
+
+    from copy import deepcopy
+    
+    stacks1 = deepcopy(stacks)
+    stacks1 = reduce(lambda x,y: move(x, y), movements, stacks1)
+    yield ''.join([q[-1] for q in stacks1.values()])
+
+    stacks2 = deepcopy(stacks)
+    stacks2 = reduce(lambda x,y: move(x, y, reverse=False), movements, stacks2)
+    yield ''.join([q[-1] for q in stacks2.values()])
 
