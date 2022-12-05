@@ -258,7 +258,7 @@ With that out of the way, all that's left is to move the crates around. We can u
     m = re.match(r'move (\d+) from (\d+) to (\d+)', movement).groups()
     amount, start, end = int(m[0]), int(m[1]), int(m[2])
 
-Once we have that, it's as simple as pulling `amount` number of crates from `start` stack and placing them into `end` stack. Be sure you remember to remove the crates from the `start` stack alone the way.
+Once we have that, it's as simple as pulling `amount` number of crates from `start` stack and placing them into `end` stack. Be sure you remember to remove the crates from the `start` stack along the way.
 
     def move(stacks: Stacks, movement: str) -> Stacks:
         m = re.match(r'move (\d+) from (\d+) to (\d+)', movement).groups()
@@ -293,12 +293,12 @@ A new optional argument `reverse` was added. If `reverse` is `True`, we will rev
 If you're trying to do both parts in one script, it should be noted that our move function **mutates** our `Stacks` state. Because of this, you can't keep using the same state object for both parts, because the initial state will have changed after part one. We can use the `deepcopy` function from the `copy` module to copy the state of our `Stacks` object before we modify it.
 
     from copy import deepcopy
-    
+
     stacks1 = deepcopy(stacks)
     stacks1 = reduce(lambda x,y: move(x, y), movements, stacks1)
-    yield ''.join([q[-1] for q in stacks1.values()])
+    part_one = ''.join([q[-1] for q in stacks1.values()])
 
     stacks2 = deepcopy(stacks)
     stacks2 = reduce(lambda x,y: move(x, y, reverse=False), movements, stacks2)
-    yield ''.join([q[-1] for q in stacks2.values()])
+    part_two = ''.join([q[-1] for q in stacks2.values()])
 
