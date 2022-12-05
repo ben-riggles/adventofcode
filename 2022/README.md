@@ -90,7 +90,7 @@ Runtime: 0.867 ms
 
 ### Part One
 
-For part two, we have to take a series of character inputs and use them to play Rock, Paper, Scissors. Each line gives two values: one is the opponent's choice ('A' for rock, 'B' for paper, 'C' for scissors), the other is our choice ('X' for rock, 'Y' for paper, 'Z' for scissors). We can represent this input as a list of tuples.
+For day two, we have to take a series of character inputs and use them to play Rock, Paper, Scissors. Each line gives two values: one is the opponent's choice ('A' for rock, 'B' for paper, 'C' for scissors), the other is our choice ('X' for rock, 'Y' for paper, 'Z' for scissors). We can represent this input as a list of tuples.
 
     # Note: aoc.read_lines() is simply a fancy utility function that will split the input data by line
     rounds = [tuple(x.split(' ')) for x in aoc.read_lines()]
