@@ -200,26 +200,44 @@ Runtime: 6.560 ms
 
 ### Part One
 
-Another day of advent of code, another day of sets. For this day, our input is a list of section IDs that each pair of elves is assigned to clean in the format `x1-x2,y1-y2`. We can use regex to pretty cleanly grab these values out of the line.
+Today's problem asks us to essentially find the overlap between two ranges. On paper, this should be a slam dunk use of sets. However, on further thought, sets might not be ideal. While still a perfectly valid solution, creating a set out of each of these inputs involves creating the full ranges, which hurts us both in time and memory. Instead, we have all the information we need when parsing the lines. If we assume elf `a` and elf `b`, our input provides a list of `amin`, `amax`, `bmin`, and `bmax`
 
-    m = tuple(map(int, re.match(r'(\d+)-(\d+),(\d+)-(\d+)', line).groups()))
-
-Our goal is then to find out if the range of x (`x1-x2`) contains the entire range of y (`y1-y2`) or vice versa. This is another way of asking whether or not the set of x values is a subset of y values. This can be found using the `<=` or `>=` operators between two sets.
-
-    def parse_line(line: str) -> tuple[set,set]:
-        m = tuple(map(int, re.match(r'(\d+)-(\d+),(\d+)-(\d+)', line).groups()))
-        return set(range(m[0], m[1]+1)), set(range(m[2], m[3]+1))
-
+    def parse_line(line: str) -> tuple[int,int,int,int]:
+        a, b = line.split(',')
+        amin, amax = map(int, a.split('-'))
+        bmin, bmax = map(int, b.split('-'))
+        return amin, amax, bmin, bmax
     assignments = [parse_line(x) for x in aoc.read_lines()]
-    part_one = len([x for x in assignments if x[0] <= x[1] or x[1] <= x[0]])
+
+Our goal is then to find out if the range of `a` (`amin-amax`) contains the entire range of `b` (`bmin-bmax`) or vice versa:
+
+    amin            amax        amin       amax
+    |---------------|           |----------|
+       |--------|               |---------------|
+       bmin     bmax            bmin            bmax
+
+As seen above, this occurs when both `amin <= bmin and amax >= bmax` or when `bmin <= amin and bmax >= amax`. We can simply compare the various min/max values to each other to determine this for each line.
+
+    def contains(min_a: int, max_a: int, min_b: int, max_b: int) -> bool:
+        return min_a <= min_b and max_a >= max_b or min_b <= min_a and max_b >= max_a
+
+    part_one = len([x for x in assignments if contains(*x)])
 
 ### Part Two
 
-For part two, we just need to see if there's any overlap between the two elves. This can be very easily found using the `intersection` of the two sets.
+For part two, we just need to see if there's any overlap between the two assignments. Instead of checking for when this is true, it's much easier to find when it is false.
 
-    part_two = len([x for x in assignments if x[0] & x[1]])
+    amin         amax
+    |------------|
+                    |------|
+                    bmin   bmax
 
-Tada! Not much else to say here, really.
+If `a` ends before `b` starts (or vice versa), then there is no overlap. The inverse of that will tell us when overlap occurs for a given line.
+
+    def overlap(min_a: int, max_a: int, min_b: int, max_b: int) -> bool:
+        return not (max_a < min_b or max_b < min_a)
+
+Tada! Believe it or not, I found this solution to be about 4 times faster than the `set`-based solution, though both were more than sufficiently fast.
 
 ## <a name="d05"></a> Day 05: Supply Stacks
 

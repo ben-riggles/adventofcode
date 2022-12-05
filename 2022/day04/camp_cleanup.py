@@ -1,9 +1,11 @@
 import aoc
-import re
 
 
-def parse_line(line: str) -> tuple[set,set]:
-    return tuple(map(int, re.match(r'(\d+)-(\d+),(\d+)-(\d+)', line).groups()))
+def parse_line(line: str) -> tuple[int,int,int,int]:
+    a, b = line.split(',')
+    amin, amax = map(int, a.split('-'))
+    bmin, bmax = map(int, b.split('-'))
+    return amin, amax, bmin, bmax
 
 def contains(min_a: int, max_a: int, min_b: int, max_b: int) -> bool:
     return min_a <= min_b and max_a >= max_b or min_b <= min_a and max_b >= max_a
