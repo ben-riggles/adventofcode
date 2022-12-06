@@ -160,13 +160,13 @@ Runtime: 1.367 ms
 
 ### Part One
 
-Here we arrive at one of those advent of code days that is just totally broken by using sets. For those not in the know, a `set` is an unmutable collection of unique, unordered values. For instance, if you were to make a `set` out of this list: `[3, 5, 3, 1, 3]`, the `set` would contain the following values: `{1, 3, 5}`. The best way to think a `set` visually is as a single circle in a larger venn diagram.
+Here we arrive at one of those advent of code days that is just totally broken by using sets. For those not in the know, a `set` is an unmutable collection of unique, unordered values. For instance, if you were to make a `set` out of this list: `[3, 5, 3, 1, 3]`, the `set` would contain the following values: `{1, 3, 5}`. The best way to think of a `set` visually is as a single circle in a larger venn diagram.
 
 First thing's first though, let's read our input. Each line is a list of characters that are contained in one rucksack. We can make a list of lists where each inner list contains every item within the rucksack.
 
     rucksacks = [list(x) for x in aoc.read_lines()]
 
-Then, we have to determine what the "priority" of each item is. `{'a'-'z': 1-26, 'A'-'Z': 27-52}`. We can iterate through the lowercase and uppercase letters using the `ascii_lowercase` and `ascii_uppercase` functions from the `string` library. The `enumerate` function will then let us loop through these while extracting both the current index, and the current value.
+Then, we have to determine what the "priority" of each item is. `{'a'-'z': 1-26, 'A'-'Z': 27-52}`. We can iterate through the lowercase and uppercase letters using the `ascii_lowercase` and `ascii_uppercase` functions from the `string` library. The `enumerate` function will then let us loop through these while extracting both the current index and the current value.
 
     priorities = {char: i+1 for i, char in enumerate(list(ascii_lowercase) + list(ascii_uppercase))}
 
@@ -288,7 +288,7 @@ Once we have that, it's as simple as pulling `amount` number of crates from `sta
         stacks[end].extend(reversed(to_move))    # Place them into the end stack
         return stacks
 
-Finally, let's call this function once for each movement. The `reduce` function in the `functools` library helps a lot here. Given a function, an iterable, and an initial state, you can apply the function from left to right on the iterable and obtain the final value. For instance `reduce(lambda x,y: x*y, numbers, 1)` will multiply every value of numbers together, starting with the value 1.
+Finally, let's call this function once for each movement. The `reduce` function in the `functools` library helps a lot here. Given a function, an iterable, and an initial state, you can apply the function from left to right on the iterable and obtain the final value. For instance `reduce(lambda x,y: x*y, numbers, 1)` will multiply every value of `numbers` together, starting with the value 1.
 
     stacks = reduce(lambda x,y: move(x, y), movements.splitlines(), stacks)
     part_one = ''.join([q[-1] for q in stacks.values()])
@@ -297,7 +297,7 @@ Finally, let's call this function once for each movement. The `reduce` function 
 
 Part two doesn't change things a whole lot for us. Instead of reversing the crates that are moved, we want to keep them in the same order. To do that, we can just edit our move function a little bit:
 
-    def move(stacks: Stacks, movement: str, reverse=True) -> Stacks:
+    def move(stacks: Stacks, movement: str, reverse: bool = True) -> Stacks:
         m = re.match(r'move (\d+) from (\d+) to (\d+)', movement).groups()
         amount, start, end = int(m[0]), int(m[1]), int(m[2])
         to_move = stacks[start][-amount:]
