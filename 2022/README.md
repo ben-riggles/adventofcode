@@ -156,7 +156,7 @@ Tada! Nice and simple, and with minimal looping!
 
 [Task description](https://adventofcode.com/2022/day/3) - [Complete solution](day03/rucksack_reorganization.py) - [Back to top](#top)  
 
-Runtime: 1.367 ms  
+Runtime: 1.232 ms  
 
 ### Part One
 
@@ -196,7 +196,7 @@ Using the `range` function, we can easily step over our list of rucksacks, takin
 
 [Task description](https://adventofcode.com/2022/day/4) - [Complete solution](day04/camp_cleanup.py) - [Back to top](#top)  
 
-Runtime: 1.161 ms  
+Runtime: 1.313 ms  
 
 ### Part One
 
@@ -245,7 +245,7 @@ Tada! Believe it or not, I found this solution to be about 4 times faster than t
 
 [Task description](https://adventofcode.com/2022/day/5) - [Complete solution](day05/supply_stacks.py) - [Back to top](#top)  
 
-Runtime: 2.254 ms  
+Runtime: 1.559 ms  
 
 ### Part One
 
@@ -326,7 +326,7 @@ If you're trying to do both parts in one script, it should be noted that our mov
 
 [Task description](https://adventofcode.com/2022/day/6) - [Complete solution](day06/tuning_trouble.py) - [Back to top](#top)  
 
-Runtime: ...  
+Runtime: 2.001 ms  
 
 ### Notes
 
