@@ -15,7 +15,7 @@
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](#d05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/green)](#d06)
-[![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
+[![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/green)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/gray)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/gray)](#d09)
 [![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/gray)](#d10)
@@ -325,6 +325,16 @@ If you're trying to do both parts in one script, it should be noted that our mov
 ## <a name="d06"></a> Day 06: Tuning Trouble
 
 [Task description](https://adventofcode.com/2022/day/6) - [Complete solution](day06/tuning_trouble.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d07"></a> Day 07: No Space Left On Device
+
+[Task description](https://adventofcode.com/2022/day/7) - [Complete solution](day07/no_space_left_on_device.py) - [Back to top](#top)  
 
 Runtime: ...  
 
