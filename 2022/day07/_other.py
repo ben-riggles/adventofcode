@@ -3,21 +3,25 @@ import aoc
 from collections import defaultdict
 
 
-def cd(paths: dict, cwd: tuple, folder: str) -> tuple:
+Path = tuple[str]
+PathTree = dict[Path, list]
+
+def cd(paths: PathTree, cwd: Path, folder: str) -> Path:
     if folder == '..': return cwd[:-1]
-    if folder == '/': return tuple()
+    if folder == '/': return Path()
 
-    paths[cwd].append(folder)
-    return cwd + (folder,)
+    new_folder = cwd + (folder,)
+    paths[cwd].append(new_folder)
+    return new_folder
 
-def ls(paths: dict, cwd: tuple, lines: str) -> tuple:
+def ls(paths: PathTree, cwd: Path, lines: str) -> Path:
     for line in lines:
         a, _ = line.split()
         if 'dir' not in a:
             paths[cwd].append(int(a))
     return cwd
 
-def build_tree(commands: list[str]) -> dict:
+def build_tree(commands: list[str]) -> PathTree:
     paths = defaultdict(list)
     cwd = tuple()
     for cmd in commands:
@@ -27,13 +31,13 @@ def build_tree(commands: list[str]) -> dict:
             cwd = ls(paths, cwd, cmd.splitlines()[1:])
     return paths
 
-def size_report(paths: dict, folder: str) -> int:
+def size_report(paths: PathTree, folder: Path) -> int:
     retval = 0
     for child in paths[folder]:
         if isinstance(child, int):
             retval += child
         else:
-            retval += size_report(paths, folder + (child,))
+            retval += size_report(paths, child)
     return retval
 
 
@@ -45,7 +49,7 @@ def answers():
     sizes = {folder: size_report(path_tree, folder) for folder in path_tree.keys()}
     yield sum(x for x in sizes.values() if x <= 100_000)
 
-    needed_space = 30_000_000 - (70_000_000 - sizes[tuple()])
+    needed_space = 30_000_000 - (70_000_000 - sizes[Path()])
     yield min(x for x in sizes.values() if x >= needed_space)
 
 if __name__ == '__main__':

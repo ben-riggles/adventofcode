@@ -39,10 +39,9 @@ class Directory:
 
     def parents(self) -> Generator[Directory]:
         level = self
-        while level.parent is not None:
-            yield level
-            level = level.parent
         yield level
+        while (level := level.parent) is not None:
+            yield level
 
     def add_content(self, content: list[str]) -> Directory:
         for line in content:
