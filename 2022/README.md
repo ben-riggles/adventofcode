@@ -336,7 +336,7 @@ Runtime: 2.001 ms
 
 [Task description](https://adventofcode.com/2022/day/7) - [Complete solution](day07/no_space_left_on_device.py) - [Back to top](#top)  
 
-Runtime: ...  
+Runtime: 1.938 ms  
 
 ### Notes
 
