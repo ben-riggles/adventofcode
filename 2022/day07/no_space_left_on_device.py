@@ -2,6 +2,7 @@ from __future__ import annotations
 import aoc
 from collections import Counter
 from dataclasses import dataclass, field
+from functools import cached_property
 from typing import Generator
 
 
@@ -26,9 +27,9 @@ class Directory:
 
     @property
     def path(self) -> str:
-        return '/' + '/'.join(reversed([x.name for x in self.parents()][1:]))
+        return '/' + '/'.join(reversed([x.name for x in self.parents()]))
 
-    @property
+    @cached_property
     def size(self) -> int:
         return sum(x.size for x in self.contents.values())
 
