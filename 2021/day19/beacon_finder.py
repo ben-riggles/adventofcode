@@ -155,7 +155,7 @@ class Scanner:
 
 
 # Read in the input data and translate it to Scanner objects
-with open('2021/day19/scanner_report.txt') as f:
+with open('2021/day19/data.txt') as f:
     scanner_report = f.read().split('\n---')
     scanner_report = [x.split('\n') for x in scanner_report]
 scanners = [Scanner(x) for x in scanner_report]
