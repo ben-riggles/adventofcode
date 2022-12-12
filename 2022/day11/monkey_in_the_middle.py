@@ -3,52 +3,46 @@ from typing import Callable, ClassVar
 import aoc
 from dataclasses import dataclass, field
 from functools import lru_cache
-import math
+from math import prod, lcm
 import re
 
 
-def euclidean(a: int, b: int, c: int) -> int:
-    gcd = math.gcd(a, b)
-    k = int(c/gcd)
-    q, r, s, t = [0,0], [a,b], [1,0], [0,1]
-    
-    while r[-1] != 0:
-        quotient = r[-2] / r[-1]
-        q.append(math.floor(quotient) if quotient >=0 else math.ceil(quotient))
-        r.append(r[-2] - q[-1] * r[-1])
-        s.append(s[-2] - q[-1] * s[-1])
-        t.append(t[-2] - q[-1] * t[-1])
+@lru_cache
+def is_prime(x: int) -> bool:
+    for i in range(2, x//2 + 1):
+        if x % i == 0:
+            return False
+    return True
 
-    s, t = s[-2], t[-2]
-    if a*s + b*t == -gcd:
-        k = -k
-    return s*k
+@lru_cache
+def prime_factors(x: int) -> set[int]:
+    pfs = {i for i in range(2, x//2+1) if is_prime(i) and x % i == 0}
+    return pfs if pfs else {x}
 
 
 class Item:
-    def __init__(self, mod: int, offset: int):
-        self.mod = mod
-        self.offset = offset % mod
+    def __init__(self, start: int = 0):
+        self.divisors: set[int] = prime_factors(start)
+        self.offset: int = 0
 
     def __repr__(self):
-        return f'Item(mod={self.mod}, offset={self.offset})'
+        return f'Item(div={self.divisors}, offset={self.offset})'
 
     def __add__(self, val: int) -> Item:
-        return Item(mod=self.mod, offset=self.offset + val)
+        new_item = self.copy()
+        new_item.offset += val
+        return new_item
 
     def __mul__(self, val: int) -> Item:
-        return Item(mod=self.mod * val, offset=self.offset * val)
+        new_item = self.copy()
+        new_item.divisors.add(val)
+        new_item.offset *= val
+        return new_item
 
-    def __mod__(self, val: int) -> Item:
-        x = euclidean(self.mod, -val, -self.offset)
-        return Item(mod=math.lcm(self.mod, val), offset=self.mod * x + self.offset)
-
-    @staticmethod
-    def create(value: int) -> Item:
-        return Item(mod=value, offset=0)
-
-i = Item(63, 6)
-print(i % 13)
+    def copy(self) -> Item:
+        new_item = Item()
+        new_item.divisors = self.divisors
+        new_item.offset = self.offset
 
 @dataclass
 class Monkey:
@@ -114,5 +108,4 @@ def answers():
     # yield prod(monkey_business)
 
 if __name__ == '__main__':
-    #aoc.run()
-    pass
+    aoc.run()
