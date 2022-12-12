@@ -1,8 +1,8 @@
-import heapq
 import aoc
+from dataclasses import dataclass, field
+import heapq
 import numpy as np
 from numpy.typing import NDArray
-import sys
 
 
 Point = tuple[int, int]
@@ -17,39 +17,49 @@ def adjacent_points(shape: tuple[int,int], point: Point) -> set[Point]:
 def manhattan_dist(point1: Point, point2: Point) -> int:
     return abs(point2[0] - point1[0]) + abs(point2[1] - point1[1])
 
-def astar(grid: NDArray, start: Point = None, _max: int = None) -> int:
-    if start is None:
-        start = np.where(grid == 0)
-        start = (start[0][0], start[1][0])
-    end = np.where(grid == 27)
-    end = (end[0][0], end[1][0])
+
+@dataclass(order=True, kw_only=True)
+class Node:
+    estimated: int = 0
+    true_value: int = 0
+    point: Point = field(compare=False)
+    visited: set[Point] = field(compare=False, default_factory=set)
+
+def astar(grid: NDArray, start: Point, end_value: int) -> int:
+    start_node = Node(point=start)
+    start_value = grid[start]
+    end_points = list(zip(*np.where(grid == end_value)))
+    increasing = start_value < end_value
 
     path_stack = []
-    visited = set()
-    heapq.heappush(path_stack, (0, 0, start))
+    heapq.heappush(path_stack, start_node)
 
     while path_stack:
-        _, true_value, point = heapq.heappop(path_stack)
-        if point == end:
-            return true_value
-        if point in visited:
+        node: Node = heapq.heappop(path_stack)
+        if node.point in end_points:
+            return node.true_value
+        if node.point in node.visited:
             continue
-        if _max is not None and true_value > _max:
-            return sys.maxsize
-        visited.add(point)
+        point_val = grid[node.point]
+        node.visited.add(node.point)
 
-        point_val = grid[point[0]][point[1]]
-
-        asdf = adjacent_points(grid.shape, point)
-        adjacents = asdf - visited
-        for adj in adjacents:
-            adj_val = grid[adj[0]][adj[1]]
-            man_dist = manhattan_dist(end, adj)
-            if adj_val - point_val > 1:
+        for adj in adjacent_points(grid.shape, node.point) - node.visited:
+            adj_val = grid[adj]
+            diff = (adj_val - point_val) * (1 if increasing else -1)
+            if diff > 1:
                 continue
-            modifier = -1 * (adj_val - point_val)
-            heapq.heappush(path_stack, (man_dist + modifier + true_value, true_value + 1, adj))
-    return sys.maxsize
+            
+            for end in end_points:
+                man_dist = manhattan_dist(end, adj)
+                modifier = -5 if diff == 1 else diff
+
+                new_node = Node(
+                    estimated = man_dist + modifier + node.true_value,
+                    true_value = node.true_value + 1,
+                    point = adj,
+                    visited = node.visited
+                )
+                heapq.heappush(path_stack, new_node)
 
 
 def convert_letter(char: str) -> int:
@@ -62,15 +72,13 @@ def convert_letter(char: str) -> int:
 @aoc.register(__file__)
 def answers():
     height_map = np.vectorize(convert_letter)(aoc.read_grid())
-    yield astar(height_map)
+
+    start = list(zip(*np.where(height_map == 0)))[0]
+    yield astar(height_map, start=start, end_value=27)
 
     height_map[height_map == 0] = 1
-    possible_starts = np.where(height_map == 1)
-
-    best_trail = sys.maxsize
-    for start in zip(*possible_starts):
-        best_trail = min(best_trail, astar(height_map, start=start, _max=best_trail))
-    yield best_trail
+    start = list(zip(*np.where(height_map == 27)))[0]
+    yield astar(height_map, start=start, end_value=1)
 
 if __name__ == '__main__':
     aoc.run()
