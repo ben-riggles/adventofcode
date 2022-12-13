@@ -41,7 +41,7 @@ def answers():
     pairs = [tuple(Packet(line) for line in chunk.splitlines())
              for chunk in aoc.read_chunks()]
 
-    right_order = [i+1 for i, pair in enumerate(pairs) if pair[0] < pair[1]]
+    right_order = [i for i, pair in enumerate(pairs, start=1) if pair[0] < pair[1]]
     yield sum(right_order)
 
     decoder_packets = [Packet('[[2]]'), Packet('[[6]]')]

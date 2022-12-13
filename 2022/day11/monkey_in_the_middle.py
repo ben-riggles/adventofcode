@@ -34,21 +34,19 @@ class Monkey:
     def from_string(monkey_data: str) -> Monkey:
         regex =  r'Monkey (\d+):\n'
         regex += r'  Starting items: (.*)\n'
-        regex += r'  Operation: new = (.*)\n'
+        regex += r'  Operation: new = (.*) (\*|\+) (.*)\n'
         regex += r'  Test: divisible by (\d+)\n'
         regex += r'    If true: throw to monkey (\d+)\n'
         regex += r'    If false: throw to monkey (\d+)'
         m = re.match(regex, monkey_data).groups()
         
-        monkey_id, op_str, test_val = int(m[0]), m[2], int(m[3])
-        true_throw, false_throw = int(m[4]), int(m[5])
+        monkey_id, test_val = int(m[0]), int(m[5])
+        left, op, right = m[2], mul if m[3] == '*' else add, m[4]
+        true_throw, false_throw = int(m[6]), int(m[7])
         items = deque([int(x.strip()) for x in m[1].split(',')])
 
-        m = re.match(r'(.*) (\*|\+) (.*)', op_str).groups()
-        op = mul if m[1] == '*' else add
-
         retval = Monkey(id=monkey_id, test=test_val, items=items)
-        retval._inspect = lambda x: op(x if m[0] == 'old' else int(m[0]), x if m[2] == 'old' else int(m[2]))
+        retval._inspect = lambda x: op(x if left == 'old' else int(left), x if right == 'old' else int(right))
         retval._throw_target = lambda x: true_throw if x else false_throw
         return retval
 
