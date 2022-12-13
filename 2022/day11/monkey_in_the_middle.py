@@ -15,7 +15,7 @@ class Monkey:
     test: int = field(repr=False)
     items: deque[int] = field(default_factory=deque)
     num_inspects: int = field(init=False, default=0, repr=False)
-    _worry: Callable[[int], int] = field(init=False, default_factory=lambda: None, repr=False)
+    _inspect: Callable[[int], int] = field(init=False, default_factory=lambda: None, repr=False)
     _throw_target: Callable[[bool], int] = field(init=False, default_factory=lambda: None, repr=False)
     _MODULO: ClassVar[int] = 1
 
@@ -26,7 +26,7 @@ class Monkey:
         while self.items:
             self.num_inspects += 1
             item = self.items.popleft()
-            item = (self._worry(item) // relief) % Monkey._MODULO
+            item = (self._inspect(item) // relief) % Monkey._MODULO
             target = self._throw_target(item % self.test == 0)
             yield item, target        
 
@@ -48,7 +48,7 @@ class Monkey:
         op = mul if m[1] == '*' else add
 
         retval = Monkey(id=monkey_id, test=test_val, items=items)
-        retval._worry = lambda x: op(x if m[0] == 'old' else int(m[0]), x if m[2] == 'old' else int(m[2]))
+        retval._inspect = lambda x: op(x if m[0] == 'old' else int(m[0]), x if m[2] == 'old' else int(m[2]))
         retval._throw_target = lambda x: true_throw if x else false_throw
         return retval
 
