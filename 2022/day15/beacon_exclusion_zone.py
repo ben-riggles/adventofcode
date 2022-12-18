@@ -2,7 +2,6 @@ from __future__ import annotations
 import aoc
 from dataclasses import dataclass, field
 import itertools
-import math
 import re
 
 
@@ -50,10 +49,8 @@ def reduce_ranges(ranges: set[tuple]) -> set[tuple]:
             ranges.remove(r2)
         elif r2[0] <= r1[0] and r2[1] >= r1[1]:
             ranges.remove(r1)
-        elif r1[0] <= r2[0]:
-            ranges = (ranges - {r1, r2}) | {(r1[0], r2[1])}
-        elif r2[0] <= r1[0]:
-            ranges = (ranges - {r1, r2}) | {(r2[0], r1[1])}
+        else:
+            ranges = (ranges - {r1, r2}) | {(min(r1[0], r2[0]), max(r1[1], r2[1]))}
         return reduce_ranges(ranges)
     return ranges
 

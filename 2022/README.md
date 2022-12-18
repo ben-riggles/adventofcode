@@ -738,10 +738,10 @@ So how do we get these points? First we have to get the lines. Using the basic f
 
 We can solve for our y-intercepts using the points that these lines cross, like so:
 
-$$y = +1*x + b_{TL} => S_y + r + 1 = S_x + B_{TL} => B_{TL} = -S_x + S_y + r + 1$$
-$$y = -1*x + b_{TR} => S_y + r + 1 = -S_x + B_{TR} => B_{TR} = S_x + S_y + r + 1$$
-$$y = -1*x + b_{BL} => S_y - r - 1 = -S_x + B_{BL} => B_{BL} = S_x + S_y - r - 1$$
-$$y = +1*x + b_{BR} => S_y - r - 1 = S_x + B_{BR} => B_{BR} = -S_x + S_y - r - 1$$
+$$y = 1x + b_{TL} => S_y + r + 1 = S_x + b_{TL} => b_{TL} = -S_x + S_y + r + 1$$
+$$y = -1x + b_{TR} => S_y + r + 1 = -S_x + b_{TR} => b_{TR} = S_x + S_y + r + 1$$
+$$y = -1x + b_{BL} => S_y - r - 1 = -S_x + b_{BL} => b_{BL} = S_x + S_y - r - 1$$
+$$y = 1x + b_{BR} => S_y - r - 1 = S_x + b_{BR} => b_{BR} = -S_x + S_y - r - 1$$
 
 Now let's do it programmatically.
 
@@ -751,6 +751,12 @@ Now let's do it programmatically.
     br = { -s.loc[0] + s.loc[1] - s.range - 1 for s in sensors }
 
 We then want to group our positive and negative slopes and find each intersection. Simply solve for x and y.
+
+$$y_i = x_i + b_p$$
+$$y_i = -x_i + b_n$$
+$$x_i + b_p = -x_i + b_n$$
+$$x_i = \frac{b_n - b_p}{2}$$
+$$y_i = \frac{b_n - b_p}{2} + b_p$$
 
     for pb, nb in itertools.product( tl & br, tr & bl ):
         x = ( nb - pb ) // 2
