@@ -25,7 +25,7 @@
 [![Day](https://badgen.net/badge/14/%E2%98%85%E2%98%85/green)](#d14)
 [![Day](https://badgen.net/badge/15/%E2%98%85%E2%98%85/green)](#d15)
 [![Day](https://badgen.net/badge/16/%E2%98%85%E2%98%85/green)](#d16)
-[![Day](https://badgen.net/badge/17/%E2%98%86%E2%98%86/gray)](#d17)
+[![Day](https://badgen.net/badge/17/%E2%98%85%E2%98%85/green)](#d17)
 [![Day](https://badgen.net/badge/18/%E2%98%86%E2%98%86/gray)](#d18)
 [![Day](https://badgen.net/badge/19/%E2%98%86%E2%98%86/gray)](#d19)
 [![Day](https://badgen.net/badge/20/%E2%98%86%E2%98%86/gray)](#d20)
@@ -788,3 +788,13 @@ Runtime: ...
 ### Notes
 
 ...  
+## <a name="d17"></a> Day 17: Pyroclastic Flow
+
+[Task description](https://adventofcode.com/2022/day/17) - [Complete solution](day17/pyroclastic_flow.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
