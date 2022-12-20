@@ -3,6 +3,7 @@ from abc import ABC
 import aoc
 from dataclasses import dataclass, field
 from itertools import cycle
+from typing import Type
 
 
 class CollisionError(Exception):
@@ -30,18 +31,31 @@ class Point:
 class Map:
     width: int
     height: int = field(default=0, init=False)
-    points: set[Point] = field(default_factory=set, init=False, repr=False)
+    columns: dict[int, set[int]] = field(default_factory=dict, init=False, repr=False)
+
+    def __post_init__(self):
+        self.columns = {x: {0} for x in range(self.width)}
+
+    def relative_y(self) -> tuple[int]:
+        max_ys = tuple(max(y) for y in self.columns.values())
+        return tuple(self.height - y for y in max_ys)
 
     def place(self, rock: Rock):
-        assert(not self & rock)
-        self.points |= rock.points
-        self.height = max(self.height, max((p.y for p in rock.points)) + 1)
+        [self.columns[p.x].add(p.y) for p in rock.points]
+        self.height = max(self.height, max((p.y for p in rock.points)))
+        self.columns = {x: set(filter(lambda n: n >= (self.height - 100), y)) for x, y in self.columns.items()}
 
-    def __and__(self, other: Map | Rock | set[Point]):
-        try:
-            return self.points & other.points
-        except AttributeError:
-            return self.points & other
+    def __and__(self, other: Rock | set[Point]):
+        points = other if not isinstance(other, Rock) else other.points
+        return any(p.y in self.columns[p.x] for p in points)
+
+
+@dataclass(eq=True, frozen=True)
+class MapState:
+    rock_type: Type[Rock]
+    gas_index: int
+    height: int = field(compare=False)
+    relative_y: tuple[int]
     
 
 class Rock(ABC):
@@ -93,18 +107,32 @@ class SquareRock(Rock):
 @aoc.register(__file__)
 def answers():
     gas_pattern = list(aoc.read_data())
-    gas_cycle = cycle(gas_pattern)
+    gas_cycle = cycle(enumerate(gas_pattern))
     rock_cycle = cycle([
         HorizontalRock, PlusRock, LRock, VerticalRock, SquareRock
     ])
 
     rock_map = Map(width=7)
-    states = {}
-    for _ in range(2022):
-        new_rock = next(rock_cycle)(bottom_left=Point(x=2, y=rock_map.height + 3))
+    states = []
+    gas_i, i = 0, 0
+    while True:
+        new_rock = next(rock_cycle)(bottom_left=Point(x=2, y=rock_map.height + 4))
+
+        new_state = MapState(
+            rock_type=type(new_rock),
+            gas_index = gas_i,
+            height=rock_map.height,
+            relative_y=rock_map.relative_y()
+        )
+        if new_state in states:
+            start_i = states.index(new_state)
+            end_i = i
+            break
+        states.append(new_state)
         while True:
             try:
-                new_rock = new_rock.shift(rock_map, next(gas_cycle))
+                gas_i, next_gas = next(gas_cycle)
+                new_rock = new_rock.shift(rock_map, next_gas)
             except CollisionError:
                 pass
 
@@ -113,7 +141,20 @@ def answers():
             except CollisionError:
                 rock_map.place(new_rock)
                 break
-    yield rock_map.height
+        i += 1
+
+    def height(rock_count: int):
+        cycle_len = i - start_i
+        cycle_start = states[start_i]
+        base_height = cycle_start.height
+        cycle_height_gain = new_state.height - base_height
+        num_cycles, remainder = divmod(rock_count - start_i, cycle_len)
+        return cycle_height_gain * num_cycles + states[start_i + remainder].height
+        
+    yield height(2022)
+    yield height(1_000_000_000_000)
+
+
 
         
 
