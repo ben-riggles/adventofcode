@@ -154,9 +154,5 @@ def answers():
     yield height(2022)
     yield height(1_000_000_000_000)
 
-
-
-        
-
 if __name__ == '__main__':
     aoc.run()
