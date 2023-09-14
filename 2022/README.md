@@ -30,7 +30,7 @@
 [![Day](https://badgen.net/badge/19/%E2%98%85%E2%98%85/green)](#d19)
 [![Day](https://badgen.net/badge/20/%E2%98%85%E2%98%85/green)](#d20)
 [![Day](https://badgen.net/badge/21/%E2%98%85%E2%98%85/green)](#d21)
-[![Day](https://badgen.net/badge/22/%E2%98%86%E2%98%86/gray)](#d22)
+[![Day](https://badgen.net/badge/22/%E2%98%85%E2%98%85/green)](#d22)
 [![Day](https://badgen.net/badge/23/%E2%98%86%E2%98%86/gray)](#d23)
 [![Day](https://badgen.net/badge/24/%E2%98%86%E2%98%86/gray)](#d24)
 [![Day](https://badgen.net/badge/25/%E2%98%86%E2%98%86/gray)](#d25)
@@ -837,6 +837,16 @@ Runtime: ...
 ## <a name="d21"></a> Day 21: Monkey Math
 
 [Task description](https://adventofcode.com/2022/day/21) - [Complete solution](day21/monkey_math.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d22"></a> Day 22: Monkey Map
+
+[Task description](https://adventofcode.com/2022/day/22) - [Complete solution](day22/monkey_map.py) - [Back to top](#top)  
 
 Runtime: ...  
 
