@@ -52,6 +52,14 @@ def trilateration(p1: Location, p2: Location, p3: Location, r1: int, r2: int, r3
     result2 = p1 + x*ex + y*ey + z2*ez
     return tuple(np.rint(result1).astype(int)), tuple(np.rint(result2).astype(int))
 
+def manhattan_distance(p1: Location, p2: Location) -> int:
+    """ Calculate the Manhattan distance between two points in 3D space """
+    return sum([
+        abs(p2[0] - p1[0]),
+        abs(p2[1] - p1[1]),
+        abs(p2[2] - p1[2])
+    ])
+
 
 class Scanner:
     def __init__(self, id: int, beacons: NDArray):
@@ -60,7 +68,7 @@ class Scanner:
         self.orientation: Orientation = Orientation.PXPYPZ
         self.location: Location = None
 
-    def beacons(self) -> NDArray:
+    def beacons(self) -> set[Location]:
         orien_str = self.orientation.name
         forward, upward, right = orien_str[:2], orien_str[2:4], orien_str[4:]
 
@@ -71,27 +79,27 @@ class Scanner:
         beacon_data[:, letter_map[upward[1]]] = letter_map[upward[0]] * self._beacon_data[:, 2]
         
         start = self.location if self.location is not None else (0, 0, 0)
-        return beacon_data + start
+        return set(tuple(x) for x in (beacon_data + start))
 
-    def matching_beacons(self, other: Scanner) -> tuple:
+    def matching_beacons(self, other: Scanner) -> list[tuple[Location, Location]]:
         my_beacons, other_beacons = self.beacons(), other.beacons()
-        my_dists = {tuple(beacon): set(distance(beacon, my_beacons)) for beacon in my_beacons}
-        other_dists = {tuple(beacon): set(distance(beacon, other_beacons)) for beacon in other_beacons}
-        return tuple((x[0], y[0]) for x, y in itertools.product(my_dists.items(), other_dists.items()) 
-                      if len(x[1] & y[1]) >= 12)
+        my_dists = {beacon: set(distance(beacon, np.asarray(list(my_beacons)))) for beacon in my_beacons}
+        other_dists = {beacon: set(distance(beacon, np.asarray(list(other_beacons)))) for beacon in other_beacons}
+        return [(x[0], y[0]) for x, y in itertools.product(my_dists.items(), other_dists.items()) 
+                      if len(x[1] & y[1]) >= 12]
 
     def _determine_orientation(self, beacons_to_match: list[Location]) -> bool:
         """ Use trial and error to determine the correct orientation of the scanner """
+        beacons_to_match = {tuple(x) for x in beacons_to_match}
         for o in Orientation:
             self.orientation = o
-            beacons = self.beacons()
-            if all([beacon in beacons for beacon in beacons_to_match]):
+            if beacons_to_match <= self.beacons():
                 return True
         return False
 
     def place_relative_to(self, other: Scanner) -> bool:
         # Need at least 12 matching beacons to place
-        matches = np.array(self.matching_beacons(other))
+        matches = self.matching_beacons(other)
         if len(matches) < 12:
             return False
 
@@ -118,7 +126,7 @@ class Scanner:
 
 @aoc.register(__file__)
 def answers():
-    scanners = [Scanner.from_string(x) for x in aoc.read_chunks('small')]
+    scanners = [Scanner.from_string(x) for x in aoc.read_chunks()]
     scanners[0].location = (0,0,0)
     
     # Attempt to place the scanners until there are none left to place
@@ -136,6 +144,9 @@ def answers():
     for x in scanners:
         all_beacons = all_beacons | set([tuple(y) for y in x.beacons()])
     yield len(all_beacons)
+
+    # Calculate the manhattan distances of each scanner to one another and report the max
+    yield max([manhattan_distance(x.location, y.location) for x, y in itertools.combinations(scanners, 2)])
 
 if __name__ == '__main__':
     aoc.run()

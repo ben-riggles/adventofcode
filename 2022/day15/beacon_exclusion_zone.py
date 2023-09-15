@@ -66,7 +66,7 @@ def answers():
     data = 'data'
     sensors = [Sensor.from_string(line) for line in aoc.read_lines(data)]
 
-    row = 10 if data is 'small' else 2_000_000
+    row = 10 if data == 'small' else 2_000_000
     ranges = set(filter(lambda x: x is not None, [s.cross_row(row) for s in sensors]))
     ranges = reduce_ranges(ranges)
     occupied = set.union(*[s.points() for s in sensors])
