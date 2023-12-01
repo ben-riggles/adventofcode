@@ -33,10 +33,10 @@ def pull_digits(calibrations: str, pattern: str) -> Generator[int]:
 def answers():
     calibrations = aoc.read_data()
 
-    pattern1 = fr'(?=(\n|{"|".join(DIGIT_STRINGS.values())}))'
+    pattern1 = fr'(?=(\n|\d))'
     yield sum(pull_digits(calibrations, pattern1))
 
-    pattern2 = fr'(?=(\n|{"|".join(list(DIGIT_STRINGS.keys()) + list(DIGIT_STRINGS.values()))}))'
+    pattern2 = fr'(?=(\n|\d|{"|".join(list(DIGIT_STRINGS.keys()))}))'
     yield sum(pull_digits(calibrations, pattern2))
 
 if __name__ == '__main__':
