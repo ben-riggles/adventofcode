@@ -41,42 +41,52 @@ class MonkeyMap:
             case ' ': return self.move(p, f)
             case '#': raise CollisionError
 
+
 class CubeMonkeyMap(MonkeyMap):
     class Face:
         def __init__(self, grid: NDArray, top_left: Point):
             self.top_left = top_left
             self._grid = grid
-            self.neighbors: dict[Facing, tuple] = {}
+            self.neighbors: dict[Facing, tuple[CubeMonkeyMap.Face, Facing]] = {}
             self.size = len(self._grid)
 
         def __contains__(self, point: Point):
             return (self.top_left[0] <= point[0] < self.top_left[0] + self.size) and (self.top_left[1] <= point[1] < self.top_left[1] + self.size)
 
         def add_neighbor(self, neighbor: CubeMonkeyMap.Face, facing: Facing, entry: Facing):
+            print(f'Add neighbor: {facing}, {entry}')
             self.neighbors[facing] = (neighbor, entry)
             neighbor.neighbors[entry] = (self, facing)
 
             shared_neighbors = (Facing.UP, Facing.DOWN) if facing in (Facing.LEFT, Facing.RIGHT) else (Facing.LEFT, Facing.RIGHT)
+            print(f'Shared neighbors: {shared_neighbors}')
             for f in shared_neighbors:
-                if f in self.neighbors:
-                    e = f - (facing + 2 - entry)
-                    self.neighbors[f][0].add_neighbor(neighbor, facing=facing, entry=e)
+                if f not in self.neighbors:
+                    continue
+                shared_neighbor, sn_entry = self.neighbors[f]
+                _f = f - (facing + 2 - entry.value).value
+                _e = f + (entry - sn_entry.value).value
+                if _e in shared_neighbor.neighbors:
+                    continue
+                print(f'auto add neighbor: {_f}, {_e}')
+                neighbor.add_neighbor(shared_neighbor, facing=_f, entry=_e)
 
         def find_neighbors(self, grid: NDArray):
-            up = (self.top_left[0] - self.size, self.top_left[1])
-            down = (self.top_left[0] + self.size, self.top_left[1])
-            left = (self.top_left[0], self.top_left[1] - self.size)
-            right = (self.top_left[0], self.top_left[1] + self.size)
+            print(f'find neighbors for:\n{self._grid}')
             dirs = {
-                Facing.RIGHT: right, Facing.DOWN: down, Facing.LEFT: left, Facing.UP: up
+                Facing.RIGHT: (self.top_left[0], self.top_left[1] + self.size),
+                Facing.DOWN: (self.top_left[0] + self.size, self.top_left[1]),
+                Facing.LEFT: (self.top_left[0], self.top_left[1] - self.size),
+                Facing.UP: (self.top_left[0] - self.size, self.top_left[1])
             }
 
             for f, p in dirs.items():
-                if ((p[0] < 0 or p[0] >= grid.shape[0] or p[1] < 0 or p[1] >= grid.shape[1]) or
-                     grid[p] == ' ' or f in self.neighbors):
+                if ((p[0] < 0 or p[0] >= grid.shape[0] or p[1] < 0 or p[1] >= grid.shape[1]) or grid[p] == ' ' or f in self.neighbors):
                     continue
+                print(f'Neighbor found at {p}. Direction {f}')
                 new_face = grid[p[0]:p[0] + self.size, p[1]:p[1] + self.size]
                 new_face = CubeMonkeyMap.Face(new_face, p)
+                print(f'Neighbor grid:\n{new_face._grid}')
                 self.add_neighbor(new_face, facing=f, entry=f+2)
                 new_face.find_neighbors(grid)
 
