@@ -300,7 +300,6 @@ line_length = len(schematic_grid[0]) + 1
 non_symbols = {str(n) for n in range(10)} | {"."}
 gear_values = defaultdict(list)
 
-part_total = 0
 for _match in re.finditer(r'(\d+)', schematic):
     y, x = divmod(_match.start(), line_length)
     val = _match.group()
@@ -311,12 +310,9 @@ for _match in re.finditer(r'(\d+)', schematic):
             continue
 
         if adj_val not in non_symbols:
-            val = int(val)
-            part_total += val
-
             # When a gear is found, add to the gear_values dictonary
             if adj_val == '*':
-                gear_values[(adj_y, adj_x)].append(val)
+                gear_values[(adj_y, adj_x)].append(int(val))
 ```
 
 Once the loop has completed, we can check which gears are valid by checking the length of the list held by the dictionary.
