@@ -3,11 +3,7 @@ import aoc
 from collections import defaultdict
 import itertools
 import re
-from typing import Generator
 
-
-def adjacent_points(x: int, y_start: int, length: int) -> Generator[int, int]:
-    yield from itertools.product(range(x-1, x+2), range(y_start-1, y_start+length+1))
 
 GEAR = '*'
 
@@ -22,11 +18,11 @@ def answers():
 
     part_total = 0
     for _match in re.finditer(r'(\d+)', schematic):
-        x, y = divmod(_match.start(), line_length)
+        y, x = divmod(_match.start(), line_length)
         val = _match.group()
-        for adj_x, adj_y in adjacent_points(x, y, len(val)):
+        for adj_y, adj_x in itertools.product(range(y-1, y+2), range(x-1, x+len(val)+1)):
             try:
-                adj_val = schematic_grid[adj_x][adj_y]
+                adj_val = schematic_grid[adj_y][adj_x]
             except IndexError:
                 continue
 
@@ -34,7 +30,7 @@ def answers():
                 val = int(val)
                 part_total += val
                 if adj_val == GEAR:
-                    gear_values[(adj_x, adj_y)].append(val)
+                    gear_values[(adj_y, adj_x)].append(val)
     yield part_total
     yield sum(v[0] * v[1] for v in gear_values.values() if len(v) == 2)
 
