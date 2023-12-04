@@ -11,8 +11,8 @@
 
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](#d01)
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
-[![Day](https://badgen.net/badge/03/%E2%98%86%E2%98%86/gray)](#d03)
-[![Day](https://badgen.net/badge/04/%E2%98%86%E2%98%86/gray)](#d04)
+[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
+[![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
 [![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
@@ -201,6 +201,26 @@ for i, game_log in enumerate(aoc.read_lines(), start=1):
         valid_game_total += i
     power += reduce(lambda x,y: x*y, max_cubes.values())
 ```
+
+...  
+
+## <a name="d03"></a> Day 03: Gear Ratios
+
+[Task description](https://adventofcode.com/2023/day/3) - [Complete solution](day03/gear_ratios.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d04"></a> Day 04: Scratchcards
+
+[Task description](https://adventofcode.com/2023/day/4) - [Complete solution](day04/scratchcards.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
 
 ...  
 
