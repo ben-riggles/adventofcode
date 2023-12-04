@@ -339,14 +339,13 @@ Thanks to the wonders of `sets`, this is a fairly easy thing to accomplish in py
 
 <img src="day04/img/union.png" width="70%"/>
 
-With this in mind, let's make a function that can parse the input and create a union of the two sets of numbers.
+With this in mind, let's write some code that can parse the input and create a union of the two sets of numbers.
 
 ```python
-def matches(card_str: str) -> set[int]:
-    winning, mine = card_str.split(': ')[1].split(' | ')
-    winning = {int(x) for x in winning.strip().split()}
-    mine = {int(x) for x in mine.strip().split()}
-    return winning & mine
+cards = aoc.read_lines()
+for i, card in enumerate(cards, start=1):
+    winning, mine = card.split(': ')[1].split(' | ')
+    matches = set(winning.split()) & set(mine.split())
 ```
 
 With this, we can now iterate through each card and calculate its score. The score doubles for each match, starting with 1 point for 1 match. Thus, it has the following trend:
@@ -366,7 +365,10 @@ cards = aoc.read_lines()
 
 score = 0
 for i, card in enumerate(cards, start=1):
-    if num_matches := len(matches(card)):
+    winning, mine = card.split(': ')[1].split(' | ')
+    matches = set(winning.split()) & set(mine.split())
+
+    if num_matches := len(matches):
         score += 2 ** (num_matches - 1)
 ```
 
@@ -381,7 +383,10 @@ cards = aoc.read_lines()
 
 copies = {x: 1 for x in range(1, len(cards) + 1)}
 for i, card in enumerate(cards, start=1):
-    if num_matches := len(matches(card)):
+    winning, mine = card.split(': ')[1].split(' | ')
+    matches = set(winning.split()) & set(mine.split())
+
+    if num_matches := len(matches):
         top_card = min(len(cards), i + num_matches)
         for new_copy in range(i + 1, top_card + 1):
             copies[new_copy] += copies[i]
