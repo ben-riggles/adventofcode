@@ -16,7 +16,7 @@ class Interval:
     def __contains__(self, val: int | Interval) -> bool:
         match val:
             case int(): return self.start <= val <= self.end
-            case Interval(): return val.end > self.start and val.start < self.end
+            case Interval(): return self.start <= val.end and self.end >= val.start
 
     def __eq__(self, other: Interval) -> bool:
         return self.start == other.start and self.end == other.end
@@ -32,32 +32,38 @@ class Interval:
             case Interval(): return self.start <= val.start and self.end >= val.end
 
     def __len__(self):
-        return self.end - self.start
+        return self.end - self.start + 1
     
-    def __and__(self, other: Interval) -> Interval:
-        if not self in other:
+    def __and__(self, val: int | Interval) -> int | Interval:
+        match val:
+            case int(): return val if val in self else 0
+            case Interval(): return self.intersection(val)
+    
+    def __iter__(self):
+        return iter(range(self.start, self.end))
+    
+    def intersection(self, other: Interval) -> Interval:
+        if self not in other:
             return None
         return Interval(
             start = max(self.start, other.start),
             end = min(self.end, other.end),
         )
     
-    def __iter__(self):
-        return iter(range(self.start, self.end))
-
-
+    def difference(self, other: Interval) -> list[Interval]:
+        retval = []
+        if self < other or self not in other:
+            return []
+        if self.start not in other:
+            retval.append(Interval(self.start, other.start - 1))
+        if self.end not in other:
+            retval.append(Interval(other.end + 1, self.end))
+        return retval
     
-
-    
-
-if __name__ == '__main__':
-    i1 = Interval(3, 7)
-    i2 = Interval(4, 5)
-    i3 = Interval(1, 5)
-    i4 = Interval(6, 10)
-
-    print(i1)
-
-    print(i2 & i3)
-    print(i3 & i4)
-    print(i2+1 & i4)
+    def union(self, other: Interval) -> Interval:
+        if self not in other:
+            return None
+        return Interval(
+            start = min(self.start, other.start),
+            end = max(self.end, other.end)
+        )
