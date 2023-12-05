@@ -37,8 +37,6 @@
 
 _Click a badge to go to the specific day._
 
-ic day._
-
 ## <a name="d01"></a> Day 01: Trebuchet
 
 [Task description](https://adventofcode.com/2023/day/1) - [Complete solution](day01/trebuchet.py) - [Back to top](#top)  
@@ -399,7 +397,7 @@ total_copies = sum(copies.values())
 
 [Task description](https://adventofcode.com/2023/day/5) - [Complete solution](day05/if_you_give_a_seed_a_fertilizer.py) - [Back to top](#top)  
 
-Runtime: 0.789 ms (in office) 
+Runtime: 6.657 ms (in office) 
 
 ### Part One
 
@@ -420,7 +418,7 @@ class MapRule:
     src_end: int
 
     def __contains__(self, val: int) -> bool:
-        return self.src_start <= val < self.src_end
+        return self.src_start <= val <= self.src_end
             
     def apply(self, val: int) -> int:
         return (val - self.src_start) + self.dest_start
@@ -455,7 +453,7 @@ class AlmanacMap:
             rules.append(MapRule(
                 dest_start = params[0],
                 src_start = params[1],
-                src_end = params[1] + params[2]
+                src_end = params[1] + params[2] - 1
             ))
         return AlmanacMap(rules)
 
@@ -494,7 +492,7 @@ class Range:
     start: int
     end: int
 
-part_two = [Range(start=start, end=start+_len) for start, _len in pairwise(seeds)]
+part_two = [Range(start=start, end=start+_len-1) for start, _len in pairwise(seeds)]
 ```
 
 There are some instances where this remains fairly easy. Take the case where our entire range falls outside of a given `MapRule`--the range stays unchanged. Another case would be if the entirety of the range falls within a given `MapRule`. In this case, both the start and end of the range would be converted according to the rule--no big deal.
@@ -518,7 +516,7 @@ Let's edit our `MapRule` object to accept both `int` and `Range` into its functi
 class MapRule:
     def __contains__(self, val: int | Range) -> bool:
         match val:
-            case int(): return self.src_start <= val < self.src_end
+            case int(): return self.src_start <= val <= self.src_end
             case Range(): return val.end > self.src_start and val.start < self.src_end
             
     def apply(self, val: int | Range) -> int:
@@ -539,7 +537,7 @@ class AlmanacMap:
             if val in rule:
                 yield rule.apply(val)
                 if type(val) is Range:
-                    if val.end-1 not in rule:
+                    if val.end not in rule:
                         yield from self.convert(Range(rule.src_end, val.end))
                     if val.start not in rule:
                         yield from self.convert(Range(val.start, rule.src_start))
