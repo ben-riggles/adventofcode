@@ -13,7 +13,7 @@
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
-[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
+[![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](#d05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/gray)](#d08)
@@ -392,6 +392,16 @@ for i, card in enumerate(cards, start=1):
             copies[new_copy] += copies[i]
 total_copies = sum(copies.values())
 ```
+
+...  
+
+## <a name="d05"></a> Day 05: If You Give A Seed A Fertilizer
+
+[Task description](https://adventofcode.com/2023/day/5) - [Complete solution](day05/if_you_give_a_seed_a_fertilizer.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
 
 ...  
 
