@@ -22,6 +22,5 @@ def answers():
     time, distance = [int(x.replace(' ', '')) for x in data]
     yield win_possibilities(time, distance)
 
-
 if __name__ == '__main__':
     aoc.run()
