@@ -9,13 +9,13 @@ class Hand:
     def __init__(self, cards: str, bid: int|str):
         self.cards = cards
         self.bid = int(bid)
-        self.rank = (self._pairs(), cards.translate(self.translator))
+        self._strength = (self._pairs(), cards.translate(self.translator))
     
     def _pairs(self) -> list[int]:
         return sorted(Counter(self.cards).values(), reverse=True)
     
     def __lt__(self, other: Hand) -> bool:
-        return self.rank < other.rank
+        return self._strength < other._strength
     
     
 class JokerHand(Hand):
