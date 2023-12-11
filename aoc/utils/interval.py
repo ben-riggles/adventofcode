@@ -85,7 +85,7 @@ class Interval:
         """
         Iterate over all values in the interval
         """
-        return iter(range(self.start, self.end))
+        return iter(range(self.start, self.end + 1))
     
     def intersection(self, other: Interval) -> Interval:
         """
