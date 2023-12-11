@@ -71,67 +71,42 @@ def find_loop(grid: NDArray, start: Point) -> set[Point]:
             return visited
     raise
 
-def closed_loop(grid: NDArray, loop: set[Point], point: Point) -> set[Point]:
-    pipe = grid[point.y][point.x]
-    bad_dirs = {
-        '-': {Direction.UP, Direction.DOWN}, '|': {Direction.LEFT, Direction.RIGHT}, 'L': {Direction.LEFT, Direction.DOWN},
-        'J': {Direction.RIGHT, Direction.DOWN}, '7': {Direction.UP, Direction.RIGHT}, 'F': {Direction.LEFT, Direction.UP}
-    }
-    for d in bad_dirs.get(pipe, set()):
-        p = point + d.value
-        if p in loop:
-            return False
-    return True
-
-def enclosed_tiles(grid: NDArray) -> set[Point]:
-    _grid = np.full((grid.shape[0]*2 - 1, grid.shape[1]*2 - 1), fill_value='.')
-    _grid[::2, ::2] = grid
-    _grid = np.pad(_grid, 1, mode='constant', constant_values='.')
-    right, left = np.roll(_grid, -1, axis=1), np.roll(_grid, 1, axis=1)
-    below, above = np.roll(_grid, -1, axis=0), np.roll(_grid, 1, axis=0)
+def replace_start(grid: NDArray) -> NDArray:
+    truth = grid == 'S'
+    s = next(locations(truth))
+    adjs = {dir: s + dir.value for dir in Direction}
+    values = {dir: grid[p[1]][p[0]] for dir, p in adjs.items()}
+    dirs = {dir for dir, value in values.items() if value != '.'}
     
-    horiz_pipe = np.logical_and(
-        np.isin(left, ['-', 'L', 'F', 'S']),
-        np.isin(right, ['-', 'J', '7', 'S'])
-    )
-    vert_pipe = np.logical_and(
-        np.isin(above, ['|', '7', 'F', 'S']),
-        np.isin(below, ['|', 'J', 'L', 'S'])
-    )
-    _grid[horiz_pipe] = '-'
-    _grid[vert_pipe] = '|'
-    _loop = set(locations(_grid != '.'))
+    if Direction.UP in dirs:
+        new_val = '|' if Direction.DOWN in dirs else ('J' if Direction.LEFT in dirs else 'L')
+    elif Direction.LEFT in dirs:
+        new_val = '-' if Direction.RIGHT in dirs else '7'
+    else:
+        new_val = 'F'
+    return np.where(grid == 'S', new_val, grid)
+
+def enclosed_tiles(grid: NDArray, loop: set[Point]) -> set[Point]:
+    pts = tuple(list(x) for x in zip(*loop))[::-1]
+    _grid = np.full_like(grid, fill_value='.')
+    _grid[pts] = grid[pts]
+    _grid = replace_start(_grid)
+
+    _grid[_grid == '-'] = '.'
+    rolled = np.roll(_grid, -1, axis=1)
+    while not np.isin(_grid, ['.', '|', 'J', '7']).all():
+        _grid = np.select(
+            [(_grid == 'F') & (rolled == 'J'), (_grid == 'F') & (rolled == '7'), 
+             (_grid == 'L') & (rolled == 'J'), (_grid == 'L') & (rolled == '7')],
+            ['|', '.', '.', '|'],
+            _grid
+        )
+        rolled = np.roll(rolled, -1, axis=1)
     
-    enclosed = set()
-    not_enclosed = set()
-    to_check = set(locations(_grid)) - _loop
-
-    while to_check:
-        point = to_check.pop()
-        visited = set()
-        queue = {point}
-        
-        while queue:
-            p = queue.pop()
-            if p in _loop and closed_loop(_grid, _loop, p):
-                continue
-            elif p.x < 0 or p.x >= _grid.shape[1] or p.y < 0 or p.y >= _grid.shape[0]:
-                not_enclosed |= visited
-                break
-
-            visited |= {p}
-            if p in enclosed:
-                enclosed |= visited
-                break
-            elif p in not_enclosed:
-                not_enclosed |= visited
-                break
-            queue = queue | ({p + d.value for d in Direction} - visited)
-        else:
-            enclosed |= visited
-        to_check -= visited
-
-    return {p for p in enclosed if p[0] % 2 == 1 and p[1] % 2 == 1}
+    count = np.where(_grid == '|', 1, 0)
+    count = np.cumsum(count, axis=1)
+    count[pts] = 0
+    return set(locations(count % 2 == 1))
 
 
 @aoc.register(__file__)
@@ -141,16 +116,7 @@ def answers():
 
     loop = find_loop(grid, start)
     yield len(loop) // 2
-
-    mask = np.zeros_like(grid, dtype=bool)
-    pts = tuple(list(x) for x in zip(*loop))[::-1]
-    mask[pts] = True
-    grid[~mask] = '.'
-
-    min_x, max_x = min(pts[1]), max(pts[1])
-    min_y, max_y = min(pts[0]), max(pts[0])
-    grid = grid[min_y:max_y+1, min_x:max_x+1]
-    yield len(enclosed_tiles(grid))
+    yield len(enclosed_tiles(grid, loop))
 
 if __name__ == '__main__':
     aoc.run()
