@@ -19,7 +19,7 @@
 [![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](#d09)
 [![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](#d10)
-[![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/gray)](#d11)
+[![Day](https://badgen.net/badge/11/%E2%98%85%E2%98%85/green)](#d11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/gray)](#d12)
 [![Day](https://badgen.net/badge/13/%E2%98%86%E2%98%86/gray)](#d13)
 [![Day](https://badgen.net/badge/14/%E2%98%86%E2%98%86/gray)](#d14)
@@ -797,6 +797,16 @@ Runtime: ...
 ## <a name="d10"></a> Day 10: Pipe Maze
 
 [Task description](https://adventofcode.com/2023/day/10) - [Complete solution](day10/pipe_maze.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d11"></a> Day 11: Cosmic Expansion
+
+[Task description](https://adventofcode.com/2023/day/11) - [Complete solution](day11/cosmic_expansion.py) - [Back to top](#top)  
 
 Runtime: ...  
 
