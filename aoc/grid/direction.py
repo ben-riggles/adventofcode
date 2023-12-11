@@ -22,7 +22,7 @@ class Direction(Enum):
         return self._values[1]
     
     @property
-    def movement(self) -> tuple[int, int]:
+    def movement(self) -> Point:
         return self._values[2]
     
     def rotate(self, n: int = 1, clockwise: bool = True) -> Direction:
