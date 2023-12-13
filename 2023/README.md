@@ -21,7 +21,7 @@
 [![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](#d10)
 [![Day](https://badgen.net/badge/11/%E2%98%85%E2%98%85/green)](#d11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/gray)](#d12)
-[![Day](https://badgen.net/badge/13/%E2%98%86%E2%98%86/gray)](#d13)
+[![Day](https://badgen.net/badge/13/%E2%98%85%E2%98%85/green)](#d13)
 [![Day](https://badgen.net/badge/14/%E2%98%86%E2%98%86/gray)](#d14)
 [![Day](https://badgen.net/badge/15/%E2%98%86%E2%98%86/gray)](#d15)
 [![Day](https://badgen.net/badge/16/%E2%98%86%E2%98%86/gray)](#d16)
@@ -807,6 +807,16 @@ Runtime: ...
 ## <a name="d11"></a> Day 11: Cosmic Expansion
 
 [Task description](https://adventofcode.com/2023/day/11) - [Complete solution](day11/cosmic_expansion.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d13"></a> Day 13: Point Of Incidence
+
+[Task description](https://adventofcode.com/2023/day/13) - [Complete solution](day13/point_of_incidence.py) - [Back to top](#top)  
 
 Runtime: ...  
 
