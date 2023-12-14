@@ -37,7 +37,10 @@ class Point:
         return Point(self.x % other.x, self.y % other.y)
     
     def __eq__(self, other: Point) -> bool:
-        return self.x == other[0] and self.y == other[1]
+        try:
+            return self.x == other[0] and self.y == other[1]
+        except TypeError:
+            return False
     
     def distance(self, other: Point) -> float:
         return math.hypot(*(self - other))

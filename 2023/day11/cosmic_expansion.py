@@ -39,4 +39,4 @@ def answers():
     yield universe.total_dist(expansion=1000000)
 
 if __name__ == '__main__':
-    aoc.run(profile=True)
+    aoc.run()
