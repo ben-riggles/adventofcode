@@ -171,7 +171,7 @@ def answers():
     data = aoc.read_lines('small')
     burrow1 = Burrow(data)
     yield burrow1.organize().effort
-
+    
     # added_rooms = ['  #D#C#B#A#', '  #D#B#A#C#']
     # burrow2 = Burrow(data[:3] + added_rooms + data[3:])
     # yield burrow2.organize().effort

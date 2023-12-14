@@ -3,32 +3,27 @@ import aoc
 import functools
 import itertools
 
-    
-RockGrid = tuple[str]
 
-def rotate(grid: RockGrid) -> RockGrid:
-    return tuple(''.join(reversed(x)) for x in zip(*grid))
-
-def tilt(grid: RockGrid) -> RockGrid:
+def tilt(grid: aoc.Grid[str]) -> aoc.Grid[str]:
     def _tilt(line: str) -> str:
         groups = []
         for group in line.split('#'):
             groups.append(''.join(sorted(group)))
         return '#'.join(groups)
-    return tuple(_tilt(x) for x in grid)
+    return aoc.Grid(tuple(_tilt(''.join(x))) for x in grid)
 
-def load(grid: RockGrid) -> int:
+def load(grid: aoc.Grid[str]) -> int:
     def _load(line: str) -> int:
         return sum(i for i, x in enumerate(line, 1) if x == 'O')
-    return sum(_load(x) for x in grid)
+    return sum(_load(''.join(x)) for x in grid)
 
-def cycle(grid: RockGrid) -> RockGrid:
-    return functools.reduce(lambda g, _: rotate(tilt(g)), range(4), grid)
+def cycle(grid: aoc.Grid[str]) -> aoc.Grid[str]:
+    return functools.reduce(lambda g, _: tilt(g).rotate(), range(4), grid)
 
 
 @aoc.register(__file__)
 def answers():
-    grid = rotate(aoc.read_lines())
+    grid = aoc.Grid(aoc.read_grid()).rotate()
     yield load(tilt(grid))
 
     visited = list()
