@@ -34,7 +34,7 @@ class Amphipod(Enum):
 
 
 class Burrow:
-    @dataclass(frozen=True, slots=True)
+    @dataclass(frozen=True)
     class State:
         amphipods: set[tuple[aoc.Point, Amphipod]] = field(default_factory=set)
         effort: int = 0
