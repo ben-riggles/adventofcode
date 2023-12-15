@@ -23,7 +23,7 @@
 [![Day](https://badgen.net/badge/12/%E2%98%85%E2%98%85/green)](#d12)
 [![Day](https://badgen.net/badge/13/%E2%98%85%E2%98%85/green)](#d13)
 [![Day](https://badgen.net/badge/14/%E2%98%85%E2%98%85/green)](#d14)
-[![Day](https://badgen.net/badge/15/%E2%98%86%E2%98%86/gray)](#d15)
+[![Day](https://badgen.net/badge/15/%E2%98%85%E2%98%85/green)](#d15)
 [![Day](https://badgen.net/badge/16/%E2%98%86%E2%98%86/gray)](#d16)
 [![Day](https://badgen.net/badge/17/%E2%98%86%E2%98%86/gray)](#d17)
 [![Day](https://badgen.net/badge/18/%E2%98%86%E2%98%86/gray)](#d18)
@@ -844,4 +844,14 @@ Runtime: ...
 
 ...  
 
+
+## <a name="d15"></a> Day 15: Lens Library
+
+[Task description](https://adventofcode.com/2023/day/15) - [Complete solution](day15/lens_library.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
 
