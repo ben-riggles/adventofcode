@@ -26,7 +26,7 @@
 [![Day](https://badgen.net/badge/15/%E2%98%85%E2%98%85/green)](#d15)
 [![Day](https://badgen.net/badge/16/%E2%98%85%E2%98%85/green)](#d16)
 [![Day](https://badgen.net/badge/17/%E2%98%85%E2%98%85/green)](#d17)
-[![Day](https://badgen.net/badge/18/%E2%98%86%E2%98%86/gray)](#d18)
+[![Day](https://badgen.net/badge/18/%E2%98%85%E2%98%85/green)](#d18)
 [![Day](https://badgen.net/badge/19/%E2%98%86%E2%98%86/gray)](#d19)
 [![Day](https://badgen.net/badge/20/%E2%98%86%E2%98%86/gray)](#d20)
 [![Day](https://badgen.net/badge/21/%E2%98%86%E2%98%86/gray)](#d21)
@@ -868,6 +868,16 @@ Runtime: ...
 ## <a name="d17"></a> Day 17: Clumsy Crucible
 
 [Task description](https://adventofcode.com/2023/day/17) - [Complete solution](day17/clumsy_crucible.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d18"></a> Day 18: Lavaduct Lagoon
+
+[Task description](https://adventofcode.com/2023/day/18) - [Complete solution](day18/lavaduct_lagoon.py) - [Back to top](#top)  
 
 Runtime: ...  
 
