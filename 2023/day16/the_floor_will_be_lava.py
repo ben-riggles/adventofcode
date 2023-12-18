@@ -14,13 +14,6 @@ class Lens(Enum):
     HSPLITTER = '-'
     VSPLITTER = '|'
 
-def move(p: tuple[int, int], d: aoc.Direction):
-    match d:
-        case aoc.Direction.UP: return (p[0], p[1]-1)
-        case aoc.Direction.RIGHT: return (p[0]+1, p[1])
-        case aoc.Direction.DOWN: return (p[0], p[1]+1)
-        case aoc.Direction.LEFT: return (p[0]-1, p[1])
-
 def encounter(lens: Lens, dir: aoc.Direction) -> Generator[aoc.Direction]:
     match lens:
         case Lens.EMPTY: yield dir
@@ -41,7 +34,7 @@ class Contraption:
         self.height = layout.count('\n') + 1
         self.width = line_length - 1
 
-    def __getitem__(self, point: tuple[int, int]) -> Lens:
+    def __getitem__(self, point: aoc.Point) -> Lens:
         if point in self:
             try:
                 return self.layout[point]
@@ -49,10 +42,10 @@ class Contraption:
                 return Lens.EMPTY
         raise KeyError
 
-    def __contains__(self, point: tuple[int, int]) -> bool:
+    def __contains__(self, point: aoc.Point) -> bool:
         return 0 <= point[0] < self.width and 0 <= point[1] < self.height
 
-    def energize(self, entrance: tuple[int, int], direction: aoc.Direction) -> int:
+    def energize(self, entrance: aoc.Point, direction: aoc.Direction) -> int:
         energized = defaultdict(set)
         queue = deque([(entrance, direction)])
 
@@ -68,26 +61,26 @@ class Contraption:
             energized[dir].add(p)
 
             for new_d in encounter(val, dir):
-                queue.append((move(p, new_d), new_d))
+                queue.append((p.move(new_d), new_d))
 
         all_energized = set.union(*energized.values())
         return len(all_energized)
     
-    def entrances(self) -> Generator[tuple[int, int], aoc.Direction]:
+    def entrances(self) -> Generator[aoc.Point, aoc.Direction]:
         max_y = self.height - 1
         for x in range(self.width):
-            yield ((x, 0), aoc.Direction.DOWN)
-            yield ((x, max_y), aoc.Direction.UP)
+            yield (aoc.Point(x, 0), aoc.Direction.DOWN)
+            yield (aoc.Point(x, max_y), aoc.Direction.UP)
         max_x = self.width - 1
         for y in range(self.height):
-            yield ((0, y), aoc.Direction.RIGHT)
-            yield ((max_x, y), aoc.Direction.LEFT)
+            yield (aoc.Point(0, y), aoc.Direction.RIGHT)
+            yield (aoc.Point(max_x, y), aoc.Direction.LEFT)
 
 
 @aoc.register(__file__)
 def answers():
     contraption = Contraption(aoc.read_data())
-    yield(contraption.energize(entrance=(0,0), direction=aoc.Direction.RIGHT))
+    yield(contraption.energize(entrance=aoc.Point(0,0), direction=aoc.Direction.RIGHT))
     yield(max(contraption.energize(p, d) for p, d in contraption.entrances()))
 
 if __name__ == '__main__':

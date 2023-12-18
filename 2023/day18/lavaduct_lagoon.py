@@ -20,21 +20,13 @@ def parse_line(line: str) -> tuple[Instruction, Instruction]:
     n2 = int(color[:5], 16)
     return (dir, int(n)), (dir2, n2)
 
-Point = tuple[int, int]
-def move(p: tuple[int, int], d: aoc.Direction, n: int = 1):
-    match d:
-        case aoc.Direction.UP: return (p[0], p[1]-n)
-        case aoc.Direction.RIGHT: return (p[0]+n, p[1])
-        case aoc.Direction.DOWN: return (p[0], p[1]+n)
-        case aoc.Direction.LEFT: return (p[0]-n, p[1])
-
-def trench_area(dig_plan: Iterable[Instruction], start: Point = (0, 0)) -> int:
+def trench_area(dig_plan: Iterable[Instruction], start: aoc.Point = aoc.Point(0, 0)) -> int:
     loc = start
     perimeter = 0
-    vertices: list[Point] = []
+    vertices: list[aoc.Point] = []
     for instruction in dig_plan:
         perimeter += instruction[1]
-        loc = move(loc, instruction[0], instruction[1])
+        loc = loc.move(instruction[0], instruction[1])
         vertices.append(loc)
 
     # Combination of shoelace theorem and Pick's theorem

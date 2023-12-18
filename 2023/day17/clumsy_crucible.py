@@ -1,23 +1,9 @@
 from __future__ import annotations
 import aoc
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import heapq
 from typing import Generator
 
-
-Point = tuple[int, int]
-def move(p: tuple[int, int], d: aoc.Direction, n: int = 1):
-    match d:
-        case aoc.Direction.UP: return (p[0], p[1]-n)
-        case aoc.Direction.RIGHT: return (p[0]+n, p[1])
-        case aoc.Direction.DOWN: return (p[0], p[1]+n)
-        case aoc.Direction.LEFT: return (p[0]-n, p[1])
-
-def adjacent_points(point: Point) -> Generator[aoc.Direction, Point]:
-    yield from ((d, move(point, d)) for d in aoc.Direction)
-
-def manhattan_distance(p1: Point, p2: Point) -> int:
-    return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
 
 @dataclass(frozen=True)
 class Crucible:
@@ -26,7 +12,7 @@ class Crucible:
     
     @dataclass(frozen=True)
     class State:
-        position: tuple[int, int] = field(default_factory=tuple)
+        position: aoc.Point
         direction: aoc.Direction = aoc.Direction.RIGHT
         heat_loss: int = 0
         estimate: int = 0
@@ -41,7 +27,7 @@ class Crucible:
             return self.estimate < other.estimate
 
 class CityBlockMap(aoc.Grid[int]):
-    def _heat_loss(self, p1: Point, p2: Point) -> int:
+    def _heat_loss(self, p1: aoc.Point, p2: aoc.Point) -> int:
         if p1 == p2: return 0
         if p1[0] == p2[0]:
             step = 1 if p2[1] > p1[1] else -1
@@ -58,19 +44,19 @@ class CityBlockMap(aoc.Grid[int]):
 
         for d in dirs:
             for i in range(crucible.min_straights, crucible.max_straights+1):
-                if not self.binds(new_pos := move(state.position, d, n=i)):
+                if not self.binds(new_pos := state.position.move(d, n=i)):
                     break
                 heat_loss = state.heat_loss + self._heat_loss(state.position, new_pos)
                 yield Crucible.State(
                     position = new_pos,
                     direction = d,
                     heat_loss = heat_loss,
-                    estimate = heat_loss + manhattan_distance(new_pos, self.bottom_right())
+                    estimate = heat_loss + new_pos.manhattan_distance(self.bottom_right())
                 )
 
     def travel(self, crucible: Crucible) -> int:
         stack = []
-        start, end = self.top_left(), self.bottom_right()
+        start, end = aoc.Point(*self.top_left()), aoc.Point(*self.bottom_right())
         visited = set()
         heapq.heappush(stack, Crucible.State(start))
 
