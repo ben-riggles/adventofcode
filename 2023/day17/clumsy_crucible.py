@@ -56,7 +56,7 @@ class CityBlockMap(aoc.Grid[int]):
 
     def travel(self, crucible: Crucible) -> int:
         stack = []
-        start, end = aoc.Point(*self.top_left()), aoc.Point(*self.bottom_right())
+        start, end = self.top_left(), aoc.Point(*self.bottom_right())
         visited = set()
         heapq.heappush(stack, Crucible.State(start))
 
