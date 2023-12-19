@@ -1,13 +1,10 @@
 from __future__ import annotations
 from abc import ABC, ABCMeta
 from aoc.grid import Point
-from aoc.utils.numpy import points
 from collections import Counter, defaultdict
 from collections.abc import Iterable
 from functools import cached_property
 import itertools
-import numpy as np
-from numpy.typing import NDArray
 import re
 from typing import Iterable, TypeVar, Generic, Generator, Iterator, Type
 
@@ -164,6 +161,8 @@ class KeyGrid(BaseGrid, Generic[T], ABC):
     
 
 class TestGrid(KeyGrid):
+    import numpy as np
+
     test = r'\^'
 
 if __name__ == '__main__':
