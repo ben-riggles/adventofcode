@@ -1,9 +1,9 @@
 <!-- Entries between SOLUTIONS and RESULTS tags are auto-generated -->
 
-[![AoC](https://badgen.net/badge/AoC/2025/blue)](https://adventofcode.com/2025)
+[![AoC](https://badgen.net/badge/AoC/2024/blue)](https://adventofcode.com/2024)
 ![Language](https://badgen.net/badge/Language/Python/blue)
 
-# 🎄 Advent of Code 2025 🎄
+# 🎄 Advent of Code 2024 🎄
 
 ## Solutions
 
@@ -41,7 +41,7 @@ ic day._
 
 ## <a name="d01"></a> Day 01: Historian Hysteria
 
-[Task description](https://adventofcode.com/2025/day/1) - [Complete solution](day01/historian_hysteria.py) - [Back to top](#top)  
+[Task description](https://adventofcode.com/2024/day/1) - [Complete solution](day01/historian_hysteria.py) - [Back to top](#top)  
 
 Runtime: ...  
 
