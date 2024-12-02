@@ -10,7 +10,7 @@
 <!--SOLUTIONS-->
 
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](#d01)
-[![Day](https://badgen.net/badge/02/%E2%98%86%E2%98%86/gray)](#d02)
+[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
 [![Day](https://badgen.net/badge/03/%E2%98%86%E2%98%86/gray)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%86%E2%98%86/gray)](#d04)
 [![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
@@ -42,6 +42,16 @@ ic day._
 ## <a name="d01"></a> Day 01: Historian Hysteria
 
 [Task description](https://adventofcode.com/2024/day/1) - [Complete solution](day01/historian_hysteria.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d02"></a> Day 02: Red Nosed Reports
+
+[Task description](https://adventofcode.com/2024/day/2) - [Complete solution](day02/red_nosed_reports.py) - [Back to top](#top)  
 
 Runtime: ...  
 
