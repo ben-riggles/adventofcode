@@ -14,8 +14,8 @@
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](#d05)
-[![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
-[![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
+[![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](#d06)
+[![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/gray)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/gray)](#d09)
 [![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/gray)](#d10)
@@ -82,6 +82,26 @@ Runtime: ...
 ## <a name="d05"></a> Day 05: Sunny With A Chance Of Asteroids
 
 [Task description](https://adventofcode.com/2019/day/5) - [Complete solution](day05/sunny_with_a_chance_of_asteroids.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d06"></a> Day 06: Universal Orbit Map
+
+[Task description](https://adventofcode.com/2019/day/6) - [Complete solution](day06/universal_orbit_map.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d07"></a> Day 07: Amplification Circuit
+
+[Task description](https://adventofcode.com/2019/day/7) - [Complete solution](day07/amplification_circuit.py) - [Back to top](#top)  
 
 Runtime: ...  
 
