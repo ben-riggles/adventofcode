@@ -15,7 +15,7 @@ def run(intcode: list[int], noun: int = 0, verb: int = 0) -> int:
             case 2: op = mul
             case _: raise Exception("Invalid opcode detected")
             
-        _intcode[pointer+3] = op(_intcode[pointer+1], _intcode[pointer+2])
+        _intcode[_intcode[pointer+3]] = op(_intcode[_intcode[pointer+1]], _intcode[_intcode[pointer+2]])
         pointer += 4
     return _intcode[0]
 
@@ -26,7 +26,7 @@ def detect(intcode: list[int], target: int) -> int:
 
 @aoc.register(__file__)
 def answers():
-    intcode = list(map(int, aoc.read_data().split(',')))
+    intcode = list(map(int, aoc.read_data('small').split(',')))
     yield run(intcode, noun=12, verb=2)
     yield detect(intcode, target=19690720)
 

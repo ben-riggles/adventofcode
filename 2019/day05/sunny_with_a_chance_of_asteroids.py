@@ -10,7 +10,6 @@ def run(intcode: list[int], input: int = 1) -> int:
     outputs = []
 
     def _param(id: int, mode: int):
-        print(id, mode, _intcode[pointer+id])
         match mode:
             case 0: return _intcode[_intcode[pointer+id]]
             case 1: return _intcode[pointer+id]
@@ -24,14 +23,22 @@ def run(intcode: list[int], input: int = 1) -> int:
         match opcode:
             case 1 | 2:
                 op = add if opcode == 1 else mul
-                x, y, z = _param(1, args[0]), _param(2, args[1]), _param(3, args[2])
-                _intcode[z] = op(x, y)
+                left = _intcode[_intcode[pointer+1]] if args[0] == 0 else _intcode[pointer+1]
+                right = _intcode[_intcode[pointer+2]] if args[1] == 0 else _intcode[pointer+2]
+
+                if args[2] == 0:
+                    _intcode[_intcode[pointer+3]] = op(left, right)
+                else:
+                    _intcode[pointer+3] = op(left, right)
+                
                 pointer += 4
             case 3:
-                _intcode[_param(1, args[0])] = input
+                arg = _intcode[_intcode[pointer+1]] if args[0] == 0 else _intcode[pointer+1]
+                _intcode[arg] = input
                 pointer += 2
             case 4:
-                outputs.append(_intcode[_param(1, args[0])])
+                arg = _intcode[_intcode[pointer+1]] if args[0] == 0 else _intcode[pointer+1]
+                outputs.append(arg)
                 pointer += 2
             case _:
                 raise Exception("Invalid opcode detected")

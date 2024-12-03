@@ -11,7 +11,7 @@
 
 [![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](#d01)
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
-[![Day](https://badgen.net/badge/03/%E2%98%86%E2%98%86/gray)](#d03)
+[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%86%E2%98%86/gray)](#d04)
 [![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
@@ -52,6 +52,16 @@ Runtime: ...
 ## <a name="d02"></a> Day 02: Red Nosed Reports
 
 [Task description](https://adventofcode.com/2024/day/2) - [Complete solution](day02/red_nosed_reports.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d03"></a> Day 03: Mull It Over
+
+[Task description](https://adventofcode.com/2024/day/3) - [Complete solution](day03/mull_it_over.py) - [Back to top](#top)  
 
 Runtime: ...  
 
