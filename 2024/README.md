@@ -13,7 +13,7 @@
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
-[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
+[![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](#d05)
 [![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/gray)](#d08)
@@ -72,6 +72,16 @@ Runtime: ...
 ## <a name="d04"></a> Day 04: Ceres Search
 
 [Task description](https://adventofcode.com/2024/day/4) - [Complete solution](day04/ceres_search.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d05"></a> Day 05: Print Queue
+
+[Task description](https://adventofcode.com/2024/day/5) - [Complete solution](day05/print_queue.py) - [Back to top](#top)  
 
 Runtime: ...  
 
