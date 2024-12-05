@@ -27,6 +27,9 @@ class Point(namedtuple('Point', ['x', 'y'])):
     def __mul__(self, val: int) -> Point:
         return self.__class__(self.x * val, self.y * val)
     
+    def __rmul__(self, val: int) -> Point:
+        return self.__class__(self.x * val, self.y * val)
+    
     def __mod__(self, other: Point | RAW_POINT) -> Point:
         return self.__class__(self[0] % other[0], self[1] % other[1])
     
