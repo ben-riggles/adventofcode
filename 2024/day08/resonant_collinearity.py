@@ -1,9 +1,12 @@
 import aoc
-from aoc.grid import Point
+from aoc.grid import Point, KeyGrid
 from collections import defaultdict
 import itertools
 from typing import Iterator
 
+
+class AntennaMap(KeyGrid):
+    pass
 
 def parse_map(antenna_map: list[list[str]]) -> dict[str, set[Point]]:
     retval = defaultdict(set)
@@ -39,6 +42,9 @@ def resonant_antinodes(shape: Point, a: Point, b: Point) -> Iterator[Point]:
 
 @aoc.register(__file__)
 def answers():
+    am = AntennaMap(aoc.read_data('small'))
+    print(am)
+
     antenna_map = aoc.read_grid()
     width, height = len(antenna_map[0]), len(antenna_map)
     antenna_map = parse_map(antenna_map)

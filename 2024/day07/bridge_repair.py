@@ -7,8 +7,7 @@ def parse_equation(line: str) -> tuple[int, tuple[int]]:
     return int(test_value), tuple(map(int, operators.split()))
 
 def try_equation(ops: list[str], test_value: int, numbers: tuple[int]) -> int:
-    state = (test_value, numbers)
-    queue = deque([state])
+    queue = deque([(test_value, numbers)])
 
     while queue:
         value, numbers = queue.pop()
@@ -18,19 +17,17 @@ def try_equation(ops: list[str], test_value: int, numbers: tuple[int]) -> int:
                 return test_value
             continue
 
-        if '+' in ops and value >= numbers[-1]:
-            queue.append((value - numbers[-1], numbers[:-1]))
-        if '*' in ops and value % numbers[-1] == 0:
-            queue.append((value // numbers[-1], numbers[:-1]))
+        _next = numbers[-1]
+        _remaining = numbers[:-1]
 
-        str_val = str(value)
-        str_num = str(numbers[-1])
-        if '||' in ops and str_val.endswith(str_num):
-            new_val = 0 if value == numbers[-1] else int(str_val[:-len(str_num)])
-            queue.append((int(new_val), numbers[:-1]))
-    
+        if '+' in ops and value >= _next:
+            queue.append((value - _next, _remaining))
+        if '*' in ops and value % _next == 0:
+            queue.append((value // _next, _remaining))
+        if '||' in ops and str(value).endswith(str(_next)):
+            new_val = 0 if value == _next else int(str(value)[:-len(str(_next))])
+            queue.append((int(new_val), _remaining))
     return 0
-
 
 @aoc.register(__file__)
 def answers():

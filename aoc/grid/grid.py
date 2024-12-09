@@ -184,26 +184,23 @@ class Grid(BaseGrid, Generic[T]):
 
 
 class KeyGrid(BaseGrid, Generic[T], ABC):
-    def __init__(self, data: str):
+    def __init__(self, data: str, empty=' '):
         self.__points: dict[str, set[Point]] = defaultdict(set)
-        members = set(vars(self.__class__)) - set(vars(KeyGrid))
-        targets = dict()
-        for x in members:
-            target = getattr(self.__class__, x)
-            targets[target] = x
+        values = set(data) - set(empty)
 
         escaped = '.^$*+?()[{\|-]\\'
-        line_length = data.index('\n') + 1
-        regex = rf'[{"|".join(x if x not in escaped else f"{chr(92)}{x}" for x in targets.keys())}]'
+        width = data.index('\n')
+        line_length = width + 1
+        height = len(data.splitlines())
+        regex = rf'[{"|".join(x if x not in escaped else f"{chr(92)}{x}" for x in values)}]'
         def _per_match(m: re.Match):
             y, x = divmod(m.start(), line_length)
-            key = targets[m.group(0)]
+            key = m.group(0)
             self.__points[key].add(Point(x, y))
         [_per_match(m) for m in re.finditer(regex, data)]
 
-        all_points = set.union(*self.__points.values())
-        self.width = max(p.x for p in all_points) + 1
-        self.height = max(p.y for p in all_points) + 1
+        print(self.__points)
+        super().__init__(width, height)
 
     def __getattribute__(self, name):
         points = object.__getattribute__(self, '_KeyGrid__points')
