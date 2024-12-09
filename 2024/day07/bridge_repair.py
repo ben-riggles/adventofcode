@@ -1,38 +1,35 @@
 import aoc
 from collections import deque
-import operator
 
 
 def parse_equation(line: str) -> tuple[int, tuple[int]]:
     test_value, operators = line.split(':')
     return int(test_value), tuple(map(int, operators.split()))
 
-def concentration(x: int, y: int) -> int:
-    return int(f'{x}{y}')
-
-def try_equation(ops, test_value, operators) -> int:
-    state = (0, 0, operators[0], ops[0])
+def try_equation(ops: list[str], test_value: int, numbers: tuple[int]) -> int:
+    state = (test_value, numbers)
     queue = deque([state])
-    values = set()
 
     while queue:
-        value, idx, op_value, op = queue.pop()
-
-        value = op(value, op_value)
-        if value > test_value:
+        value, numbers = queue.pop()
+        
+        if len(numbers) == 0:
+            if (value == 0):
+                return test_value
             continue
 
-        next_idx = idx + 1
-        try:
-            next_operator = operators[next_idx]
-        except IndexError:
-            values.add(value)
-            continue
+        if '+' in ops and value >= numbers[-1]:
+            queue.append((value - numbers[-1], numbers[:-1]))
+        if '*' in ops and value % numbers[-1] == 0:
+            queue.append((value // numbers[-1], numbers[:-1]))
 
-        for _op in ops:
-            queue.append((value, next_idx, next_operator, _op))
-
-    return test_value if test_value in values else 0
+        str_val = str(value)
+        str_num = str(numbers[-1])
+        if '||' in ops and str_val.endswith(str_num):
+            new_val = 0 if value == numbers[-1] else int(str_val[:-len(str_num)])
+            queue.append((int(new_val), numbers[:-1]))
+    
+    return 0
 
 
 @aoc.register(__file__)
@@ -40,11 +37,11 @@ def answers():
     equations = [parse_equation(x) for x in aoc.read_lines()]
 
     # Part One
-    ops = (operator.add, operator.mul)
+    ops = ('+', '*')
     yield sum(try_equation(ops, *x) for x in equations)
 
     # Part Two
-    ops += (concentration, )
+    ops += ('||',)
     yield sum(try_equation(ops, *x) for x in equations)
 
 if __name__ == '__main__':
