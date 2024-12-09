@@ -31,12 +31,12 @@ class Crucible:
 class CityBlockMap(Grid[int]):
     def _heat_loss(self, p1: Point, p2: Point) -> int:
         if p1 == p2: return 0
-        if p1[0] == p2[0]:
-            step = 1 if p2[1] > p1[1] else -1
-            return sum(self[(p1[0], i)] for i in range(p1[1]+step, p2[1]+step, step))
-        if p1[1] == p2[1]:
-            step = 1 if p2[0] > p1[0] else -1
-            return sum(self[(i, p1[1])] for i in range(p1[0]+step, p2[0]+step, step))
+        if p1.x == p2.x:
+            step = 1 if p2.y > p1.y else -1
+            return sum(self[(p1.x, i)] for i in range(p1.y+step, p2.y+step, step))
+        if p1.y == p2.y:
+            step = 1 if p2.x > p1.x else -1
+            return sum(self[(i, p1.y)] for i in range(p1.x+step, p2.x+step, step))
         raise ValueError
     
     def _possibilities(self, crucible: Crucible, state: Crucible.State) -> Generator[Crucible.State]:

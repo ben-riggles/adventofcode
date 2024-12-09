@@ -5,8 +5,9 @@ from collections import Counter, defaultdict
 from collections.abc import Iterable
 from functools import cached_property
 import itertools
+import operator
 import re
-from typing import Iterable, TypeVar, Generic, Generator, Iterator, Type
+from typing import Iterable, TypeVar, Generic, Generator, Iterator, Type, Callable
 
 
 class PostInitCaller(type):
@@ -29,7 +30,10 @@ class BaseGrid(Generic[T]):
         pass
 
     def binds(self, idx: tuple[int, int] | Point) -> bool:
-        return 0 <= idx[0] < self.width and 0 <= idx[1] < self.height
+        try:
+            return 0 <= idx.x < self.width and 0 <= idx.y < self.height
+        except AttributeError:
+            return 0 <= idx[0] < self.width and 0 <= idx[1] < self.height
     
     @cached_property
     def top_left(self) -> Point: return Point(0, 0)
@@ -98,6 +102,10 @@ class Grid(BaseGrid, Generic[T]):
                     self[p] = value
             case _: raise TypeError(f'Invalid index: {idx}')
 
+    @cached_property
+    def shape(self) -> tuple[int, int]: 
+        return (self.width, self.height)
+
     def diagonal(self, i: int = 0, forward: bool = True) -> tuple[T]:
         if i <= -self.height or i >= self.width: raise ValueError('Invalid i value')
         start_x = max(0, i) if forward else min(self.width-1-i, self.width-1)
@@ -131,6 +139,21 @@ class Grid(BaseGrid, Generic[T]):
             return Grid((row[x] for row in data))
         return Grid(data)
     
+    def __op(self, other: Grid[T], op: Callable):
+        if not self.dtype == other.dtype: raise TypeError
+        if not self.shape == other.shape: raise ValueError
+        return Grid((op(a, b) for a, b in zip(r1, r2)) for r1, r2 in zip(self, other))
+    
+    def __add__(self, other: Grid[T]) -> Grid[T]: return self.__op(other, operator.add)
+    def __sub__(self, other: Grid[T]) -> Grid[T]: return self.__op(other, operator.sub)
+    def __mul__(self, other: Grid[T]) -> Grid[T]: return self.__op(other, operator.mul)
+    def __and__(self, other: Grid[T]) -> Grid[bool]: return self.__op(other, operator.and_)
+    def __or__(self, other: Grid[T]) -> Grid[bool]: return self.__op(other, operator.or_)
+    def __lt__(self, other: Grid[T]) -> Grid[bool]: return self.__op(other, operator.lt)
+    def __le__(self, other: Grid[T]) -> Grid[bool]: return self.__op(other, operator.le)
+    def __gt__(self, other: Grid[T]) -> Grid[bool]: return self.__op(other, operator.gt)
+    def __ge__(self, other: Grid[T]) -> Grid[bool]: return self.__op(other, operator.ge)
+    
     def find(self, value: T) -> Generator[Point]:
         yield from (Point(x, y) for y, r in enumerate(self) for x, v in enumerate(r) if v == value)
 
@@ -156,9 +179,8 @@ class Grid(BaseGrid, Generic[T]):
             return sum(row.count(value) for row in self.__data)
         
     @staticmethod
-    def full():
-        pass
-        
+    def full(width: int, height: int, value: T) -> Grid[T]:
+        return Grid[T]((value for _ in range(width)) for _ in range(height))
 
 
 class KeyGrid(BaseGrid, Generic[T], ABC):
@@ -172,12 +194,16 @@ class KeyGrid(BaseGrid, Generic[T], ABC):
 
         escaped = '.^$*+?()[{\|-]\\'
         line_length = data.index('\n') + 1
-        regex = rf'[{"".join(x if x not in escaped else f"{chr(92)}{x}" for x in targets.keys())}]'
+        regex = rf'[{"|".join(x if x not in escaped else f"{chr(92)}{x}" for x in targets.keys())}]'
         def _per_match(m: re.Match):
             y, x = divmod(m.start(), line_length)
             key = targets[m.group(0)]
             self.__points[key].add(Point(x, y))
         [_per_match(m) for m in re.finditer(regex, data)]
+
+        all_points = set.union(*self.__points.values())
+        self.width = max(p.x for p in all_points) + 1
+        self.height = max(p.y for p in all_points) + 1
 
     def __getattribute__(self, name):
         points = object.__getattribute__(self, '_KeyGrid__points')
@@ -279,8 +305,11 @@ if __name__ == '__main__':
     print('-- Find --')
     test_time(lambda x: np.where(x == 2000), iar)
     test_time(lambda x: list(x.find(2000)), igr)
-
-    print(*igr.diagonal())
+    
+    print('-- Add --')
+    fn = lambda x: x + x
+    test_time(fn, iar)
+    test_time(fn, igr)
 
     test_str = '...^\n.^..\n^^..\n....'
     kg = TestGrid(test_str)
