@@ -1,8 +1,9 @@
 from __future__ import annotations
+from aoc.grid.direction import Direction
 from collections import namedtuple
 from dataclasses import dataclass
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 
 if TYPE_CHECKING:
     from aoc.grid.direction import Direction
@@ -58,7 +59,7 @@ class PointDC:
     def move(self, direction: Direction, n: int = 1) -> PointDC:
         return PointDC(self.x + (direction.movement.x * n), self.y + (direction.movement.y * n))
     
-# RAW_POINT = tuple[int, int]
+RAW_POINT = tuple[int, int]
 # class Point:
 #     __slots__ = ['x', 'y']
     
@@ -156,6 +157,9 @@ class Point(namedtuple('Point', ['x', 'y'])):
     def move(self, direction: Direction, n: int = 1) -> Point:
         return self + direction.movement if n == 1 else self + direction.movement * n
     
+    def adjacent(self) -> Iterator[Point]:
+        return (self + d.movement for d in Direction)
+    
 
 if __name__ == '__main__':
     import random
@@ -196,3 +200,7 @@ if __name__ == '__main__':
     test_time(add_em, nt_pts)
     test_time(add_em, dc_pts)
     # test_time(add_em, slot_pts)
+    
+    p1 = Point(1, 2)
+    for x in p1.adjacent():
+        print(x)

@@ -24,6 +24,7 @@ class BaseGrid(Generic[T]):
     def __init__(self, width: int, height: int):
         self.width = width
         self.height = height
+        self.__post_init__()
 
     def __post_init__(self):
         pass

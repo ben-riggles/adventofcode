@@ -18,7 +18,7 @@
 [![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](#d09)
-[![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/gray)](#d10)
+[![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](#d10)
 [![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/gray)](#d11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/gray)](#d12)
 [![Day](https://badgen.net/badge/13/%E2%98%86%E2%98%86/gray)](#d13)
@@ -122,6 +122,16 @@ Runtime: ...
 ## <a name="d09"></a> Day 09: Disk Fragmenter
 
 [Task description](https://adventofcode.com/2024/day/9) - [Complete solution](day09/disk_fragmenter.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d10"></a> Day 10: Hoof It
+
+[Task description](https://adventofcode.com/2024/day/10) - [Complete solution](day10/hoof_it.py) - [Back to top](#top)  
 
 Runtime: ...  
 

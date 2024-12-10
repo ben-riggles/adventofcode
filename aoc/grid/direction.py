@@ -1,6 +1,9 @@
 from __future__ import annotations
-from aoc.grid.point import Point
 from enum import Enum
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from aoc.grid.point import Point
 
 
 class Direction(Enum):
