@@ -1,12 +1,11 @@
 from __future__ import annotations
-from abc import ABC, ABCMeta
+from abc import ABCMeta
 from aoc.grid import Point
-from collections import Counter, defaultdict
+from collections import Counter
 from collections.abc import Iterable
 from functools import cached_property
 import itertools
 import operator
-import re
 from typing import Iterable, TypeVar, Generic, Generator, Iterator, Type, Callable
 
 
@@ -183,36 +182,6 @@ class Grid(BaseGrid, Generic[T]):
         return Grid[T]((value for _ in range(width)) for _ in range(height))
 
 
-class KeyGrid(BaseGrid, Generic[T], ABC):
-    def __init__(self, data: str, empty=' '):
-        self.__points: dict[str, set[Point]] = defaultdict(set)
-        values = set(data) - set(empty)
-
-        escaped = '.^$*+?()[{\|-]\\'
-        width = data.index('\n')
-        line_length = width + 1
-        height = len(data.splitlines())
-        regex = rf'[{"|".join(x if x not in escaped else f"{chr(92)}{x}" for x in values)}]'
-        def _per_match(m: re.Match):
-            y, x = divmod(m.start(), line_length)
-            key = m.group(0)
-            self.__points[key].add(Point(x, y))
-        [_per_match(m) for m in re.finditer(regex, data)]
-
-        print(self.__points)
-        super().__init__(width, height)
-
-    def __getattribute__(self, name):
-        points = object.__getattribute__(self, '_KeyGrid__points')
-        if name in points:
-            return points[name]
-        else:
-            return object.__getattribute__(self, name)
-    
-
-class TestGrid(KeyGrid):
-    test = '^'
-
 if __name__ == '__main__':
     import time
     def test_time(f, *args, **kwargs):
@@ -307,11 +276,6 @@ if __name__ == '__main__':
     fn = lambda x: x + x
     test_time(fn, iar)
     test_time(fn, igr)
-
-    test_str = '...^\n.^..\n^^..\n....'
-    kg = TestGrid(test_str)
-    print(kg)
-    print(kg.test)
 
 
     
