@@ -19,7 +19,6 @@ class PatrolState:
     direction: Direction
 
     def move(self) -> PatrolState:
-        return PatrolState(Point(self.position.x + self.direction.movement[0], self.position.y + self.direction.movement[1]), self.direction)
         return PatrolState(self.position.move(self.direction), self.direction)
     
     def turn(self) -> PatrolState:

@@ -13,7 +13,7 @@ class TopographicMap(Grid[int]):
         
         ends, unique = set(), 0
         for d in Direction:
-            a = p + d
+            a = p + d.movement
             if not self.binds(a) or self[a] != v + 1:
                 continue
             _ends, _unique = self.trails(a)
