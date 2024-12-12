@@ -1,16 +1,13 @@
 from __future__ import annotations
+from aoc.grid.point import Point
 from enum import Enum
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from aoc.grid.point import Point
 
 
 class Direction(Enum):
-    UP = 1, 0, (0, -1)
-    RIGHT = 2, 90, (1, 0)
-    DOWN = 3, 180, (0, 1)
-    LEFT = 4, 270, (-1, 0)
+    UP = 1, 0, Point(0, -1)
+    RIGHT = 2, 90, Point(1, 0)
+    DOWN = 3, 180, Point(0, 1)
+    LEFT = 4, 270, Point(-1, 0)
 
     def __new__(cls, *values):
         obj = object.__new__(cls)

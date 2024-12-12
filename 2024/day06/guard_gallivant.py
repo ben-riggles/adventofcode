@@ -5,8 +5,10 @@ from dataclasses import dataclass
 
 
 class GuardMap(KeyGrid):
-    obstacles = '#'
-    guard = '^'
+    fields = {
+        'obstacles': '#',
+        'guard': '^'
+    }
 
 class InfiniteLoopError(Exception):
     pass

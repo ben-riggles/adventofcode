@@ -1,5 +1,5 @@
 import aoc
-from aoc.grid import Point, Grid
+from aoc.grid import Point, Grid, Direction
 import functools
 
 
@@ -12,7 +12,8 @@ class TopographicMap(Grid[int]):
             return {p}, 1
         
         ends, unique = set(), 0
-        for a in p.adjacent():
+        for d in Direction:
+            a = p + d
             if not self.binds(a) or self[a] != v + 1:
                 continue
             _ends, _unique = self.trails(a)
