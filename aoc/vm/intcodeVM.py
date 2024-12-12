@@ -9,6 +9,7 @@ IntcodeProgram = Iterable[int]
 class ParameterMode(Enum):
     POSITION = 0
     IMMEDIATE = 1
+    RELATIVE = 2
 
 class Operation(ABC):
     opcode: int = None
@@ -26,8 +27,16 @@ class Operation(ABC):
     def decode_arg(self, i: int) -> int:
         value = self.args[i]
         match ParameterMode(self.modes[i]):
-            case ParameterMode.POSITION: return self.vm.program[value]
+            case ParameterMode.POSITION: return self.vm[value]
             case ParameterMode.IMMEDIATE: return value
+            case ParameterMode.RELATIVE: return self.vm[value + self.vm.relative_base]
+            case _: raise Exception("Invalid mode detected")
+
+    def decode_out(self, i: int) -> int:
+        value = self.args[i]
+        match ParameterMode(self.modes[i]):
+            case ParameterMode.POSITION | ParameterMode.IMMEDIATE: return value
+            case ParameterMode.RELATIVE: return value + self.vm.relative_base
             case _: raise Exception("Invalid mode detected")
 
     @abstractmethod
@@ -48,21 +57,21 @@ class OpAdd(Operation):
     length = 4
 
     def exec(self, inputs: Iterable[int]) -> int:
-        self.vm[self.args[2]] = self.decode_arg(0) + self.decode_arg(1)
+        self.vm[self.decode_out(2)] = self.decode_arg(0) + self.decode_arg(1)
 
 class OpMultiply(Operation):
     opcode = 2
     length = 4
 
     def exec(self, inputs: Iterable[int]) -> int:
-        self.vm[self.args[2]] = self.decode_arg(0) * self.decode_arg(1)
+        self.vm[self.decode_out(2)] = self.decode_arg(0) * self.decode_arg(1)
 
 class OpInput(Operation):
     opcode = 3
     length = 2
 
     def exec(self, inputs: Iterable[int]) -> int:
-        self.vm[self.args[0]] = next(inputs)
+        self.vm[self.decode_out(0)] = next(inputs)
     
 class OpOutput(Operation):
     opcode = 4
@@ -90,14 +99,21 @@ class OpLessThan(Operation):
     length = 4
 
     def exec(self, inputs: Iterable[int]) -> int:
-        self.vm[self.args[2]] = 1 if self.decode_arg(0) < self.decode_arg(1) else 0
+        self.vm[self.decode_out(2)] = 1 if self.decode_arg(0) < self.decode_arg(1) else 0
 
 class OpEquals(Operation):
     opcode = 8
     length = 4
 
     def exec(self, inputs: Iterable[int]) -> int:
-        self.vm[self.args[2]] = 1 if self.decode_arg(0) == self.decode_arg(1) else 0
+        self.vm[self.decode_out(2)] = 1 if self.decode_arg(0) == self.decode_arg(1) else 0
+
+class OpRelativeBase(Operation):
+    opcode = 9
+    length = 2
+
+    def exec(self, inputs: Iterable[int]) -> int:
+        self.vm.relative_base += self.decode_arg(0)
 
 class OpHalt(Operation):
     opcode = 99
@@ -111,13 +127,16 @@ class OpHalt(Operation):
 class IntcodeVM:
     def __init__(self, program: list[int]):
         self.__original = program
-        self.program = self.__original[:]
-        self.running = True
-        self.pc = 0
+        self.reset()
+        
         self.last_output = None
+        self.relative_base = 0
 
-    def __getitem__(self, idx):
-        return self.program[idx]
+    def __getitem__(self, idx: int) -> int:
+        try:
+            return self.program[idx]
+        except IndexError:
+            return 0
     
     def __setitem__(self, idx, val):
         self.program[idx] = val
@@ -137,4 +156,4 @@ class IntcodeVM:
     def reset(self):
         self.running = True
         self.pc = 0
-        self.program = self.__original[:]
+        self.program = self.__original + [0] * 10000

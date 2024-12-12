@@ -57,7 +57,7 @@ def check_for_loop(guard_map: GuardMap, new_obstacle: Point) -> bool:
 
 @aoc.register(__file__)
 def answers():
-    guard_map = GuardMap(aoc.read_data())
+    guard_map = GuardMap(aoc.read_data('jack'))
 
     patrol = run_patrol(guard_map)
     yield len({x.position for x in patrol})
