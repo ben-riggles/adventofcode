@@ -25,11 +25,11 @@ class PatrolState:
         return PatrolState(self.position, self.direction.rotate())
 
 def run_patrol(guard_map: GuardMap, new_obstacle: Point = None) -> set[PatrolState]:
-    obstacles = set(guard_map.obstacles)
+    obstacles = set(guard_map['obstacles'])
     if new_obstacle:
         obstacles.add(new_obstacle)
 
-    state = PatrolState(list(guard_map.guard)[0], Direction.UP)
+    state = PatrolState(list(guard_map['guard'])[0], Direction.UP)
     visited = set([state])
     
     while True:
@@ -62,7 +62,7 @@ def answers():
     patrol = run_patrol(guard_map)
     yield len({x.position for x in patrol})
 
-    occupied = guard_map.obstacles | guard_map.guard
+    occupied = guard_map['obstacles'] | guard_map['guard']
     all_points = {x.position for x in patrol} - occupied
     yield sum(check_for_loop(guard_map, p) for p in all_points)
 
