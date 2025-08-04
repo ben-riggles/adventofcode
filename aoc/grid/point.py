@@ -28,6 +28,9 @@ class Point:
             case 1: return self.y
             case _: raise IndexError
 
+    def __eq__(self, other: Point | RAW_POINT) -> bool:
+        return self.x == other.x and self.y == other.y
+
     def __add__(self, other: Point | RAW_POINT) -> Point:
         try:
             return Point(self.x + other.x, self.y + other.y)
@@ -190,7 +193,7 @@ if __name__ == '__main__':
         return [cls(v, v) for v in range(n)]
     
     t_pts = test_time(create_tuple, i)
-    nt_pts = test_time(creator, Point, i)
+    nt_pts = test_time(creator, PointTuple, i)
     dc_pts = test_time(creator, Point, i)
     slot_pts = test_time(creator, PointSlots, i)
 

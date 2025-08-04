@@ -24,11 +24,11 @@
 [![Day](https://badgen.net/badge/13/%E2%98%85%E2%98%85/green)](#d13)
 [![Day](https://badgen.net/badge/14/%E2%98%85%E2%98%85/green)](#d14)
 [![Day](https://badgen.net/badge/15/%E2%98%85%E2%98%85/green)](#d15)
-[![Day](https://badgen.net/badge/16/%E2%98%86%E2%98%86/gray)](#d16)
-[![Day](https://badgen.net/badge/17/%E2%98%86%E2%98%86/gray)](#d17)
-[![Day](https://badgen.net/badge/18/%E2%98%86%E2%98%86/gray)](#d18)
-[![Day](https://badgen.net/badge/19/%E2%98%86%E2%98%86/gray)](#d19)
-[![Day](https://badgen.net/badge/20/%E2%98%86%E2%98%86/gray)](#d20)
+[![Day](https://badgen.net/badge/16/%E2%98%85%E2%98%85/green)](#d16)
+[![Day](https://badgen.net/badge/17/%E2%98%85%E2%98%85/green)](#d17)
+[![Day](https://badgen.net/badge/18/%E2%98%85%E2%98%85/green)](#d18)
+[![Day](https://badgen.net/badge/19/%E2%98%85%E2%98%85/green)](#d19)
+[![Day](https://badgen.net/badge/20/%E2%98%85%E2%98%85/green)](#d20)
 [![Day](https://badgen.net/badge/21/%E2%98%86%E2%98%86/gray)](#d21)
 [![Day](https://badgen.net/badge/22/%E2%98%86%E2%98%86/gray)](#d22)
 [![Day](https://badgen.net/badge/23/%E2%98%86%E2%98%86/gray)](#d23)
@@ -182,6 +182,56 @@ Runtime: ...
 ## <a name="d15"></a> Day 15: Warehouse Woes
 
 [Task description](https://adventofcode.com/2024/day/15) - [Complete solution](day15/warehouse_woes.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d16"></a> Day 16: Reindeer Maze
+
+[Task description](https://adventofcode.com/2024/day/16) - [Complete solution](day16/reindeer_maze.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d17"></a> Day 17: Chronospatial Computer
+
+[Task description](https://adventofcode.com/2024/day/17) - [Complete solution](day17/chronospatial_computer.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d18"></a> Day 18: Ram Run
+
+[Task description](https://adventofcode.com/2024/day/18) - [Complete solution](day18/ram_run.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d19"></a> Day 19: Linen Layout
+
+[Task description](https://adventofcode.com/2024/day/19) - [Complete solution](day19/linen_layout.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d20"></a> Day 20: Race Condition
+
+[Task description](https://adventofcode.com/2024/day/20) - [Complete solution](day20/race_condition.py) - [Back to top](#top)  
 
 Runtime: ...  
 

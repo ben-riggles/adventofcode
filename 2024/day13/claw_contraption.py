@@ -25,11 +25,10 @@ class ClawMachine:
         
     @staticmethod
     def parse(chunk: str) -> ClawMachine:
-        buttons = re.findall(r'Button .*: X\+(\d+), Y\+(\d+)', chunk)
-        prize = re.search(r'Prize: X=(\d+), Y=(\d+)', chunk).groups()
-        a_button = Point(int(buttons[0][0]), int(buttons[0][1]))
-        b_button = Point(int(buttons[1][0]), int(buttons[1][1]))
-        prize = Point(int(prize[0]), int(prize[1]))
+        digits = re.findall(r'(\d+)', chunk)
+        a_button = Point(int(digits[0]), int(digits[1]))
+        b_button = Point(int(digits[2]), int(digits[3]))
+        prize = Point(int(digits[4]), int(digits[5]))
         return ClawMachine(a_button, b_button, prize)
 
 @aoc.register(__file__)
