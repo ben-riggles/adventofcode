@@ -1,7 +1,6 @@
 import aoc
 from collections import Counter
 from enum import Enum
-from itertools import cycle, islice
 import numpy as np
 from numpy.typing import NDArray
 from typing import Iterable
