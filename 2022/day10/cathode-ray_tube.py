@@ -28,7 +28,7 @@ def answers():
 
     rows = [pixels[i:i+39] for i in range(0, len(pixels), 40)]
     image = '\n'.join(rows)
-    print(image)
+    yield '\n' + image
 
 if __name__ == '__main__':
     aoc.run()

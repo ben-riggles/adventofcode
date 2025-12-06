@@ -13,8 +13,8 @@
 [![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](#d02)
 [![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](#d03)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](#d04)
-[![Day](https://badgen.net/badge/05/%E2%98%86%E2%98%86/gray)](#d05)
-[![Day](https://badgen.net/badge/06/%E2%98%86%E2%98%86/gray)](#d06)
+[![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%85/green)](#d05)
+[![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](#d06)
 [![Day](https://badgen.net/badge/07/%E2%98%86%E2%98%86/gray)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%86%E2%98%86/gray)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%86%E2%98%86/gray)](#d09)
@@ -72,6 +72,26 @@ Runtime: ...
 ## <a name="d04"></a> Day 04: Printing Department
 
 [Task description](https://adventofcode.com/2025/day/4) - [Complete solution](day04/printing_department.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d05"></a> Day 05: Cafeteria
+
+[Task description](https://adventofcode.com/2025/day/5) - [Complete solution](day05/cafeteria.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d06"></a> Day 06: Trash Compactor
+
+[Task description](https://adventofcode.com/2025/day/6) - [Complete solution](day06/trash_compactor.py) - [Back to top](#top)  
 
 Runtime: ...  
 

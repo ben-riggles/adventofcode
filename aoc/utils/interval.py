@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from typing import Iterable, Generator
 
 
 @dataclass(frozen=True)
@@ -116,8 +117,10 @@ class Interval:
         starting to the right of the other interval, or neither. Thus, a list of intervals is returned.
         """
         retval = []
-        if self < other or self not in other:
+        if self < other:
             return []
+        if self not in other:
+            return self
         if self.start not in other:
             retval.append(Interval(self.start, other.start - 1))
         if self.end not in other:
@@ -135,6 +138,33 @@ class Interval:
             start = min(self.start, other.start),
             end = max(self.end, other.end)
         )
+    
+    @staticmethod
+    def parse(range_str: str) -> Interval:
+        """
+        Parses a string in format 'x-y' into an interval
+        """
+        start, end = range_str.split('-')
+        return Interval(int(start), int(end))
+    
+    @staticmethod
+    def reduce(intervals: Iterable[Interval]) -> Generator[Interval]:
+        """
+        Reduce a set of intervals into the most concise possible set.
+        For instance, ranges [3-5], [10-15], [12-18], and [9-12] could reduce
+        to [3-5], and [9-18]
+        """
+        intervals = sorted(intervals, key=lambda x: x.start)
+        current: Interval = None
+        for x in intervals:
+            if current is None:
+                current = x
+            elif current.end < x.start:
+                yield current
+                current = x
+            else:
+                current = Interval(current.start, max(current.end, x.end))
+        yield current
     
 
 @dataclass(frozen=True)

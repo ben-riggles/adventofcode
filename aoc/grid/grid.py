@@ -3,7 +3,7 @@ from abc import ABCMeta
 from aoc.grid import Point
 from collections import Counter
 from collections.abc import Iterable
-from functools import cached_property, cache
+from functools import cached_property
 import itertools
 import operator
 from typing import Iterable, TypeVar, Generic, Generator, Iterator, Type, Callable
