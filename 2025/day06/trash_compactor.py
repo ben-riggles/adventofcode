@@ -16,8 +16,7 @@ def solve_1(problem: list[str]) -> int:
 
 def solve_2(problem: list[str]) -> int:
     op = operator(''.join([x[-1] for x in problem]).strip())
-    vals = [int(x[:-1]) for x in problem]
-    return op(vals)
+    return op([int(x[:-1]) for x in problem])
 
 
 @aoc.register(__file__)

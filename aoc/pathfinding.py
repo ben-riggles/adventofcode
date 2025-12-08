@@ -8,6 +8,7 @@ from uuid import uuid4, UUID
 
 @dataclass()
 class PathNode(ABC):
+    value: Any
     distance: int = field(frozen=True)
     uid: UUID = field(default_factory=lambda: uuid4())
 
@@ -17,17 +18,12 @@ class PathNode(ABC):
     def __eq__(self, other: PathNode):
         return self.uid == other.uid
 
-    @classmethod
-    def new(cls, prev: PathNode) -> PathNode:
-        return cls(distance=prev.distance+1)
-
     @abstractmethod
     def adjacent(self) -> set[PathNode]:
         pass
 
-    @abstractmethod
     def cost(self, other: PathNode) -> int:
-        pass
+        return 1
 
     def can_move_to(self, other: PathNode, visited: set[PathNode]) -> bool:
         return other not in visited
@@ -48,5 +44,5 @@ class PathNode(ABC):
             for adj in node.adjacent() - visited:
                 if not node.can_move_to(other=adj, visited=visited):
                     continue
-                queue.append(__class__.new(node, adj))
+                queue.append(self.__class__(adj.distance + self.cost()))
         return None
