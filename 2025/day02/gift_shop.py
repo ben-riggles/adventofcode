@@ -5,10 +5,6 @@ from itertools import count
 from typing import Generator
 
 
-def parse_range(r: str) -> Interval:
-    start, end = r.split('-')
-    return Interval(int(start), int(end))
-
 def invalid_ids(max_value: int, only_doubles: bool = True) -> Generator[int]:
     for value in count(1):
         for repeat in count(2):
@@ -28,11 +24,47 @@ def in_ranges(ranges: list[Interval], value: int) -> bool:
 
 @aoc.register(__file__)
 def answers():
-    ranges = [parse_range(x) for x in aoc.read_data().replace('\n', '').split(',')]
+    ranges = [Interval.parse(x) for x in aoc.read_data().replace('\n', '').split(',')]
     max_value = max(x.end for x in ranges)
+    max_digits = len(str(max_value))
 
-    yield sum(set(x for x in invalid_ids(max_value) if in_ranges(ranges, x)))
-    yield sum(set(x for x in invalid_ids(max_value, only_doubles=False) if in_ranges(ranges, x)))
+    invalid_1 = set()
+    invalid_2 = set()
+    for i in count(1):
+        s = str(i) * 2
+        v = int(s)
+        if v > max_value:
+            break
+        invalid_1.add(v)
+        while len(s) <= max_digits:
+            invalid_2.add(int(s))
+            s += str(i)
+    invalid_1 = sorted(invalid_1)
+    invalid_2 = sorted(invalid_2)
+    ranges = sorted(ranges, key=lambda x: x.start)
+
+    a = 0
+    b = 0
+    for r in ranges:
+        try:
+            invalid_start_1 = next(i for i, x in enumerate(invalid_1) if x >= r.start)
+            invalid_end_1 = next(i for i, x in enumerate(invalid_1) if x > r.end)
+            _invalid_1 = invalid_1[invalid_start_1:invalid_end_1]
+            invalid_1 = invalid_1[invalid_end_1:]
+            a += sum(_invalid_1)
+        except StopIteration:
+            pass
+
+        try:
+            invalid_start_2 = next(i for i, x in enumerate(invalid_2) if x >= r.start)
+            invalid_end_2 = next(i for i, x in enumerate(invalid_2) if x > r.end)
+            _invalid_2 = invalid_2[invalid_start_2:invalid_end_2]
+            invalid_2 = invalid_2[invalid_end_2:]
+            b += sum(_invalid_2)
+        except StopIteration:
+            pass
+    yield a
+    yield b
 
 if __name__ == '__main__':
     aoc.run()
