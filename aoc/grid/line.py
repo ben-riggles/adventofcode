@@ -151,6 +151,9 @@ class LineSegment:
         y = y1 + ua * (y2-y1)
         return Point(int(x), int(y))
     
+    def parallel(self, other: LineSegment) -> bool:
+        return self.slope == other.slope
+    
 
 if __name__ == '__main__':
     from aoc import Point
