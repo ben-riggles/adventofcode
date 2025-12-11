@@ -24,8 +24,6 @@
 
 _Click a badge to go to the specific day._
 
-ic day._
-
 ## <a name="d01"></a> Day 01: Secret Entrance
 
 [Task description](https://adventofcode.com/2025/day/1) - [Complete solution](day01/secret_entrance.py) - [Back to top](#top)  
