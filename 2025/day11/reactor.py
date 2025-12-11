@@ -1,5 +1,5 @@
 import aoc
-from collections import defaultdict
+import functools
 
 
 def parse_connection(connection: str) -> tuple[str, frozenset[str]]:
@@ -8,26 +8,14 @@ def parse_connection(connection: str) -> tuple[str, frozenset[str]]:
     return _in, _out
 
 def count_paths(connections: dict[str, frozenset[str]], start: str, end: str, required: set[str] = set()) -> int:
-    cache = defaultdict(lambda: defaultdict(int))
-    
-    def __find_paths(device: str) -> dict[frozenset, int]:
-        if device in cache:
-            return cache[device]
-        
-        result = defaultdict(int)
-        reqs = frozenset(required & {device,})
+    @functools.cache
+    def __paths(device: str, reqs: frozenset[str]) -> dict[frozenset, int]:
+        reqs -= {device}
         if device == end:
-            result[reqs] = 1
-        else:
-            for output in connections[device]:
-                for k, v in __find_paths(output).items():
-                    result[frozenset(k | reqs)] += v
-
-        cache[device] = result
-        return result
+            return 0 if reqs else 1
+        return sum(__paths(x, reqs) for x in connections[device])
     
-    paths = __find_paths(start)
-    return paths[frozenset(required)]
+    return __paths(start, frozenset(required))
 
 
 @aoc.register(__file__)

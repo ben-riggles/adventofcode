@@ -16,12 +16,12 @@ class TachyonManifold(KeyGrid):
     def move(self, point: Point) -> tuple[set[Point], bool]:
         new_point = point.move(Direction.DOWN)
         if new_point not in self['splitter']:
-            return {new_point,}, False
+            return {new_point}, False
         return {new_point.move(Direction.LEFT), new_point.move(Direction.RIGHT)}, True
 
     def splits(self) -> int:
         total = 0
-        beams = {self.start,}
+        beams = {self.start}
 
         for _ in range(self.height):
             moves = [self.move(beam) for beam in beams]
