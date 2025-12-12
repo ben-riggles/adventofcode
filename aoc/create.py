@@ -17,6 +17,7 @@ def create(year: int, day: int, name: str):
         with open(str(year_md), mode='r+') as f:
             contents = f.read().replace('<<year>>', str(year))
             f.seek(0)
+            f.truncate(0)
             f.write(contents)
         
 

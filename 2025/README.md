@@ -18,13 +18,11 @@
 [![Day](https://badgen.net/badge/07/%E2%98%85%E2%98%85/green)](#d07)
 [![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](#d09)
-[![Day](https://badgen.net/badge/10/%E2%98%86%E2%98%86/gray)](#d10)
+[![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](#d10)
 [![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/gray)](#d11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/gray)](#d12)
 
 _Click a badge to go to the specific day._
-
-ic day._
 
 ## <a name="d01"></a> Day 01: Secret Entrance
 
@@ -109,6 +107,16 @@ Runtime: ...
 ## <a name="d09"></a> Day 09: Movie Theater
 
 [Task description](https://adventofcode.com/2025/day/9) - [Complete solution](day09/movie_theater.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+...  
+
+## <a name="d10"></a> Day 10: Factory
+
+[Task description](https://adventofcode.com/2025/day/10) - [Complete solution](day10/factory.py) - [Back to top](#top)  
 
 Runtime: ...  
 

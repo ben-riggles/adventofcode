@@ -37,8 +37,6 @@
 
 _Click a badge to go to the specific day._
 
-ic day._
-
 ## <a name="d01"></a> Day 01: The Tyranny Of The Rocket Equation
 
 [Task description](https://adventofcode.com/2019/day/1) - [Complete solution](day01/the_tyranny_of_the_rocket_equation.py) - [Back to top](#top)  

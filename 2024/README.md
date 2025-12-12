@@ -37,8 +37,6 @@
 
 _Click a badge to go to the specific day._
 
-ic day._
-
 ## <a name="d01"></a> Day 01: Historian Hysteria
 
 [Task description](https://adventofcode.com/2024/day/1) - [Complete solution](day01/historian_hysteria.py) - [Back to top](#top)  
