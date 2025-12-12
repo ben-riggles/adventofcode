@@ -19,7 +19,7 @@
 [![Day](https://badgen.net/badge/08/%E2%98%85%E2%98%85/green)](#d08)
 [![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](#d09)
 [![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](#d10)
-[![Day](https://badgen.net/badge/11/%E2%98%86%E2%98%86/gray)](#d11)
+[![Day](https://badgen.net/badge/11/%E2%98%85%E2%98%85/green)](#d11)
 [![Day](https://badgen.net/badge/12/%E2%98%86%E2%98%86/gray)](#d12)
 
 _Click a badge to go to the specific day._
@@ -117,6 +117,14 @@ Runtime: ...
 ## <a name="d10"></a> Day 10: Factory
 
 [Task description](https://adventofcode.com/2025/day/10) - [Complete solution](day10/factory.py) - [Back to top](#top)  
+
+Runtime: ...  
+
+### Notes
+
+## <a name="d11"></a> Day 11: Reactor
+
+[Task description](https://adventofcode.com/2025/day/11) - [Complete solution](day11/reactor.py) - [Back to top](#top)  
 
 Runtime: ...  
 
