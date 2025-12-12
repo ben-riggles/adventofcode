@@ -122,6 +122,8 @@ Runtime: ...
 
 ### Notes
 
+...
+
 ## <a name="d11"></a> Day 11: Reactor
 
 [Task description](https://adventofcode.com/2025/day/11) - [Complete solution](day11/reactor.py) - [Back to top](#top)  
